@@ -805,15 +805,16 @@ async function submitAndContinue(){
     }
 
     btn.textContent='Saving...';
-    await fetch(APPS_SCRIPT_URL,{
-      method:'POST',
-      body:JSON.stringify({
-        name:name,score:g.score,category:g.cat,
-        correct:g.correct,streak:g.best,
-        speed:avg+'s',accuracy:acc+'%',
-        weekKey:wk
-      })
-    });
+    const saveUrl=APPS_SCRIPT_URL+'?action=save'+
+      '&name='+encodeURIComponent(name)+
+      '&score='+encodeURIComponent(g.score)+
+      '&category='+encodeURIComponent(g.cat)+
+      '&correct='+encodeURIComponent(g.correct)+
+      '&streak='+encodeURIComponent(g.best)+
+      '&speed='+encodeURIComponent(avg+'s')+
+      '&accuracy='+encodeURIComponent(acc+'%')+
+      '&weekKey='+encodeURIComponent(wk);
+    await fetch(saveUrl);
     g.scoreSubmitted=true;
     status.textContent='Score saved! ✅'; status.className='submit-status ok';
   }catch(e){
