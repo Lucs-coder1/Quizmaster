@@ -213,15 +213,15 @@
         <option value="Space and Science">Space &amp; Science</option>
       </select>
     </div>
+    <div class="lb-back-row" style="margin-bottom:12px;">
+      <button class="btn-ghost" onclick="goHome()">← Back</button>
+      <button class="btn-ghost" onclick="openHallOfFame()">👑 Hall of Fame</button>
+    </div>
     <span class="lb-weekly-tag" id="lb-weekly-tag">📅 Weekly Leaderboard — Resets every Monday</span>
     <table class="lb-table">
       <thead><tr><th>#</th><th>Name</th><th>Category</th><th class="r">Score</th></tr></thead>
       <tbody id="lb-body"><tr><td colspan="4" class="lb-loading">Loading...</td></tr></tbody>
     </table>
-    <div class="lb-back-row">
-      <button class="btn-ghost" onclick="goHome()">← Back</button>
-      <button class="btn-ghost" onclick="openHallOfFame()">👑 Hall of Fame</button>
-    </div>
   </div>
 
   <!-- HALL OF FAME -->
@@ -369,7 +369,26 @@ const QS={
 {question:"Which club plays at the Allianz Arena?",options:["Borussia Dortmund","RB Leipzig","Bayern Munich","Bayer Leverkusen"],answer:2},
 {question:"Which player became the most expensive teenager in history when joining Chelsea in 2023?",options:["Mykhailo Mudryk","Enzo Fernandez","Moises Caicedo","Romeo Lavia"],answer:2},
 {question:"Which club did Ronaldinho play for after Barcelona?",options:["PSG","AC Milan","Inter Milan","Juventus"],answer:1},
-{question:"Which country won the 2010 UEFA Champions League with Inter Milan?",options:["Portugal","Italy","Spain","Brazil"],answer:1}
+{question:"Which country won the 2010 UEFA Champions League with Inter Milan?",options:["Portugal","Italy","Spain","Brazil"],answer:1},
+{question:"Which club did Cristiano Ronaldo join after leaving Manchester United in 2009?",options:["Juventus","PSG","Real Madrid","Bayern Munich"],answer:2},
+{question:"Which player is known as O Fenomeno?",options:["Ronaldinho","Rivaldo","Ronaldo Nazario","Kaka"],answer:2},
+{question:"Which country won Euro 2024?",options:["France","Germany","England","Spain"],answer:3},
+{question:"Which club has won the most La Liga titles?",options:["Barcelona","Atletico Madrid","Real Madrid","Valencia"],answer:2},
+{question:"Who scored the fastest hat-trick in Premier League history?",options:["Robbie Fowler","Michael Owen","Sadio Mane","Alan Shearer"],answer:0},
+{question:"Which club plays at the Nou Camp?",options:["Real Madrid","Atletico Madrid","Barcelona","Valencia"],answer:2},
+{question:"Which country won the first ever Euro championship in 1960?",options:["France","West Germany","Soviet Union","Yugoslavia"],answer:2},
+{question:"Which player has the most international goals in football history?",options:["Cristiano Ronaldo","Lionel Messi","Ali Daei","Romelu Lukaku"],answer:0},
+{question:"Which Premier League club is nicknamed The Foxes?",options:["Wolverhampton","Leicester City","Crystal Palace","Norwich City"],answer:1},
+{question:"Which country did Zinedine Zidane play for internationally?",options:["Algeria","France","Morocco","Tunisia"],answer:1},
+{question:"Which club won the 2023 Champions League final?",options:["Real Madrid","Inter Milan","Man City","PSG"],answer:2},
+{question:"Which player wore the famous number 10 shirt for Brazil at the 2006 World Cup?",options:["Kaka","Ronaldinho","Rivaldo","Robinho"],answer:1},
+{question:"Which English club is known as The Toffees?",options:["Burnley","Everton","Aston Villa","Fulham"],answer:1},
+{question:"Which country hosted the 2018 FIFA World Cup?",options:["Qatar","Brazil","Germany","Russia"],answer:3},
+{question:"Which player scored the winning goal in the 2010 World Cup final?",options:["David Villa","Andres Iniesta","Xavi","Fernando Torres"],answer:1},
+{question:"Which goalkeeper won the Golden Glove at the 2022 World Cup?",options:["Alisson","Hugo Lloris","Yassine Bounou","Emiliano Martinez"],answer:3},
+{question:"Which club did Neymar join when he left Barcelona in 2017?",options:["PSG","Manchester City","Real Madrid","Juventus"],answer:0},
+{question:"Which country has won the Copa America the most times?",options:["Brazil","Argentina","Uruguay","Chile"],answer:1},
+{question:"Which player is nicknamed The Egyptian King?",options:["Sadio Mane","Riyad Mahrez","Mohamed Salah","Pierre-Emerick Aubameyang"],answer:2}
 ],
 "Portugal":[
 {question:"Which city is the capital of Portugal?",options:["Porto","Faro","Lisbon","Braga"],answer:2},
@@ -420,7 +439,26 @@ const QS={
 {question:"What is the name of Portugal's most famous pastry shop in Belem?",options:["Pasteis de Belem","Casa do Pastel","Confeitaria Nacional","Antiga Confeitaria"],answer:0},
 {question:"Which Portuguese city hosted Expo 98?",options:["Porto","Coimbra","Braga","Lisbon"],answer:3},
 {question:"Which Portuguese holiday on April 25th celebrates the Carnation Revolution?",options:["Republic Day","Liberty Day","Portugal Day","Flag Day"],answer:1},
-{question:"Which Portuguese island is closest to mainland Portugal?",options:["Madeira","Sao Miguel","Corvo","Faial"],answer:0}
+{question:"Which Portuguese island is closest to mainland Portugal?",options:["Madeira","Sao Miguel","Corvo","Faial"],answer:0},
+{question:"Which Portuguese city is known for its colourful tilework and hill trams?",options:["Porto","Faro","Lisbon","Braga"],answer:2},
+{question:"What is the name of Portugal's national airline?",options:["Iberia","Air Portugal","TAP Air Portugal","Portugalia"],answer:2},
+{question:"Which famous Portuguese explorer discovered the sea route to Brazil?",options:["Vasco da Gama","Bartolomeu Dias","Pedro Alvares Cabral","Ferdinand Magellan"],answer:2},
+{question:"What is the Portuguese word for thank you?",options:["Gracias","Merci","Obrigado","Danke"],answer:2},
+{question:"Which Portuguese city hosted the 2004 UEFA European Championship final?",options:["Porto","Braga","Lisbon","Coimbra"],answer:2},
+{question:"What is the name of Portugal's famous egg tart pastry?",options:["Croissant","Brioche","Pastel de Nata","Churro"],answer:2},
+{question:"Which river separates Portugal from Spain in the south?",options:["Tagus","Douro","Guadiana","Mondego"],answer:2},
+{question:"Which Portuguese city is home to the famous Dragon Stadium?",options:["Braga","Lisbon","Faro","Porto"],answer:3},
+{question:"What is the capital of the Azores archipelago?",options:["Funchal","Ponta Delgada","Horta","Angra do Heroismo"],answer:1},
+{question:"Which Portuguese writer won the Nobel Prize for Literature in 1998?",options:["Fernando Pessoa","Luis de Camoes","Jose Saramago","Eca de Queiros"],answer:2},
+{question:"What is the name of Portugal's most popular traditional Christmas dish?",options:["Bacalhau com natas","Cozido a portuguesa","Bacalhau da consoada","Leitao"],answer:2},
+{question:"Which Portuguese footballer won the Ballon d'Or five times?",options:["Luis Figo","Eusebio","Rui Costa","Cristiano Ronaldo"],answer:3},
+{question:"What is the name of the famous palace in Queluz near Lisbon?",options:["Pena Palace","Queluz National Palace","Belem Palace","Sintra Palace"],answer:1},
+{question:"Which Portuguese city is famous for its thermal spas and hot springs?",options:["Chaves","Coimbra","Evora","Setubal"],answer:0},
+{question:"What is the name of Portugal's most famous fado singer known as the Queen of Fado?",options:["Mariza","Ana Moura","Amalia Rodrigues","Carminho"],answer:2},
+{question:"Which year did Portugal join the European Union?",options:["1980","1986","1992","1995"],answer:1},
+{question:"What is the name of the famous surfing wave near Nazare in Portugal?",options:["Pipeline","Praia do Norte","Mavericks","Teahupo"],answer:1},
+{question:"Which Portuguese city is known as the City of Bracara Augusta from Roman times?",options:["Coimbra","Evora","Porto","Braga"],answer:3},
+{question:"What is the name of Portugal's highest mountain?",options:["Serra da Estrela","Pico do Arieiro","Pico","Foia"],answer:2}
 ],
 "Algarve":[
 {question:"Which Algarve beach is famous for its dramatic rock formations and sea arches?",options:["Praia da Rocha","Praia da Marinha","Meia Praia","Praia de Monte Gordo"],answer:1},
@@ -471,7 +509,26 @@ const QS={
 {question:"What is the name of the UNESCO Geopark covering part of the western Algarve?",options:["Costa Vicentina Geopark","Sagres Geopark","Alentejo Geopark","Aljezur Geopark"],answer:0},
 {question:"Which Algarve town is the starting point for the Via Algarviana hiking trail?",options:["Faro","Alcoutim","Lagos","Sagres"],answer:1},
 {question:"Which crop is the Algarve especially famous for producing?",options:["Oranges and almonds","Apples and grapes","Lemons and olives","Strawberries and peaches"],answer:0},
-{question:"Which Algarve beach is near the village of Odeceixe on the west coast?",options:["Praia de Odeceixe","Praia da Arrifana","Praia de Bordeira","Praia do Amado"],answer:0}
+{question:"Which Algarve beach is near the village of Odeceixe on the west coast?",options:["Praia de Odeceixe","Praia da Arrifana","Praia de Bordeira","Praia do Amado"],answer:0},
+{question:"Which Algarve town is famous for its annual jazz festival?",options:["Faro","Lagos","Loule","Portimao"],answer:1},
+{question:"What is the name of the natural park on the western Algarve coast?",options:["Ria Formosa","Costa Vicentina","Serra de Monchique","Vale do Guadiana"],answer:1},
+{question:"Which Algarve city has a famous Roman fish-salting factory ruins?",options:["Silves","Tavira","Faro","Lagos"],answer:3},
+{question:"What is the traditional name for the Algarve fishing boats with painted eyes on the bow?",options:["Caravela","Caique","Barco do Xaval","Bateira"],answer:1},
+{question:"Which Algarve beach is famous for its sea cave accessible only by swimming?",options:["Praia de Odeceixe","Praia do Camilo","Praia da Marinha","Praia do Carvalho"],answer:3},
+{question:"What is the name of the Algarve's famous sweet liqueur made from medronho berries?",options:["Ginjinha","Aguardente","Medronho","Amendoa amarga"],answer:2},
+{question:"Which town in the western Algarve is known for its stunning waterfall?",options:["Monchique","Alte","Silves","Alcoutim"],answer:1},
+{question:"What is the name of the Algarve festival celebrating seafood held in Portimao?",options:["Festa da Sardinha","Festival do Marisco","Festa do Mar","Festival do Atum"],answer:1},
+{question:"Which Algarve beach is famous for its vast sand dunes?",options:["Meia Praia","Praia da Ilha de Tavira","Praia de Cacela Velha","Praia de Faro"],answer:1},
+{question:"What is the approximate population of Faro city?",options:["20,000","40,000","60,000","100,000"],answer:2},
+{question:"Which Algarve town is closest to the village of Cacela Velha?",options:["Tavira","Vila Real de Santo Antonio","Olhao","Faro"],answer:0},
+{question:"What type of cuisine is the Algarve most famous for?",options:["Meat dishes","Pastries","Seafood","Rice dishes"],answer:2},
+{question:"Which Algarve beach is known as the most beautiful in Europe by many travel guides?",options:["Praia da Rocha","Praia da Marinha","Praia do Camilo","Meia Praia"],answer:1},
+{question:"What is the name of the Algarve's famous almond blossom season?",options:["Primavera","Amendoeira em Flor","Flor de Primavera","Festa da Amendoa"],answer:1},
+{question:"Which Algarve town hosts a famous international motorbike rally each year?",options:["Lagos","Faro","Portimao","Albufeira"],answer:2},
+{question:"What is the name of the Algarve's most famous golf resort area?",options:["Vilamoura","Vale do Lobo","Quinta do Lago","Golden Triangle"],answer:3},
+{question:"Which river runs through the city of Portimao?",options:["Guadiana","Arade","Gilao","Odelouca"],answer:1},
+{question:"What is the name of the ancient Moorish city that preceded modern Silves?",options:["Xelb","Ossoba","Balsa","Lacobriga"],answer:0},
+{question:"Which Algarve town is famous for its lacemaking tradition?",options:["Olhao","Tavira","Lagos","Azinhal"],answer:1}
 ],
 "Celebrities and TikTok":[
 {question:"Which YouTuber is famous for challenges, giveaways, and philanthropy videos?",options:["KSI","MrBeast","Markiplier","PewDiePie"],answer:1},
@@ -523,7 +580,26 @@ const QS={
 {question:"Which celebrity is famous for the phrase That is not who I am on social media?",options:["Trisha Paytas","James Charles","Jeffree Star","Shane Dawson"],answer:0},
 {question:"Which viral TikTok challenge involved walking backwards into a room?",options:["Nope Walk","Backwards Challenge","Reverse Walk","Thriller Walk"],answer:1},
 {question:"Which artist released the breakout hit Vampire in 2023?",options:["Olivia Rodrigo","Sabrina Carpenter","Gracie Abrams","Conan Gray"],answer:0},
-{question:"Which streamer has the most followed channel on Twitch?",options:["Ninja","Tfue","Kai Cenat","Ninja"],answer:0}
+{question:"Which streamer has the most followed channel on Twitch?",options:["Ninja","Tfue","Kai Cenat","Ninja"],answer:0},
+{question:"Which artist released the hit song Espresso in 2024?",options:["Dua Lipa","Sabrina Carpenter","Olivia Rodrigo","Ariana Grande"],answer:1},
+{question:"Which YouTuber is famous for the series MrBeast Burger?",options:["KSI","Logan Paul","MrBeast","Markiplier"],answer:2},
+{question:"Which TikTok creator is known for saying Ice Spice in viral videos?",options:["Charli D'Amelio","Addison Rae","Ice Spice","Khaby Lame"],answer:3},
+{question:"Which artist released the album Cowboy Carter in 2024?",options:["Taylor Swift","Rihanna","Beyonce","Adele"],answer:2},
+{question:"Which streamer is famous for the Just Chatting category and subathons?",options:["Pokimane","Ludwig","Ninja","xQc"],answer:1},
+{question:"Which K-pop group did BTS member Jin return to after military service?",options:["Blackpink","Stray Kids","EXO","BTS"],answer:3},
+{question:"Which artist is known for the viral song Calm Down?",options:["Rema","Burna Boy","Wizkid","Davido"],answer:0},
+{question:"Which YouTuber is famous for the series Sidemen Charity Matches?",options:["KSI","W2S","Miniminter","Zerkaa"],answer:0},
+{question:"Which TikTok trend involved people freezing like mannequins in public?",options:["NPC trend","Mannequin Challenge","Statue trend","Freeze trend"],answer:1},
+{question:"Which artist released the album Short n Sweet in 2024?",options:["Olivia Rodrigo","Ariana Grande","Sabrina Carpenter","Dua Lipa"],answer:2},
+{question:"Which streamer is famous for the show First We Feast Hot Ones?",options:["Sean Evans","MrBeast","Logan Paul","Mark Rober"],answer:0},
+{question:"Which celebrity couple is known as Hailey and Justin?",options:["Hailey Bieber and Justin Timberlake","Hailey Baldwin and Justin Bieber","Hailey Steinfeld and Justin Bieber","Hailey Baldwin and Justin Timberlake"],answer:1},
+{question:"Which artist went viral with the song Rich Flex?",options:["Drake and Lil Baby","Drake and 21 Savage","Future and Drake","Lil Durk and Drake"],answer:1},
+{question:"Which YouTuber is famous for the channel Dude Perfect?",options:["5 friends doing trick shots","MrBeast and friends","Mark Rober","Ryan Trahan"],answer:0},
+{question:"Which social media platform introduced Reels to compete with TikTok?",options:["Twitter","Snapchat","Instagram","YouTube"],answer:2},
+{question:"Which artist is known for the hit song Die With A Smile with Bruno Mars?",options:["Dua Lipa","Lady Gaga","Ariana Grande","Selena Gomez"],answer:1},
+{question:"Which streamer became famous for react content and GTA V roleplay on NoPixel?",options:["xQc","Adin Ross","Pokimane","Sykkuno"],answer:0},
+{question:"Which viral TikTok sound was from the show Bluey?",options:["Daddy Pig","Bluey theme","Dad jokes song","Hammerbarn"],answer:1},
+{question:"Which artist released the debut album Pink Friday in 2010?",options:["Cardi B","Nicki Minaj","Iggy Azalea","Lil Kim"],answer:1}
 ],
 "Famous Athletes":[
 {question:"Which football player has won the most Ballon d'Or awards?",options:["Cristiano Ronaldo","Lionel Messi","Pele","Diego Maradona"],answer:1},
@@ -574,7 +650,26 @@ const QS={
 {question:"Which tennis player won the most consecutive Wimbledon titles in the open era?",options:["Pete Sampras","Roger Federer","Bjorn Borg","Novak Djokovic"],answer:1},
 {question:"Which South African runner is famous for racing on prosthetic blades?",options:["Wayde van Niekerk","Caster Semenya","Oscar Pistorius","Luvo Manyonga"],answer:2},
 {question:"Which sport does Katie Ledecky compete in?",options:["Gymnastics","Athletics","Swimming","Cycling"],answer:2},
-{question:"Which player holds the record for most Grand Slam titles in women's tennis?",options:["Serena Williams","Steffi Graf","Margaret Court","Martina Navratilova"],answer:2}
+{question:"Which player holds the record for most Grand Slam titles in women's tennis?",options:["Serena Williams","Steffi Graf","Margaret Court","Martina Navratilova"],answer:2},
+{question:"Which athlete won the 100m gold at both the 2020 and 2024 Olympics?",options:["Usain Bolt","Noah Lyles","Marcell Jacobs","Fred Kerley"],answer:2},
+{question:"Which Formula 1 driver won the world championship in 2023?",options:["Lewis Hamilton","Charles Leclerc","Max Verstappen","Lando Norris"],answer:2},
+{question:"Which NBA player is known as The Joker?",options:["Luka Doncic","Giannis Antetokounmpo","Nikola Jokic","Joel Embiid"],answer:2},
+{question:"Which female gymnast made a comeback at the 2024 Paris Olympics?",options:["Aly Raisman","Gabby Douglas","Sunisa Lee","Simone Biles"],answer:3},
+{question:"Which tennis player won the US Open in 2024?",options:["Carlos Alcaraz","Jannik Sinner","Novak Djokovic","Daniil Medvedev"],answer:1},
+{question:"Which sprinter won the 100m gold at the 2024 Paris Olympics?",options:["Marcell Jacobs","Noah Lyles","Kishane Thompson","Fred Kerley"],answer:1},
+{question:"Which football player won the 2024 Ballon d Or?",options:["Erling Haaland","Vinicius Junior","Kylian Mbappe","Rodri"],answer:3},
+{question:"Which swimmer broke multiple world records at the 2024 Paris Olympics?",options:["Caeleb Dressel","Adam Peaty","Leon Marchand","Kyle Chalmers"],answer:2},
+{question:"Which boxer defeated Tyson Fury to become undisputed heavyweight champion?",options:["Anthony Joshua","Deontay Wilder","Oleksandr Usyk","Daniel Dubois"],answer:2},
+{question:"Which golfer won The Masters in 2023?",options:["Rory McIlroy","Jon Rahm","Tiger Woods","Brooks Koepka"],answer:1},
+{question:"Which NBA team won the championship in 2024?",options:["Golden State Warriors","Boston Celtics","Miami Heat","Denver Nuggets"],answer:1},
+{question:"Which female footballer plays for Barcelona and Spain?",options:["Sam Kerr","Aitana Bonmati","Alex Morgan","Marta"],answer:1},
+{question:"Which athlete holds the world record in the 400m hurdles?",options:["Karsten Warholm","Rai Benjamin","Sydney McLaughlin","Kevin Young"],answer:2},
+{question:"Which tennis player won Wimbledon in 2024?",options:["Jannik Sinner","Novak Djokovic","Carlos Alcaraz","Daniil Medvedev"],answer:2},
+{question:"Which F1 driver won the most races in the 2023 season?",options:["Lewis Hamilton","Charles Leclerc","Max Verstappen","Fernando Alonso"],answer:2},
+{question:"Which country won the most gold medals at the 2024 Paris Olympics?",options:["China","Great Britain","Australia","USA"],answer:3},
+{question:"Which NBA player was the MVP of the 2024 Finals?",options:["Jayson Tatum","Jaylen Brown","Kristaps Porzingis","Al Horford"],answer:1},
+{question:"Which athlete is known as the White Lightning in sprinting?",options:["Christian Coleman","Andre De Grasse","Akani Simbine","Zharnel Hughes"],answer:0},
+{question:"Which cricketer holds the record for most Test centuries?",options:["Brian Lara","Ricky Ponting","Sachin Tendulkar","Kumar Sangakkara"],answer:2}
 ],
 "Gaming":[
 {question:"Which company created Fortnite?",options:["Valve","Epic Games","Mojang","Ubisoft"],answer:1},
@@ -625,7 +720,26 @@ const QS={
 {question:"Which Minecraft hostile mob lives in the ocean and shoots laser beams?",options:["Drowned","Elder Guardian","Squid","Turtle"],answer:1},
 {question:"Which popular game involves catching and battling creatures called Pokemon?",options:["Digimon","Yokai Watch","Pokemon","Dragon Quest Monsters"],answer:2},
 {question:"Which Roblox game involves defeating waves of enemies to become the strongest?",options:["Blox Fruits","Anime Dimensions","Anime Fighters Simulator","Shindo Life"],answer:2},
-{question:"Which Fortnite item allows players to glide across the map quickly?",options:["Launch Pad","Shockwave Grenade","Grapple Glove","Rift-To-Go"],answer:2}
+{question:"Which Fortnite item allows players to glide across the map quickly?",options:["Launch Pad","Shockwave Grenade","Grapple Glove","Rift-To-Go"],answer:2},
+{question:"Which game features the character Master Chief fighting the Covenant?",options:["Call of Duty","Destiny","Halo","Gears of War"],answer:2},
+{question:"Which Minecraft update introduced frogs and the mangrove swamp?",options:["Wild Update","Nether Update","Caves and Cliffs","Aquatic Update"],answer:0},
+{question:"Which Roblox game is inspired by the anime Dragon Ball?",options:["Anime Dimensions","Dragon Ball Rage","Shindo Life","Anime Fighting Simulator"],answer:0},
+{question:"Which game features the open world city of Night City?",options:["GTA VI","Watch Dogs","Cyberpunk 2077","Spider-Man"],answer:2},
+{question:"Which Fortnite skin was based on a real life Marvel character first added in Chapter 2?",options:["Iron Man","Thor","Wolverine","Black Panther"],answer:0},
+{question:"Which game studio made the God of War series?",options:["Naughty Dog","Insomniac","Santa Monica Studio","Rockstar"],answer:2},
+{question:"Which Minecraft item is used to locate strongholds?",options:["Compass","Clock","Eye of Ender","Lodestone"],answer:2},
+{question:"Which game is set in the post-apocalyptic Wasteland?",options:["The Last of Us","Days Gone","Fallout","Metro Exodus"],answer:2},
+{question:"Which Roblox game involves surviving a natural disaster every round?",options:["Flood Escape","Natural Disaster Survival","Survive the Disasters","Disaster Island"],answer:1},
+{question:"Which popular game involves dropping onto an island and being the last one standing?",options:["Warzone","Apex Legends","PUBG","All of these"],answer:3},
+{question:"Which Fortnite season introduced the character Darth Vader?",options:["Chapter 3 Season 3","Chapter 2 Season 4","Chapter 4 Season 1","Chapter 3 Season 4"],answer:0},
+{question:"Which game features the open world kingdom of Hyrule?",options:["Fire Emblem","Xenoblade","The Legend of Zelda","Pokemon"],answer:2},
+{question:"Which gaming platform has the most users worldwide?",options:["PlayStation","Xbox","Nintendo Switch","Mobile gaming"],answer:3},
+{question:"Which Minecraft mob drops ender pearls when killed?",options:["Endermite","Shulker","Enderman","Elder Guardian"],answer:2},
+{question:"Which Roblox tycoon game involves building and managing a theme park?",options:["Theme Park Tycoon 2","Tycoon Factory","Park Builder","Funland Tycoon"],answer:0},
+{question:"Which game features the character Joel and Ellie surviving in a zombie apocalypse?",options:["Days Gone","Dying Light","The Last of Us","Resident Evil"],answer:2},
+{question:"Which Fortnite collaborator added a lightsaber as a weapon?",options:["Marvel","DC","Star Wars","Dragon Ball"],answer:2},
+{question:"Which game studio made the Red Dead Redemption series?",options:["Ubisoft","Rockstar Games","Bethesda","CD Projekt Red"],answer:1},
+{question:"Which Minecraft structure generates in the ocean and is guarded by guardians?",options:["Shipwreck","Underwater Temple","Ocean Monument","Coral Fortress"],answer:2}
 ],
 "Space and Science":[
 {question:"Which planet is known as the Red Planet?",options:["Venus","Mars","Jupiter","Mercury"],answer:1},
@@ -677,7 +791,26 @@ const QS={
 {question:"Which animal can see ultraviolet light?",options:["Dogs","Cats","Bees","Owls"],answer:2},
 {question:"Which invention did Marie Curie contribute to by discovering radioactivity?",options:["X-ray machines","Nuclear power","Cancer treatment","All of these"],answer:3},
 {question:"Which moon is the largest in our Solar System?",options:["Titan","Europa","Ganymede","Callisto"],answer:2},
-{question:"What percentage of the Earth's surface is covered by water?",options:["51 percent","61 percent","71 percent","81 percent"],answer:2}
+{question:"What percentage of the Earth's surface is covered by water?",options:["51 percent","61 percent","71 percent","81 percent"],answer:2},
+{question:"Which planet has a day longer than its year?",options:["Mars","Mercury","Venus","Jupiter"],answer:2},
+{question:"What is the name of the galaxy we live in?",options:["Andromeda","Milky Way","Triangulum","Whirlpool"],answer:1},
+{question:"Which bone is the longest in the human body?",options:["Spine","Femur","Tibia","Humerus"],answer:1},
+{question:"What is the chemical symbol for gold?",options:["Go","Gd","Au","Ag"],answer:2},
+{question:"How many chromosomes do humans have?",options:["23","44","46","48"],answer:2},
+{question:"What is the hardest natural substance on Earth?",options:["Ruby","Quartz","Diamond","Sapphire"],answer:2},
+{question:"What is the most abundant gas in Earth's atmosphere?",options:["Oxygen","Carbon dioxide","Argon","Nitrogen"],answer:3},
+{question:"What is the name of the first artificial satellite launched into space?",options:["Explorer 1","Vostok 1","Sputnik 1","Apollo 1"],answer:2},
+{question:"What is the powerhouse of the cell?",options:["Nucleus","Ribosome","Mitochondria","Golgi apparatus"],answer:2},
+{question:"Which blood type is known as the universal donor?",options:["A positive","B negative","AB positive","O negative"],answer:3},
+{question:"How many bones are in the adult human body?",options:["196","206","216","226"],answer:1},
+{question:"Which element has the atomic number 1?",options:["Helium","Oxygen","Carbon","Hydrogen"],answer:3},
+{question:"Which part of the brain controls balance and coordination?",options:["Cerebrum","Medulla","Hippocampus","Cerebellum"],answer:3},
+{question:"Which planet is known as the Ice Giant?",options:["Saturn","Jupiter","Neptune","Mars"],answer:2},
+{question:"What is the study of earthquakes called?",options:["Meteorology","Seismology","Geology","Volcanology"],answer:1},
+{question:"Which vitamin does the human body produce when exposed to sunlight?",options:["Vitamin A","Vitamin B","Vitamin C","Vitamin D"],answer:3},
+{question:"What is the largest organ in the human body?",options:["Brain","Liver","Lungs","Skin"],answer:3},
+{question:"Which scientist discovered the structure of DNA?",options:["Louis Pasteur","Watson and Crick","Marie Curie","Gregor Mendel"],answer:1},
+{question:"Which metal is liquid at room temperature?",options:["Lead","Tin","Mercury","Aluminium"],answer:2}
 ]
 };
 
