@@ -789,7 +789,7 @@ async function submitAndContinue(){
     const acc=Math.round((g.correct/10)*100);
     const wk=getWeekKey();
 
-    // Fetch current leaderboard and check if name already exists (case-insensitive)
+    // Fetch ALL names this week (no category filter) to check for duplicates
     const checkRes=await fetch(APPS_SCRIPT_URL+'?weekKey='+encodeURIComponent(wk));
     const checkJson=await checkRes.json();
     if(checkJson.success&&checkJson.leaderboard&&checkJson.leaderboard.length){
@@ -797,7 +797,7 @@ async function submitAndContinue(){
         return entry.name.trim().toLowerCase()===name.toLowerCase();
       });
       if(taken){
-        status.textContent='This name is taken, try another.';
+        status.textContent='This name is taken this week, try another.';
         status.className='submit-status err';
         btn.disabled=false; btn.textContent='SAVE MY SCORE 🏆';
         return;
