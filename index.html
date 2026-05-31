@@ -789,19 +789,23 @@ async function submitAndContinue(){
     const acc=Math.round((g.correct/10)*100);
     const wk=getWeekKey();
 
-    // Fetch ALL names this week (no category filter) to check for duplicates
-    const checkRes=await fetch(APPS_SCRIPT_URL+'?weekKey='+encodeURIComponent(wk));
-    const checkJson=await checkRes.json();
-    if(checkJson.success&&checkJson.leaderboard&&checkJson.leaderboard.length){
-      const taken=checkJson.leaderboard.some(function(entry){
-        return entry.name.trim().toLowerCase()===name.toLowerCase();
-      });
-      if(taken){
-        status.textContent='This name is taken this week, try another.';
-        status.className='submit-status err';
-        btn.disabled=false; btn.textContent='SAVE MY SCORE 🏆';
-        return;
+    // Check for duplicate names - if check fails, proceed anyway
+    try{
+      const checkRes=await fetch(APPS_SCRIPT_URL+'?weekKey='+encodeURIComponent(wk));
+      const checkJson=await checkRes.json();
+      if(checkJson.success&&checkJson.leaderboard&&checkJson.leaderboard.length){
+        const taken=checkJson.leaderboard.some(function(entry){
+          return entry.name.trim().toLowerCase()===name.toLowerCase();
+        });
+        if(taken){
+          status.textContent='This name is taken this week, try another.';
+          status.className='submit-status err';
+          btn.disabled=false; btn.textContent='SAVE MY SCORE 🏆';
+          return;
+        }
       }
+    }catch(checkErr){
+      // Check failed - proceed to save anyway
     }
 
     btn.textContent='Saving...';
