@@ -42,7 +42,7 @@
   .chip-val{font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:700;color:#fff;}
   .chip-val.str{color:#ffaa33;}
   .tbar-wrap{width:100%;height:7px;background:#1e1e32;border-radius:4px;margin-bottom:24px;overflow:hidden;}
-  .tbar{height:100%;border-radius:4px;background:#00d48a;transition:width 1s linear,background 1s linear;}
+  .tbar{height:100%;border-radius:4px;background:#00d48a;transition:background .3s;}
   .tbar.warn{background:#ffaa33;}.tbar.danger{background:#ff5c5c;}
   .q-text{font-size:18px;font-weight:700;line-height:1.5;color:#fff;margin-bottom:26px;min-height:60px;}
   .opts{display:flex;flex-direction:column;gap:11px;}
@@ -839,6 +839,7 @@ function startGame(cat){
 
 function loadQ(){
   const q=g.qs[g.qi];
+  clearInterval(g.timer); g.timer=null;
   g.answered=false; g.secsLeft=TSEC; g.tstart=Date.now();
   document.getElementById('q-cat').textContent=g.cat;
   document.getElementById('q-prog').textContent=(g.qi+1)+' / 10';
@@ -851,12 +852,18 @@ function loadQ(){
     b.innerHTML='<span class="opt-ltr">'+L[i]+'</span><span>'+o+'</span>';
     b.onclick=()=>pick(i); c.appendChild(b);
   });
-  updateBar(); clearInterval(g.timer);
-  g.timer=setInterval(()=>{g.secsLeft--;updateBar();if(g.secsLeft<=0){clearInterval(g.timer);if(!g.answered)timeout();}},1000);
+  updateBar();
+  g.timer=setInterval(()=>{
+    const elapsed=(Date.now()-g.tstart)/1000;
+    g.secsLeft=Math.max(0,TSEC-elapsed);
+    updateBar();
+    if(g.secsLeft<=0){clearInterval(g.timer);g.timer=null;if(!g.answered)timeout();}
+  },16);
 }
 
 function updateBar(){
-  const pct=(g.secsLeft/TSEC)*100;
+  const elapsed=(Date.now()-g.tstart)/1000;
+  const pct=Math.max(0,((TSEC-elapsed)/TSEC)*100);
   const b=document.getElementById('tbar');
   b.style.width=pct+'%';
   b.className='tbar'+(pct<=25?' danger':pct<=50?' warn':'');
@@ -870,7 +877,7 @@ function timeout(){
 }
 
 function pick(chosen){
-  if(g.answered)return; g.answered=true; clearInterval(g.timer);
+  if(g.answered)return; g.answered=true; clearInterval(g.timer); g.timer=null;
   const elapsed=(Date.now()-g.tstart)/1000; g.times.push(Math.min(elapsed,TSEC));
   const q=g.qs[g.qi]; const ok=chosen===q.answer;
   document.querySelectorAll('.opt').forEach((b,i)=>{
@@ -896,7 +903,7 @@ function flash(ok,pts){
   w.classList.add('show'); setTimeout(()=>w.classList.remove('show'),1000);
 }
 
-function nextQ(){g.qi++; g.qi>=10?summary():loadQ();}
+function nextQ(){clearInterval(g.timer);g.timer=null;g.qi++; g.qi>=10?summary():loadQ();}
 
 function summary(){
   g.scoreSubmitted=false;
