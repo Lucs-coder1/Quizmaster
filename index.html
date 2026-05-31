@@ -814,7 +814,7 @@ async function submitAndContinue(){
       '&speed='+encodeURIComponent(avg+'s')+
       '&accuracy='+encodeURIComponent(acc+'%')+
       '&weekKey='+encodeURIComponent(wk);
-    await fetch(saveUrl);
+    await fetch(saveUrl,{mode:'no-cors'});
     g.scoreSubmitted=true;
     status.textContent='Score saved! ✅'; status.className='submit-status ok';
   }catch(e){
