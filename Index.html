@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Quizmaster</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{font-family:'Nunito',sans-serif;background:#0d0d1a;color:#e8eaf6;display:flex;justify-content:center;}
+  #app{width:100%;max-width:480px;min-height:100vh;padding:0 16px;}
+
+  .scr{display:none;flex-direction:column;padding:20px 0 40px;}
+  .scr.on{display:flex;}
+
+  /* HOME */
+  .big-title{font-family:'Rajdhani',sans-serif;font-size:46px;font-weight:700;color:#fff;text-align:center;letter-spacing:2px;margin:40px 0 4px;}
+  .big-sub{font-size:12px;color:#9ca3c4;text-align:center;letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;}
+  .home-top-score{font-size:12px;color:#00d48a;text-align:center;font-weight:700;margin-bottom:22px;min-height:20px;letter-spacing:.5px;background:#00d48a11;border:1px solid #00d48a33;border-radius:20px;padding:7px 14px;}
+  .home-top-score.loading{color:#9ca3c4;border-color:#2a2a42;background:transparent;animation:pulse .8s ease-in-out infinite alternate;}
+  @keyframes pulse{from{opacity:.4;}to{opacity:1;}}
+  .cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;}
+  .cat-btn{background:#161628;border:1.5px solid #2a2a42;border-radius:16px;padding:20px 12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;transition:transform .12s,background .12s;}
+  .cat-btn:hover{background:#1d1d32;}.cat-btn:active{transform:scale(.96);}
+  .cat-icon{font-size:28px;}
+  .cat-name{font-size:13px;font-weight:700;color:#d0d4f0;text-align:center;line-height:1.3;}
+  .cat-btn.fc{border-color:#00d48a;}.cat-btn.pt{border-color:#ff5c7a;}
+  .cat-btn.al{border-color:#ffaa33;}.cat-btn.ce{border-color:#c473ff;}
+  .cat-btn.at{border-color:#ffe033;}.cat-btn.gm{border-color:#33d4ff;}
+  .cat-btn.sc{border-color:#ff70c0;}.span2{grid-column:span 2;}
+  .home-btns{display:flex;flex-direction:column;gap:10px;margin-top:16px;}
+
+  /* QUIZ */
+  .q-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+  .cat-pill{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#00d48a;padding:5px 12px;border:1px solid #00d48a55;border-radius:20px;background:#00d48a18;}
+  .prog{font-size:14px;color:#b0b8d8;font-weight:700;}
+  .chips{display:flex;gap:10px;margin-bottom:16px;}
+  .chip{flex:1;background:#161628;border:1px solid #2a2a42;border-radius:10px;padding:10px 14px;}
+  .chip-lbl{font-size:11px;color:#9ca3c4;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;}
+  .chip-val{font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:700;color:#fff;}
+  .chip-val.str{color:#ffaa33;}
+  .tbar-wrap{width:100%;height:7px;background:#1e1e32;border-radius:4px;margin-bottom:24px;overflow:hidden;}
+  .tbar{height:100%;border-radius:4px;background:#00d48a;transition:width 1s linear,background 1s linear;}
+  .tbar.warn{background:#ffaa33;}.tbar.danger{background:#ff5c5c;}
+  .q-text{font-size:18px;font-weight:700;line-height:1.5;color:#fff;margin-bottom:26px;min-height:60px;}
+  .opts{display:flex;flex-direction:column;gap:11px;}
+  .opt{background:#161628;border:1.5px solid #2a2a42;border-radius:13px;padding:15px 16px;font-size:15px;font-weight:600;color:#d0d4f0;cursor:pointer;text-align:left;display:flex;align-items:center;gap:13px;transition:border-color .12s,background .12s;font-family:'Nunito',sans-serif;width:100%;}
+  .opt:hover{background:#1d1d32;border-color:#3a3a55;}.opt:active{transform:scale(.98);}
+  .opt-ltr{width:30px;height:30px;border-radius:8px;background:#1e1e32;border:1px solid #2a2a42;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#9ca3c4;flex-shrink:0;}
+  .opt.ok{background:#00200f;border-color:#00d48a;color:#00ff9d;}
+  .opt.ok .opt-ltr{background:#00d48a22;border-color:#00d48a;color:#00ff9d;}
+  .opt.bad{background:#200008;border-color:#ff5c5c;color:#ff8888;}
+  .opt.bad .opt-ltr{background:#ff5c5c22;border-color:#ff5c5c;color:#ff8888;}
+  .opt.off{cursor:default;pointer-events:none;}
+  .btn-give-up{width:100%;margin-top:20px;padding:12px;background:transparent;border:1.5px solid #ff5c5c44;border-radius:13px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;color:#ff5c5c88;cursor:pointer;transition:background .12s,color .12s,border-color .12s;}
+  .btn-give-up:hover{background:#ff5c5c12;color:#ff5c5c;border-color:#ff5c5c;}
+
+  /* FEEDBACK FLASH */
+  .fb-wrap{position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:99;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s;}
+  .fb-wrap.show{opacity:1;}
+  .fb-pill{padding:14px 32px;border-radius:40px;font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700;letter-spacing:1px;}
+  .fb-pill.ok{background:#00d48a;color:#001a0a;}.fb-pill.bad{background:#ff5c5c;color:#fff;}
+
+  /* SUMMARY */
+  .sum-title{font-family:'Rajdhani',sans-serif;font-size:36px;font-weight:700;color:#fff;text-align:center;margin-bottom:4px;}
+  .sum-cat{font-size:11px;color:#9ca3c4;text-align:center;letter-spacing:2px;text-transform:uppercase;margin-bottom:24px;}
+  .score-box{width:100%;background:#161628;border:1px solid #2a2a42;border-radius:16px;padding:24px;text-align:center;margin-bottom:20px;}
+  .score-lbl{font-size:11px;color:#9ca3c4;letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:6px;}
+  .score-num{font-family:'Rajdhani',sans-serif;font-size:64px;font-weight:700;color:#00d48a;line-height:1;}
+  .sgrid{display:grid;grid-template-columns:1fr 1fr;gap:11px;width:100%;margin-bottom:20px;}
+  .scard{background:#161628;border:1px solid #2a2a42;border-radius:13px;padding:16px;}
+  .scard-lbl{font-size:10px;color:#9ca3c4;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3px;}
+  .scard-val{font-family:'Rajdhani',sans-serif;font-size:30px;font-weight:700;color:#fff;}
+  .scard-sub{font-size:12px;color:#9ca3c4;margin-top:2px;}
+  .rating-box{width:100%;background:#161628;border:1px solid #2a2a42;border-radius:13px;padding:18px;text-align:center;margin-bottom:24px;}
+  .rating-stars{font-size:24px;margin-bottom:8px;}
+  .rating-txt{font-size:20px;font-weight:700;color:#fff;}
+  .rating-sub{font-size:13px;color:#b0b8d8;margin-top:5px;}
+  .sum-btns{display:flex;flex-direction:column;gap:10px;}
+
+  /* NAME SCREEN — more prominent */
+  #s-name{padding-top:40px;align-items:center;}
+  .name-hero{width:100%;background:linear-gradient(135deg,#001a0a,#002a14);border:1.5px solid #00d48a44;border-radius:20px;padding:28px 20px 24px;text-align:center;margin-bottom:24px;}
+  .name-trophy{font-size:40px;margin-bottom:10px;}
+  .name-title{font-family:'Rajdhani',sans-serif;font-size:32px;font-weight:700;color:#fff;margin-bottom:6px;}
+  .name-sub{font-size:13px;color:#9ca3c4;line-height:1.5;margin-bottom:16px;}
+  .name-score-preview{font-family:'Rajdhani',sans-serif;font-size:56px;font-weight:700;color:#00d48a;line-height:1;}
+  .name-score-label{font-size:11px;color:#00d48a88;letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-top:4px;}
+  .name-form{width:100%;}
+  .name-input-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#9ca3c4;margin-bottom:8px;display:block;}
+  .name-input{width:100%;padding:18px 20px;background:#161628;border:2px solid #00d48a55;border-radius:14px;font-family:'Nunito',sans-serif;font-size:20px;font-weight:700;color:#fff;outline:none;margin-bottom:8px;text-align:center;letter-spacing:1px;transition:border-color .2s,box-shadow .2s;}
+  .name-input:focus{border-color:#00d48a;box-shadow:0 0 0 3px #00d48a22;}
+  .name-input::placeholder{color:#3a3a55;}
+  .submit-status{font-size:13px;text-align:center;min-height:20px;margin-bottom:14px;color:#9ca3c4;}
+  .submit-status.err{color:#ff8888;}.submit-status.ok{color:#00d48a;}
+  .name-btns{width:100%;display:flex;flex-direction:column;gap:10px;}
+
+  /* LEADERBOARD */
+  #s-lb{padding-top:0;}
+  .lb-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;margin-top:36px;}
+  .lb-title{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;color:#fff;}
+  .lb-weekly-tag{font-size:11px;color:#ffaa33;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px;display:block;}
+  .lb-cat-sel{background:#161628;border:1px solid #2a2a42;border-radius:8px;padding:7px 10px;font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;color:#b0b8d8;cursor:pointer;outline:none;}
+  .lb-table{width:100%;border-collapse:collapse;margin-bottom:20px;}
+  .lb-table th{font-size:10px;color:#9ca3c4;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:0 8px 10px;text-align:left;}
+  .lb-table th.r{text-align:right;}
+  .lb-table td{padding:11px 8px;border-top:1px solid #1e1e32;font-size:14px;color:#d0d4f0;vertical-align:middle;}
+  .lb-table td.r{text-align:right;font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;color:#00d48a;}
+  .lb-rank{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:#3a3a55;}
+  .lb-rank.gold{color:#ffe033;}.lb-rank.silver{color:#b0b8d8;}.lb-rank.bronze{color:#ffaa33;}
+  .lb-empty,.lb-loading{text-align:center;color:#9ca3c4;font-size:14px;padding:40px 0;}
+  .lb-back-row{display:flex;gap:10px;margin-bottom:10px;}
+  .lb-back-row .btn-ghost{flex:1;}
+
+  /* HALL OF FAME */
+  #s-hof{padding-top:0;}
+  .hof-header{display:flex;align-items:center;justify-content:space-between;margin-top:36px;margin-bottom:6px;}
+  .hof-title{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;color:#fff;}
+  .hof-sub{font-size:11px;color:#ffaa33;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:20px;display:block;}
+  .hof-list{display:flex;flex-direction:column;gap:10px;margin-bottom:24px;}
+  .hof-card{background:#161628;border:1px solid #2a2a42;border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:14px;}
+  .hof-crown{font-size:22px;flex-shrink:0;}
+  .hof-info{flex:1;min-width:0;}
+  .hof-name{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:#ffe033;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .hof-week{font-size:11px;color:#9ca3c4;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+  .hof-cat{font-size:11px;color:#9ca3c4;margin-top:1px;}
+  .hof-score{font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:700;color:#00d48a;flex-shrink:0;}
+  .hof-empty{text-align:center;color:#9ca3c4;font-size:14px;padding:40px 0;}
+
+  /* SHARED BUTTONS */
+  .btn-primary{width:100%;padding:16px;background:#00d48a;border:none;border-radius:13px;font-family:'Rajdhani',sans-serif;font-size:21px;font-weight:700;letter-spacing:1px;color:#001a0a;cursor:pointer;margin-bottom:12px;transition:opacity .12s,transform .12s;}
+  .btn-primary:hover{opacity:.9;}.btn-primary:active{transform:scale(.98);}
+  .btn-primary:disabled{opacity:.5;cursor:default;transform:none;}
+  .btn-ghost{width:100%;padding:14px;background:transparent;border:1.5px solid #2a2a42;border-radius:13px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;color:#b0b8d8;cursor:pointer;transition:background .12s;}
+  .btn-ghost:hover{background:#161628;}
+
+  /* SCROLL HINT */
+  .scroll-hint{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;padding:28px 16px 16px;background:linear-gradient(to bottom,transparent,#0d0d1a 60%);pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:4px;opacity:1;transition:opacity .3s;z-index:50;}
+  .scroll-hint.hidden{opacity:0;}
+  .scroll-hint-text{font-size:11px;font-weight:700;color:#9ca3c4;letter-spacing:1.5px;text-transform:uppercase;}
+  .scroll-hint-arrow{width:20px;height:20px;border-right:2.5px solid #9ca3c4;border-bottom:2.5px solid #9ca3c4;transform:rotate(45deg);margin-top:-4px;animation:bounceDown .9s ease-in-out infinite;}
+  @keyframes bounceDown{0%,100%{transform:rotate(45deg) translateY(0);}50%{transform:rotate(45deg) translateY(4px);}}
+
+  /* MODALS */
+  .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:#0009;z-index:200;display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .2s;}
+  .modal-overlay.show{opacity:1;pointer-events:all;}
+  .modal-box{background:#161628;border:1.5px solid #2a2a42;border-radius:20px;padding:22px;width:100%;max-width:440px;max-height:88dvh;overflow-y:auto;}
+  .modal-title{font-family:'Rajdhani',sans-serif;font-size:21px;font-weight:700;color:#fff;margin-bottom:14px;text-align:center;}
+  .modal-section{margin-bottom:14px;}
+  .modal-os{font-size:11px;font-weight:700;color:#00d48a;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px;}
+  .modal-text{font-size:13px;color:#b0b8d8;line-height:1.55;}
+  .modal-close{width:100%;margin-top:6px;}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- HOME -->
+  <div id="s-home" class="scr on">
+    <div class="big-title">QUIZMASTER</div>
+    <div class="big-sub">Pick a category</div>
+    <div class="home-top-score" id="home-top-score">Loading top score...</div>
+    <div class="cat-grid">
+      <button class="cat-btn fc" onclick="startGame('Football')"><span class="cat-icon">⚽</span><span class="cat-name">Football</span></button>
+      <button class="cat-btn pt" onclick="startGame('Portugal')"><span class="cat-icon">🇵🇹</span><span class="cat-name">Portugal</span></button>
+      <button class="cat-btn al" onclick="startGame('Algarve')"><span class="cat-icon">🏖</span><span class="cat-name">Algarve</span></button>
+      <button class="cat-btn ce" onclick="startGame('Celebrities and TikTok')"><span class="cat-icon">🎵</span><span class="cat-name">Celebs &amp; TikTok</span></button>
+      <button class="cat-btn at" onclick="startGame('Famous Athletes')"><span class="cat-icon">🏆</span><span class="cat-name">Famous Athletes</span></button>
+      <button class="cat-btn gm" onclick="startGame('Gaming')"><span class="cat-icon">🎮</span><span class="cat-name">Gaming</span></button>
+      <button class="cat-btn sc span2" onclick="startGame('Space and Science')"><span class="cat-icon">🚀</span><span class="cat-name">Space &amp; Science</span></button>
+    </div>
+    <div class="home-btns">
+      <button class="btn-ghost" onclick="openLeaderboard(null)">🎆 Weekly Leaderboard</button>
+      <button class="btn-ghost" onclick="openHallOfFame()">👑 Hall of Fame</button>
+      <button class="btn-ghost" onclick="openAppModal()">📱 How to turn this into an app</button>
+    </div>
+  </div>
+
+  <!-- NAME ENTRY — redesigned for clarity -->
+  <div id="s-name" class="scr">
+    <div class="name-hero">
+      <div class="name-trophy">🏅</div>
+      <div class="name-title">YOU FINISHED!</div>
+      <div class="name-sub">Enter your name below to save your score to the weekly leaderboard.</div>
+      <div class="name-score-preview" id="name-score-preview">0</div>
+      <div class="name-score-label">Your Score</div>
+    </div>
+    <div class="name-form">
+      <label class="name-input-label" for="name-input">Your name</label>
+      <input class="name-input" id="name-input" type="text" maxlength="20" placeholder="Enter your name..." autocomplete="off" />
+      <div class="submit-status" id="submit-status"></div>
+      <div class="name-btns">
+        <button class="btn-primary" id="btn-submit-score" onclick="submitAndContinue()">SAVE MY SCORE 🏆</button>
+        <button class="btn-ghost" onclick="skipToSummary()">Skip → See results</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEADERBOARD -->
+  <div id="s-lb" class="scr">
+    <div class="lb-header">
+      <div class="lb-title">🎆 TOP SCORES</div>
+      <select class="lb-cat-sel" id="lb-cat-sel" onchange="openLeaderboard(this.value||null)">
+        <option value="">All categories</option>
+        <option value="Football">Football</option>
+        <option value="Portugal">Portugal</option>
+        <option value="Algarve">Algarve</option>
+        <option value="Celebrities and TikTok">Celebs &amp; TikTok</option>
+        <option value="Famous Athletes">Famous Athletes</option>
+        <option value="Gaming">Gaming</option>
+        <option value="Space and Science">Space &amp; Science</option>
+      </select>
+    </div>
+    <span class="lb-weekly-tag" id="lb-weekly-tag">📅 Weekly Leaderboard — Resets every Monday</span>
+    <table class="lb-table">
+      <thead><tr><th>#</th><th>Name</th><th>Category</th><th class="r">Score</th></tr></thead>
+      <tbody id="lb-body"><tr><td colspan="4" class="lb-loading">Loading...</td></tr></tbody>
+    </table>
+    <div class="lb-back-row">
+      <button class="btn-ghost" onclick="goHome()">← Back</button>
+      <button class="btn-ghost" onclick="openHallOfFame()">👑 Hall of Fame</button>
+    </div>
+  </div>
+
+  <!-- HALL OF FAME -->
+  <div id="s-hof" class="scr">
+    <div class="hof-header">
+      <div class="hof-title">👑 HALL OF FAME</div>
+    </div>
+    <span class="hof-sub">Weekly Champions — Past Winners</span>
+    <div class="hof-list" id="hof-list">
+      <div class="hof-empty">Loading champions...</div>
+    </div>
+    <button class="btn-ghost" onclick="goHome()">← Back</button>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="s-q" class="scr">
+    <div class="q-top">
+      <span class="cat-pill" id="q-cat">Football</span>
+      <span class="prog" id="q-prog">1 / 10</span>
+    </div>
+    <div class="chips">
+      <div class="chip"><div class="chip-lbl">Score</div><div class="chip-val" id="live-score">0</div></div>
+      <div class="chip"><div class="chip-lbl">Streak</div><div class="chip-val str" id="live-streak">0</div></div>
+    </div>
+    <div class="tbar-wrap"><div class="tbar" id="tbar"></div></div>
+    <div class="q-text" id="q-text"></div>
+    <div class="opts" id="opts"></div>
+    <button class="btn-give-up" onclick="confirmGiveUp()">⚑ Give up</button>
+  </div>
+
+  <!-- SUMMARY -->
+  <div id="s-sum" class="scr">
+    <div class="sum-title">GAME OVER</div>
+    <div class="sum-cat" id="sum-cat"></div>
+    <div class="score-box"><div class="score-lbl">Final Score</div><div class="score-num" id="fin-score">0</div></div>
+    <div class="sgrid">
+      <div class="scard"><div class="scard-lbl">Correct</div><div class="scard-val" id="st-correct">0/10</div><div class="scard-sub">questions</div></div>
+      <div class="scard"><div class="scard-lbl">Best streak</div><div class="scard-val" id="st-streak">0</div><div class="scard-sub">in a row</div></div>
+      <div class="scard"><div class="scard-lbl">Avg speed</div><div class="scard-val" id="st-speed">0s</div><div class="scard-sub">per answer</div></div>
+      <div class="scard"><div class="scard-lbl">Accuracy</div><div class="scard-val" id="st-acc">0%</div><div class="scard-sub">hit rate</div></div>
+    </div>
+    <div class="rating-box">
+      <div class="rating-stars" id="r-stars">⭐⭐⭐</div>
+      <div class="rating-txt" id="r-txt">Nice work!</div>
+      <div class="rating-sub" id="r-sub">Keep playing to improve</div>
+    </div>
+    <div class="sum-btns">
+      <button class="btn-primary" id="btn-again">PLAY AGAIN</button>
+      <button class="btn-ghost" onclick="goHome()">Change Category</button>
+      <button class="btn-ghost" onclick="openLeaderboard(null)">🎆 View Leaderboard</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- Give Up Modal -->
+<div class="modal-overlay" id="giveup-modal">
+  <div class="modal-box">
+    <div class="modal-title">⚑ Give Up?</div>
+    <p style="font-size:14px;color:#b0b8d8;text-align:center;margin-bottom:24px;line-height:1.6;">Your current score will be lost and you'll go back to the home screen.</p>
+    <button class="btn-primary" style="background:#ff5c5c;color:#fff;margin-bottom:10px;" onclick="doGiveUp()">Yes, give up</button>
+    <button class="btn-ghost" onclick="closeGiveUpModal()">Keep playing</button>
+  </div>
+</div>
+
+<!-- App Install Modal -->
+<div class="modal-overlay" id="app-modal">
+  <div class="modal-box">
+    <div class="modal-title">📱 Turn This Into An App</div>
+    <div class="modal-section">
+      <div class="modal-os">🍎 iPhone</div>
+      <div class="modal-text">Open this site in Safari → tap the <strong>Share</strong> button → tap <strong>Add to Home Screen</strong>.</div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-os">🤖 Android</div>
+      <div class="modal-text">Open this site in Google Chrome → tap the <strong>three dots</strong> (top right) → tap <strong>Add to Home Screen</strong>.</div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-os">💻 PC (Windows)</div>
+      <div class="modal-text">Resize your browser so you can see part of your desktop → look at the address bar at the top → find the small padlock or icon to the left of the URL → click and hold that icon, then drag it directly onto your desktop.</div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-os">🍎 Mac</div>
+      <div class="modal-text">Open Safari and go to this site → click <strong>File</strong> in the top menu bar and select <strong>Add to Dock</strong> (or click the Share button in the toolbar and select <strong>Add to Dock</strong>) → choose a custom name or icon, then click <strong>Add</strong>. The web app will instantly appear in your Dock and Applications folder.</div>
+    </div>
+    <button class="btn-ghost modal-close" onclick="closeAppModal()">Got it ✓</button>
+  </div>
+</div>
+
+<div class="scroll-hint" id="scroll-hint">
+  <div class="scroll-hint-text">Scroll for more</div>
+  <div class="scroll-hint-arrow"></div>
+</div>
+<div class="fb-wrap" id="fb"><div class="fb-pill" id="fb-pill">+200</div></div>
+
+<script>
+const QS={
+"Football":[
+{question:"Which club won the first ever Premier League title in 1992-93?",options:["Arsenal","Manchester United","Blackburn Rovers","Liverpool"],answer:1},
+{question:"Which player wears the number 10 shirt for Chelsea in the 2025-26 season?",options:["Cole Palmer","Enzo Fernandes","Mykhailo Mudryk","Nicolas Jackson"],answer:0},
+{question:"Which club has won the most UEFA Champions League titles?",options:["Barcelona","AC Milan","Real Madrid","Bayern Munich"],answer:2},
+{question:"Which country won the 2022 FIFA World Cup?",options:["France","Brazil","Argentina","Germany"],answer:2},
+{question:"Which player transferred from Borussia Dortmund to Real Madrid in 2024?",options:["Erling Haaland","Jude Bellingham","Jadon Sancho","Kylian Mbappe"],answer:1},
+{question:"Who holds the record for most goals in Premier League history?",options:["Wayne Rooney","Alan Shearer","Harry Kane","Sergio Aguero"],answer:1},
+{question:"Which player famously wore shirt number 7 for Manchester United and Portugal?",options:["Luis Figo","Cristiano Ronaldo","Nani","Bruno Fernandes"],answer:1},
+{question:"Which English club made the Miracle of Istanbul comeback in the 2005 Champions League final?",options:["Chelsea","Manchester United","Liverpool","Arsenal"],answer:2},
+{question:"Which nation has won the most FIFA World Cup trophies?",options:["Germany","Italy","Argentina","Brazil"],answer:3},
+{question:"What is the record highest transfer fee ever paid in football?",options:["150 million euros","180 million euros","222 million euros","250 million euros"],answer:2},
+{question:"Which club are nicknamed The Gunners?",options:["Chelsea","Arsenal","Tottenham","West Ham"],answer:1},
+{question:"Which player scored a famous bicycle kick for Real Madrid against Juventus?",options:["Karim Benzema","Gareth Bale","Cristiano Ronaldo","Luka Modric"],answer:2},
+{question:"Which football legend wore number 23 for LA Galaxy?",options:["David Beckham","Thierry Henry","Zlatan Ibrahimovic","Steven Gerrard"],answer:0},
+{question:"Which country hosted the 2010 FIFA World Cup?",options:["Brazil","Germany","South Africa","Qatar"],answer:2},
+{question:"Which player moved from Tottenham Hotspur to Bayern Munich in 2023?",options:["Son Heung-min","Harry Kane","Gareth Bale","Dele Alli"],answer:1},
+{question:"Which goalkeeper has the most clean sheets in Premier League history?",options:["David de Gea","Petr Cech","Alisson Becker","Edwin van der Sar"],answer:1},
+{question:"Which club won the 1999 Champions League final with two late goals against Bayern Munich?",options:["Liverpool","Chelsea","Manchester United","Barcelona"],answer:2},
+{question:"Which player wore number 9 for Brazil in the 2002 World Cup final?",options:["Ronaldinho","Rivaldo","Ronaldo Nazario","Kaka"],answer:2},
+{question:"Which country lost the 2014 FIFA World Cup final to Germany?",options:["Spain","Brazil","France","Argentina"],answer:3},
+{question:"Which club signed Kylian Mbappe on a free transfer in 2024?",options:["Liverpool","Manchester City","Real Madrid","Arsenal"],answer:2},
+{question:"Which club has the most points ever in a single Premier League season?",options:["Arsenal","Manchester City","Liverpool","Chelsea"],answer:1},
+{question:"Who is the all-time top scorer in Champions League history?",options:["Lionel Messi","Robert Lewandowski","Karim Benzema","Cristiano Ronaldo"],answer:3},
+{question:"Which player famously wore number 14 for Arsenal?",options:["Dennis Bergkamp","Thierry Henry","Patrick Vieira","Mesut Ozil"],answer:1},
+{question:"Which country won the 2018 FIFA World Cup?",options:["Croatia","France","Belgium","England"],answer:1},
+{question:"Which player transferred from Barcelona to PSG in a world-record deal in 2017?",options:["Lionel Messi","Luis Suarez","Andres Iniesta","Neymar"],answer:3},
+{question:"Which team completed the Invincibles season unbeaten?",options:["Liverpool","Manchester United","Chelsea","Arsenal"],answer:3},
+{question:"Which club won the Champions League in 2012 despite finishing 6th in the Premier League?",options:["Arsenal","Manchester City","Tottenham","Chelsea"],answer:3},
+{question:"Which famous player wore number 10 for Argentina during the 1986 World Cup?",options:["Lionel Messi","Diego Maradona","Gabriel Batistuta","Juan Roman Riquelme"],answer:1},
+{question:"Which country has appeared in the most World Cup finals?",options:["Germany","Brazil","Italy","Argentina"],answer:0},
+{question:"Which defender transferred from Leicester to Manchester United for a world-record defender fee in 2019?",options:["Virgil van Dijk","Harry Maguire","Ruben Dias","Raphael Varane"],answer:1},
+{question:"Which club did Erling Haaland join in 2022?",options:["Real Madrid","Bayern Munich","Manchester City","Chelsea"],answer:2},
+{question:"Which country won the UEFA Euro 2020 tournament?",options:["France","Spain","England","Italy"],answer:3},
+{question:"Which manager won the Premier League with Leicester City in 2016?",options:["Jose Mourinho","Claudio Ranieri","Jurgen Klopp","Pep Guardiola"],answer:1},
+{question:"Which player has scored the most goals in a single Premier League season?",options:["Mohamed Salah","Cristiano Ronaldo","Andy Cole","Alan Shearer"],answer:0},
+{question:"Which African country reached the semi-finals of the 2022 World Cup?",options:["Senegal","Ghana","Nigeria","Morocco"],answer:3},
+{question:"Which club did Zinedine Zidane manage to three consecutive Champions League titles?",options:["Barcelona","Juventus","Real Madrid","Bayern Munich"],answer:2},
+{question:"Which player scored the winning penalty for England in Euro 2020 semi-finals?",options:["Raheem Sterling","Harry Kane","Bukayo Saka","Jordan Pickford"],answer:1},
+{question:"Which country hosted the first ever FIFA World Cup in 1930?",options:["Brazil","Argentina","Uruguay","France"],answer:2},
+{question:"Which club did David Beckham leave Manchester United to join in 2003?",options:["LA Galaxy","PSG","AC Milan","Real Madrid"],answer:3},
+{question:"Which Premier League club plays at Elland Road?",options:["Everton","Leeds United","Middlesbrough","Sheffield United"],answer:1},
+{question:"Which player won the Golden Boot at the 2018 World Cup?",options:["Cristiano Ronaldo","Lionel Messi","Harry Kane","Romelu Lukaku"],answer:2},
+{question:"Which stadium is known as the Theatre of Dreams?",options:["Anfield","Stamford Bridge","Old Trafford","Emirates Stadium"],answer:2},
+{question:"Which country did Thierry Henry play for internationally?",options:["Belgium","Ivory Coast","France","Cameroon"],answer:2},
+{question:"Which club has won the most FA Cup titles?",options:["Liverpool","Arsenal","Chelsea","Manchester United"],answer:1},
+{question:"Which player is known for the Panenka penalty technique?",options:["Michel Platini","Antonin Panenka","Roberto Baggio","Zico"],answer:1},
+{question:"Which country beat Brazil 7-1 at the 2014 World Cup semi-final?",options:["Argentina","Netherlands","Germany","France"],answer:2},
+{question:"Which club plays at the Allianz Arena?",options:["Borussia Dortmund","RB Leipzig","Bayern Munich","Bayer Leverkusen"],answer:2},
+{question:"Which player became the most expensive teenager in history when joining Chelsea in 2023?",options:["Mykhailo Mudryk","Enzo Fernandez","Moises Caicedo","Romeo Lavia"],answer:2},
+{question:"Which club did Ronaldinho play for after Barcelona?",options:["PSG","AC Milan","Inter Milan","Juventus"],answer:1},
+{question:"Which country won the 2010 UEFA Champions League with Inter Milan?",options:["Portugal","Italy","Spain","Brazil"],answer:1}
+],
+"Portugal":[
+{question:"Which city is the capital of Portugal?",options:["Porto","Faro","Lisbon","Braga"],answer:2},
+{question:"Which Portuguese explorer reached India by sea in 1498?",options:["Ferdinand Magellan","Vasco da Gama","Bartolomeu Dias","Pedro Alvares Cabral"],answer:1},
+{question:"Which food is a famous Portuguese custard tart?",options:["Churro","Croissant","Pastel de Nata","Brigadeiro"],answer:2},
+{question:"Which famous footballer captained Portugal to victory at Euro 2016?",options:["Luis Figo","Eusebio","Cristiano Ronaldo","Bernardo Silva"],answer:2},
+{question:"Which Portuguese city is famous for port wine?",options:["Coimbra","Porto","Evora","Setubal"],answer:1},
+{question:"Which ocean borders Portugal?",options:["Indian","Pacific","Arctic","Atlantic"],answer:3},
+{question:"What is the traditional Portuguese music style called?",options:["Flamenco","Fado","Samba","Opera"],answer:1},
+{question:"Which Portuguese region is known for beautiful beaches and tourism?",options:["Minho","Alentejo","Algarve","Azores"],answer:2},
+{question:"Which landmark in Lisbon was built to celebrate Vasco da Gama's voyage?",options:["Belem Tower","Pena Palace","Jeronimos Monastery","Monument to the Discoveries"],answer:3},
+{question:"Which Portuguese dish is made with salted codfish?",options:["Paella","Bacalhau","Risotto","Gazpacho"],answer:1},
+{question:"Which country was once united with Portugal between 1580 and 1640?",options:["France","Spain","Italy","England"],answer:1},
+{question:"Which city is home to the famous Livraria Lello bookstore?",options:["Lisbon","Faro","Porto","Braga"],answer:2},
+{question:"What are the Portuguese islands in the Atlantic called?",options:["Canary Islands and Malta","Madeira and Azores","Sicily and Sardinia","Corsica and Crete"],answer:1},
+{question:"Which Portuguese royal was known as The Navigator?",options:["King Joao II","King Manuel I","Prince Henry the Navigator","King Afonso I"],answer:2},
+{question:"Which Portuguese dessert is often made with cinnamon and egg custard?",options:["Tiramisu","Pastel de Nata","Cheesecake","Macaron"],answer:1},
+{question:"Which city has the famous yellow Tram 28?",options:["Porto","Coimbra","Lisbon","Faro"],answer:2},
+{question:"Which Portuguese football club is nicknamed The Eagles?",options:["Sporting CP","FC Porto","Benfica","Braga"],answer:2},
+{question:"Which famous palace is located in Sintra?",options:["Belem Palace","Pena Palace","Crystal Palace","Royal Palace of Madrid"],answer:1},
+{question:"Which Portuguese navigator first sailed around the southern tip of Africa?",options:["Vasco da Gama","Ferdinand Magellan","Bartolomeu Dias","Pedro Cabral"],answer:2},
+{question:"Which language is spoken in Portugal?",options:["Spanish","Italian","French","Portuguese"],answer:3},
+{question:"What is the name of the bridge in Lisbon that looks similar to the Golden Gate Bridge?",options:["Vasco da Gama Bridge","25 de Abril Bridge","Dom Luis I Bridge","Eiffel Bridge"],answer:1},
+{question:"Which Portuguese city is famous for its university, one of the oldest in Europe?",options:["Coimbra","Faro","Braga","Aveiro"],answer:0},
+{question:"Which Portuguese explorer's fleet first reached Brazil?",options:["Vasco da Gama","Ferdinand Magellan","Pedro Alvares Cabral","Bartolomeu Dias"],answer:2},
+{question:"Which fish is commonly grilled during Portuguese festivals?",options:["Tuna","Sardines","Salmon","Cod"],answer:1},
+{question:"Which famous Portuguese player was nicknamed The Black Panther?",options:["Cristiano Ronaldo","Deco","Eusebio","Rui Costa"],answer:2},
+{question:"What is the currency used in Portugal today?",options:["Peso","Escudo","Euro","Pound"],answer:2},
+{question:"Which Portuguese city is known as the Venice of Portugal?",options:["Aveiro","Braga","Lagos","Guimaraes"],answer:0},
+{question:"Which monument in Lisbon survived the 1755 earthquake?",options:["Belem Tower","Santa Justa Lift","Jeronimos Monastery","Lisbon Cathedral"],answer:3},
+{question:"Which holiday celebrates Portugal's national day on June 10th?",options:["Liberty Day","Portugal Day","Republic Day","Explorer's Day"],answer:1},
+{question:"Which Portuguese region is especially famous for cork production?",options:["Algarve","Alentejo","Madeira","Minho"],answer:1},
+{question:"What is the name of Portugal's national football stadium in Lisbon?",options:["Estadio da Luz","Jose Alvalade","Dragao","Braga Municipal"],answer:0},
+{question:"Which Portuguese wine region is a UNESCO World Heritage Site?",options:["Alentejo","Douro Valley","Minho","Setubal"],answer:1},
+{question:"Which Portuguese city is the second largest in the country?",options:["Braga","Coimbra","Porto","Setubal"],answer:2},
+{question:"What is the name of the earthquake that destroyed much of Lisbon in 1755?",options:["The Great Lisbon Earthquake","The Iberian Quake","The Atlantic Disaster","The Portuguese Tremor"],answer:0},
+{question:"Which Portuguese king ordered the construction of the Jeronimos Monastery?",options:["King Afonso V","King Manuel I","King Joao III","King Sebastiao"],answer:1},
+{question:"Which river runs through the city of Lisbon?",options:["Douro","Mondego","Tagus","Guadiana"],answer:2},
+{question:"Which Portuguese island is the largest in the Azores?",options:["Faial","Pico","Sao Miguel","Terceira"],answer:2},
+{question:"What is the traditional Portuguese soup made with kale and sausage called?",options:["Caldo Verde","Sopa Alentejana","Cozido","Gaspacho"],answer:0},
+{question:"Which city was Portugal's capital before Lisbon?",options:["Porto","Coimbra","Braga","Evora"],answer:1},
+{question:"Which famous Portuguese poet wrote The Lusiads?",options:["Fernando Pessoa","Jose Saramago","Luis de Camoes","Eca de Queiros"],answer:2},
+{question:"Which Portuguese city is famous for its azulejo tile art museum?",options:["Porto","Lisbon","Braga","Setubal"],answer:1},
+{question:"What percentage of the world speaks Portuguese as a first language?",options:["About 1 percent","About 3 percent","About 5 percent","About 8 percent"],answer:2},
+{question:"Which Portuguese region produces the famous Vinho Verde wine?",options:["Alentejo","Douro","Minho","Bairrada"],answer:2},
+{question:"Which historic Portuguese neighborhood sits on seven hills in Lisbon?",options:["Belem","Chiado","Alfama","Bairro Alto"],answer:2},
+{question:"Which Portuguese explorer completed the first circumnavigation of the globe?",options:["Vasco da Gama","Bartolomeu Dias","Ferdinand Magellan","Pedro Cabral"],answer:2},
+{question:"What is the name of Portugal's most famous pastry shop in Belem?",options:["Pasteis de Belem","Casa do Pastel","Confeitaria Nacional","Antiga Confeitaria"],answer:0},
+{question:"Which Portuguese city hosted Expo 98?",options:["Porto","Coimbra","Braga","Lisbon"],answer:3},
+{question:"Which Portuguese holiday on April 25th celebrates the Carnation Revolution?",options:["Republic Day","Liberty Day","Portugal Day","Flag Day"],answer:1},
+{question:"Which Portuguese island is closest to mainland Portugal?",options:["Madeira","Sao Miguel","Corvo","Faial"],answer:0}
+],
+"Algarve":[
+{question:"Which Algarve beach is famous for its dramatic rock formations and sea arches?",options:["Praia da Rocha","Praia da Marinha","Meia Praia","Praia de Monte Gordo"],answer:1},
+{question:"Which town is known as the capital of the Algarve?",options:["Lagos","Portimao","Faro","Tavira"],answer:2},
+{question:"Which ocean borders the Algarve region?",options:["Pacific","Indian","Arctic","Atlantic"],answer:3},
+{question:"Which Algarve dish is made with seafood, potatoes and vegetables cooked together?",options:["Cataplana","Francesinha","Bacalhau a Bras","Caldo Verde"],answer:0},
+{question:"Which famous cave near Benagil can be reached by boat or kayak?",options:["Algar Seco Cave","Benagil Cave","Elephant Cave","Pirate Cave"],answer:1},
+{question:"Which Algarve beach is one of the longest in the region?",options:["Praia da Rocha","Praia dos Pescadores","Meia Praia","Praia do Camilo"],answer:2},
+{question:"Which Algarve town is famous for its old city walls and marina?",options:["Lagos","Albufeira","Silves","Olhao"],answer:0},
+{question:"Which mountain range is found in northern Algarve?",options:["Serra da Estrela","Serra do Geres","Serra de Monchique","Serra do Marao"],answer:2},
+{question:"Which Algarve food is a sweet dessert made with figs and almonds?",options:["Pastel de Nata","Dom Rodrigo","Arroz Doce","Pudim Flan"],answer:1},
+{question:"Which Algarve landmark is a historic castle with red sandstone walls?",options:["Castle of Silves","Pena Palace","Belem Tower","Castle of Guimaraes"],answer:0},
+{question:"Which beach near Lagos is famous for golden cliffs and clear water?",options:["Praia do Camilo","Praia Verde","Praia da Falesia","Ilha de Tavira"],answer:0},
+{question:"Which Algarve town is known for its nightlife and tourism?",options:["Tavira","Monchique","Albufeira","Loule"],answer:2},
+{question:"Which river forms part of the eastern Algarve border with Spain?",options:["Douro River","Guadiana River","Tagus River","Mondego River"],answer:1},
+{question:"Which seafood is especially popular in Algarve cuisine?",options:["Lobster","Mussels","Sardines","Octopus"],answer:2},
+{question:"Which landmark in Faro is made from human bones?",options:["Bone Chapel","Tower of Faro","Roman Temple","Algarve Cathedral"],answer:0},
+{question:"Which Algarve beach is famous for surfing near Aljezur?",options:["Praia da Luz","Praia da Rocha","Arrifana Beach","Ilha Deserta"],answer:2},
+{question:"Which town is famous for its traditional market and fishing harbor?",options:["Olhao","Lagoa","Quarteira","Sagres"],answer:0},
+{question:"Which is the highest point in the Algarve?",options:["Foia","Pico Ruivo","Torre","Rocha da Pena"],answer:0},
+{question:"Which Algarve food is often cooked in a copper pan with clams and seafood?",options:["Feijoada","Cataplana","Cozido","Acorda"],answer:1},
+{question:"Which famous fortress is located in Sagres?",options:["Fortress of Sagres","Castle of Lagos","Fort of Faro","Fortress of Tavira"],answer:0},
+{question:"Which Algarve beach is known for red cliffs stretching for kilometers?",options:["Praia da Falesia","Praia do Camilo","Praia Verde","Praia da Rocha"],answer:0},
+{question:"Which town hosts one of the Algarve's biggest carnival celebrations?",options:["Faro","Loule","Tavira","Monchique"],answer:1},
+{question:"Which protected natural park is famous for lagoons and birdlife in the Algarve?",options:["Peneda-Geres National Park","Ria Formosa Natural Park","Sintra-Cascais Park","Arrabida Natural Park"],answer:1},
+{question:"Which Algarve sweet is commonly made with marzipan?",options:["Ovos Moles","Queijada","Morgado","Travesseiro"],answer:2},
+{question:"Which landmark in Lagos is linked to Portugal's Age of Discoveries?",options:["Ponta da Piedade","Forte da Ponta da Bandeira","Castle of Lagos","Marina Tower"],answer:1},
+{question:"Which beach near Carvoeiro is famous for the Algar Seco rock formations?",options:["Praia do Carvalho","Praia do Vau","Praia Grande","Praia dos Salgados"],answer:0},
+{question:"Which Algarve town is closest to the Spanish border?",options:["Portimao","Lagos","Vila Real de Santo Antonio","Lagoa"],answer:2},
+{question:"Which type of trees are commonly found across the Algarve countryside?",options:["Pine trees only","Cherry trees","Cork oak and olive trees","Maple trees"],answer:2},
+{question:"Which Algarve food is a bread-based seafood dish?",options:["Acorda de Marisco","Francesinha","Leitao","Bitoque"],answer:0},
+{question:"Which famous lighthouse stands at Cabo de Sao Vicente near Sagres?",options:["Lagos Lighthouse","Cape St. Vincent Lighthouse","Faro Lighthouse","Tavira Lighthouse"],answer:1},
+{question:"Which Algarve town is famous for its Roman ruins at Milreu?",options:["Silves","Estoi","Tavira","Loule"],answer:1},
+{question:"Which golf resort in the Algarve hosted the World Golf Championships?",options:["Vale do Lobo","Vilamoura","Quinta do Lago","Pine Cliffs"],answer:2},
+{question:"Which Algarve city has an international airport?",options:["Lagos","Portimao","Faro","Silves"],answer:2},
+{question:"Which Algarve island beach is only accessible by ferry from Tavira?",options:["Ilha de Faro","Ilha Deserta","Ilha de Tavira","Ilha do Rosario"],answer:2},
+{question:"Which traditional Algarve boat has a distinctive curved prow?",options:["Caique","Barco Xavega","Caravela","Barco Rabelo"],answer:0},
+{question:"Which spa town in the Algarve hills is famous for medronho spirit?",options:["Alte","Monchique","Silves","Alcoutim"],answer:1},
+{question:"Which Algarve town hosts an annual medieval fair at its Moorish castle?",options:["Faro","Tavira","Silves","Loule"],answer:2},
+{question:"Which Algarve beach received a Blue Flag award for water quality?",options:["Praia da Marinha","Praia de Odeceixe","Meia Praia","All of these"],answer:3},
+{question:"What is the approximate length of the Algarve coastline?",options:["100 km","155 km","200 km","250 km"],answer:1},
+{question:"Which Algarve town is known as the white city because of its whitewashed buildings?",options:["Faro","Tavira","Loule","Lagos"],answer:1},
+{question:"Which bird is commonly spotted in the Ria Formosa natural park?",options:["Toucan","Flamingo","Parrot","Eagle"],answer:1},
+{question:"Which Algarve region is sometimes called the Sotavento?",options:["Western Algarve","Central Algarve","Eastern Algarve","Northern Algarve"],answer:2},
+{question:"Which Algarve city was the Moorish capital of the region?",options:["Faro","Lagos","Silves","Portimao"],answer:2},
+{question:"Which Algarve activity involves exploring sea caves by paddleboard?",options:["Coasteering","Sea kayaking","Snorkeling","Cliff diving"],answer:1},
+{question:"Which Algarve festival celebrates the sardine season every summer?",options:["Festa do Mar","Festival do Marisco","Festa da Sardinha","Festival Sudowest"],answer:2},
+{question:"What is the name of the UNESCO Geopark covering part of the western Algarve?",options:["Costa Vicentina Geopark","Sagres Geopark","Alentejo Geopark","Aljezur Geopark"],answer:0},
+{question:"Which Algarve town is the starting point for the Via Algarviana hiking trail?",options:["Faro","Alcoutim","Lagos","Sagres"],answer:1},
+{question:"Which crop is the Algarve especially famous for producing?",options:["Oranges and almonds","Apples and grapes","Lemons and olives","Strawberries and peaches"],answer:0},
+{question:"Which Algarve beach is near the village of Odeceixe on the west coast?",options:["Praia de Odeceixe","Praia da Arrifana","Praia de Bordeira","Praia do Amado"],answer:0}
+],
+"Celebrities and TikTok":[
+{question:"Which YouTuber is famous for challenges, giveaways, and philanthropy videos?",options:["KSI","MrBeast","Markiplier","PewDiePie"],answer:1},
+{question:"Which music artist released the album Midnights?",options:["Olivia Rodrigo","Billie Eilish","Taylor Swift","Dua Lipa"],answer:2},
+{question:"Which streamer became famous for Minecraft speedruns and the Dream SMP?",options:["Kai Cenat","IShowSpeed","Dream","Ninja"],answer:2},
+{question:"Which viral TikTok trend involved dancing to Renegade?",options:["Cooking trend","Dance trend","Prank trend","Football challenge"],answer:1},
+{question:"Which YouTuber is known for the Sidemen group and boxing matches?",options:["Logan Paul","KSI","Jacksepticeye","TommyInnit"],answer:1},
+{question:"Which artist is known for Blinding Lights and Starboy?",options:["Drake","Bad Bunny","The Weeknd","Ed Sheeran"],answer:2},
+{question:"Which streamer is famous for saying Ronaldo better during football reactions?",options:["xQc","Ninja","Kai Cenat","IShowSpeed"],answer:3},
+{question:"Which viral challenge involved pouring ice water over your head for charity?",options:["Bottle Flip Challenge","Ice Bucket Challenge","Cinnamon Challenge","Mannequin Challenge"],answer:1},
+{question:"Which YouTuber became famous for horror game playthroughs and Let's Plays?",options:["Markiplier","MrBeast","Dhar Mann","DanTDM"],answer:0},
+{question:"Which artist is nicknamed The King of Pop?",options:["Elvis Presley","Bruno Mars","Michael Jackson","Prince"],answer:2},
+{question:"Which streamer broke Twitch subscription records in 2023?",options:["Ninja","Kai Cenat","Pokimane","Sykkuno"],answer:1},
+{question:"Which viral internet moment featured people standing frozen in place?",options:["Harlem Shake","Renegade","Mannequin Challenge","Bottle Cap Challenge"],answer:2},
+{question:"Which YouTuber is famous for Minecraft videos and family-friendly content?",options:["DanTDM","Adin Ross","IShowSpeed","xQc"],answer:0},
+{question:"Which artist sang Shape of You?",options:["Harry Styles","Shawn Mendes","Ed Sheeran","Justin Bieber"],answer:2},
+{question:"Which streamer is known for Just Chatting streams and loud reactions?",options:["Kai Cenat","Ninja","Dream","LazarBeam"],answer:0},
+{question:"Which viral dance app became extremely popular worldwide during 2020?",options:["Snapchat","Discord","TikTok","Skype"],answer:2},
+{question:"Which YouTuber created the Five Nights at Freddy's theory videos?",options:["Flamingo","MatPat","CoryxKenshin","PewDiePie"],answer:1},
+{question:"Which music artist is known for the albums 1989 and Red?",options:["Ariana Grande","Taylor Swift","Rihanna","Adele"],answer:1},
+{question:"Which streamer originally became famous playing Fortnite professionally?",options:["Ninja","xQc","IShowSpeed","CaseOh"],answer:0},
+{question:"Which viral meme phrase became popular from football edits online?",options:["Sheesh!","Siuuu!","Bruh","NPC"],answer:1},
+{question:"Which YouTuber is famous for animated storytime videos about school and life?",options:["Dream","Jaiden Animations","MrBeast","PewDiePie"],answer:1},
+{question:"Which artist released the song bad guy?",options:["Billie Eilish","Olivia Rodrigo","Dua Lipa","Selena Gomez"],answer:0},
+{question:"Which streamer is known for chaotic GTA roleplay streams?",options:["Pokimane","Kai Cenat","Adin Ross","Ninja"],answer:2},
+{question:"Which viral trend involved flipping a plastic bottle and landing it upright?",options:["Bottle Flip Challenge","Ice Bucket Challenge","Harlem Shake","Cinnamon Challenge"],answer:0},
+{question:"Which YouTuber became the most subscribed individual creator for many years?",options:["MrBeast","PewDiePie","KSI","Logan Paul"],answer:1},
+{question:"Which artist is famous for the album SOUR?",options:["Olivia Rodrigo","Tate McRae","Sabrina Carpenter","Dua Lipa"],answer:0},
+{question:"Which streamer is famous for reacting to football and FIFA content?",options:["IShowSpeed","Ninja","Sykkuno","Ludwig"],answer:0},
+{question:"Which viral internet dance started with the song Harlem Shake?",options:["Harlem Shake","Renegade","Floss Dance","Griddy"],answer:0},
+{question:"Which YouTuber is famous for Try Not To Laugh and meme reaction videos with the Sidemen?",options:["W2S","Zerkaa","Miniminter","KSI"],answer:3},
+{question:"Which artist is known for the song As It Was?",options:["Harry Styles","Justin Bieber","Shawn Mendes","The Kid LAROI"],answer:0},
+{question:"Which TikTok creator became famous for the NPC live stream trend?",options:["Charli D'Amelio","Pinkydoll","Addison Rae","Bella Poarch"],answer:1},
+{question:"Which artist released the viral hit Flowers in 2023?",options:["Dua Lipa","Ariana Grande","Miley Cyrus","Selena Gomez"],answer:2},
+{question:"Which YouTuber is famous for the Among Us and Fall Guys gaming content with friends?",options:["Corpse Husband","Tommyinnit","CoryxKenshin","Sykkuno"],answer:0},
+{question:"Which Sidemen member is known for his cooking and food challenges?",options:["JJ","Tobi","Ethan","Josh"],answer:2},
+{question:"Which artist performed at the Super Bowl halftime show in 2023?",options:["Beyonce","Taylor Swift","Rihanna","Lizzo"],answer:2},
+{question:"Which YouTuber became famous for roasting other YouTubers?",options:["Leafy","RiceGum","Crypt","H3H3"],answer:1},
+{question:"Which K-pop group had a massive hit with Dynamite?",options:["EXO","Stray Kids","BTS","Blackpink"],answer:2},
+{question:"Which streamer is famous for Among Us gameplay with a large group?",options:["Disguised Toast","TimTheTatman","DrLupo","Valkyrae"],answer:0},
+{question:"Which artist released the album Un Verano Sin Ti?",options:["J Balvin","Daddy Yankee","Bad Bunny","Maluma"],answer:2},
+{question:"Which viral TikTok sound became famous from the Corn Kid interview?",options:["It's corn","I like corn","Corn song","Corn forever"],answer:0},
+{question:"Which female artist broke streaming records with her 2023 album?",options:["Dua Lipa","Olivia Rodrigo","Taylor Swift","Billie Eilish"],answer:2},
+{question:"Which YouTuber is famous for extreme food eating challenges?",options:["Mark Wiens","Matt Stonie","BeardMeatsFood","Furious Pete"],answer:1},
+{question:"Which TikTok trend involved pretending to be an NPC character?",options:["Skit trend","NPC trend","POV trend","Transition trend"],answer:1},
+{question:"Which celebrity couple is often called Jelena?",options:["Justin Bieber and Hailey Baldwin","Justin Bieber and Selena Gomez","Joe Jonas and Selena Gomez","Nick Jonas and Priyanka"],answer:1},
+{question:"Which artist is known for the song Levitating?",options:["Dua Lipa","Doja Cat","Lizzo","Ava Max"],answer:0},
+{question:"Which YouTube channel is famous for the Watcher Entertainment mystery series?",options:["Unsolved Network","BuzzFeed Unsolved","Mystery Channel","True Crime Daily"],answer:1},
+{question:"Which celebrity is famous for the phrase That is not who I am on social media?",options:["Trisha Paytas","James Charles","Jeffree Star","Shane Dawson"],answer:0},
+{question:"Which viral TikTok challenge involved walking backwards into a room?",options:["Nope Walk","Backwards Challenge","Reverse Walk","Thriller Walk"],answer:1},
+{question:"Which artist released the breakout hit Vampire in 2023?",options:["Olivia Rodrigo","Sabrina Carpenter","Gracie Abrams","Conan Gray"],answer:0},
+{question:"Which streamer has the most followed channel on Twitch?",options:["Ninja","Tfue","Kai Cenat","Ninja"],answer:0}
+],
+"Famous Athletes":[
+{question:"Which football player has won the most Ballon d'Or awards?",options:["Cristiano Ronaldo","Lionel Messi","Pele","Diego Maradona"],answer:1},
+{question:"Which basketball player is known as King James?",options:["Michael Jordan","Kobe Bryant","LeBron James","Stephen Curry"],answer:2},
+{question:"Which tennis player has won the most Grand Slam men's singles titles?",options:["Roger Federer","Novak Djokovic","Rafael Nadal","Andy Murray"],answer:1},
+{question:"Which swimmer won 23 Olympic gold medals?",options:["Mark Spitz","Michael Phelps","Ian Thorpe","Caeleb Dressel"],answer:1},
+{question:"Which athlete was known as the fastest man in the world after winning Olympic sprint gold medals?",options:["Carl Lewis","Noah Lyles","Usain Bolt","Yohan Blake"],answer:2},
+{question:"Which football player is nicknamed CR7?",options:["Kaka","Cristiano Ronaldo","Karim Benzema","Ronaldinho"],answer:1},
+{question:"Which NBA player won six championships with the Chicago Bulls?",options:["Magic Johnson","Kobe Bryant","Michael Jordan","Shaquille O'Neal"],answer:2},
+{question:"Which female tennis player won 23 Grand Slam singles titles in the Open Era?",options:["Serena Williams","Venus Williams","Maria Sharapova","Steffi Graf"],answer:0},
+{question:"Which swimmer is famous for the Baltimore Bullet nickname?",options:["Michael Phelps","Ryan Lochte","Adam Peaty","Ian Thorpe"],answer:0},
+{question:"Which country did Usain Bolt represent?",options:["USA","Jamaica","Canada","Bahamas"],answer:1},
+{question:"Which football legend won the World Cup with Argentina in 1986?",options:["Lionel Messi","Diego Maradona","Gabriel Batistuta","Javier Zanetti"],answer:1},
+{question:"Which basketball player is famous for the Sky Hook shot?",options:["Kareem Abdul-Jabbar","Wilt Chamberlain","Larry Bird","Tim Duncan"],answer:0},
+{question:"Which tennis tournament is played on grass courts?",options:["Roland Garros","US Open","Wimbledon","Australian Open"],answer:2},
+{question:"Which swimmer specializes in breaststroke and broke many world records?",options:["Adam Peaty","Michael Phelps","Leon Marchand","Ryan Murphy"],answer:0},
+{question:"Which Olympian won gold medals in both sprinting and long jump?",options:["Carl Lewis","Usain Bolt","Jesse Owens","Mo Farah"],answer:0},
+{question:"Which footballer won the 2022 FIFA World Cup with Argentina?",options:["Angel Di Maria","Lionel Messi","Julian Alvarez","Lautaro Martinez"],answer:1},
+{question:"Which NBA player is famous for shooting three-pointers for the Golden State Warriors?",options:["Kevin Durant","Luka Doncic","Stephen Curry","Giannis Antetokounmpo"],answer:2},
+{question:"Which tennis player is known as the King of Clay?",options:["Novak Djokovic","Roger Federer","Carlos Alcaraz","Rafael Nadal"],answer:3},
+{question:"Which swimmer won eight gold medals at the 2008 Olympics?",options:["Ian Thorpe","Michael Phelps","Mark Spitz","Caeleb Dressel"],answer:1},
+{question:"Which Olympic athlete became famous for the Lightning Bolt pose?",options:["Carl Lewis","Noah Lyles","Usain Bolt","Andre De Grasse"],answer:2},
+{question:"Which football club did Cristiano Ronaldo first play for professionally?",options:["Manchester United","Sporting CP","Real Madrid","Juventus"],answer:1},
+{question:"Which basketball player scored 100 points in a single NBA game?",options:["Kobe Bryant","Wilt Chamberlain","Michael Jordan","LeBron James"],answer:1},
+{question:"Which female tennis player completed the Golden Slam in 1988?",options:["Serena Williams","Martina Navratilova","Steffi Graf","Venus Williams"],answer:2},
+{question:"Which swimmer is nicknamed The Thorpedo?",options:["Ian Thorpe","Michael Phelps","Ryan Lochte","Adam Peaty"],answer:0},
+{question:"Which athlete won Olympic gold medals in the 5000m and 10000m for Great Britain?",options:["Mo Farah","Eliud Kipchoge","Jakob Ingebrigtsen","Joshua Cheptegei"],answer:0},
+{question:"Which football player is famous for the Siuuu celebration?",options:["Neymar","Kylian Mbappe","Cristiano Ronaldo","Ronaldinho"],answer:2},
+{question:"Which NBA legend was nicknamed Black Mamba?",options:["Shaquille O'Neal","Kobe Bryant","Allen Iverson","Dwyane Wade"],answer:1},
+{question:"Which young Spanish tennis player won Wimbledon in 2023?",options:["Rafael Nadal","Novak Djokovic","Carlos Alcaraz","Jannik Sinner"],answer:2},
+{question:"Which swimmer won multiple Olympic medals for France in 2024 and became a global star?",options:["Leon Marchand","Florent Manaudou","Yannick Agnel","Alain Bernard"],answer:0},
+{question:"Which Olympic gymnast became famous for winning four gold medals at the 2016 Olympics?",options:["Simone Biles","Nadia Comaneci","Sunisa Lee","Aly Raisman"],answer:0},
+{question:"Which boxer is known as The Greatest and won three world heavyweight titles?",options:["Joe Frazier","George Foreman","Muhammad Ali","Mike Tyson"],answer:2},
+{question:"Which Formula 1 driver holds the record for most world championships?",options:["Ayrton Senna","Michael Schumacher","Lewis Hamilton","Sebastian Vettel"],answer:1},
+{question:"Which golfer is known as The Golden Bear?",options:["Tiger Woods","Jack Nicklaus","Arnold Palmer","Phil Mickelson"],answer:1},
+{question:"Which female athlete won four Olympic sprint gold medals at the 2000 Sydney Olympics before losing them?",options:["Florence Griffith-Joyner","Marion Jones","Gail Devers","Evelyn Ashford"],answer:1},
+{question:"Which NBA player was known as The Answer?",options:["Tracy McGrady","Allen Iverson","Vince Carter","Gilbert Arenas"],answer:1},
+{question:"Which cyclist won the Tour de France seven consecutive times but was later stripped of the titles?",options:["Greg LeMond","Bernard Hinault","Lance Armstrong","Miguel Indurain"],answer:2},
+{question:"Which tennis player is known as The Djoker?",options:["Roger Federer","Rafael Nadal","Novak Djokovic","Andy Murray"],answer:2},
+{question:"Which sprinter won both the 100m and 200m at the 1996 Atlanta Olympics?",options:["Carl Lewis","Michael Johnson","Donovan Bailey","Frank Fredericks"],answer:1},
+{question:"Which female gymnast scored the first perfect 10 in Olympic history?",options:["Simone Biles","Larisa Latynina","Nadia Comaneci","Olga Korbut"],answer:2},
+{question:"Which basketball player is nicknamed The Greek Freak?",options:["Luka Doncic","Nikola Jokic","Giannis Antetokounmpo","Rudy Gobert"],answer:2},
+{question:"Which British boxer became undisputed heavyweight champion in 2016?",options:["Lennox Lewis","David Haye","Anthony Joshua","Tyson Fury"],answer:2},
+{question:"Which golfer is nicknamed Tiger?",options:["Rory McIlroy","Justin Rose","Tiger Woods","Jon Rahm"],answer:2},
+{question:"Which athlete holds the world record in the 100 metres?",options:["Justin Gatlin","Tyson Gay","Noah Lyles","Usain Bolt"],answer:3},
+{question:"Which female footballer won the 2023 Ballon d'Or?",options:["Marta","Sam Kerr","Aitana Bonmati","Alex Morgan"],answer:2},
+{question:"Which NBA team did LeBron James win his first championship with?",options:["Los Angeles Lakers","Miami Heat","Cleveland Cavaliers","Chicago Bulls"],answer:1},
+{question:"Which tennis player won the most consecutive Wimbledon titles in the open era?",options:["Pete Sampras","Roger Federer","Bjorn Borg","Novak Djokovic"],answer:1},
+{question:"Which South African runner is famous for racing on prosthetic blades?",options:["Wayde van Niekerk","Caster Semenya","Oscar Pistorius","Luvo Manyonga"],answer:2},
+{question:"Which sport does Katie Ledecky compete in?",options:["Gymnastics","Athletics","Swimming","Cycling"],answer:2},
+{question:"Which player holds the record for most Grand Slam titles in women's tennis?",options:["Serena Williams","Steffi Graf","Margaret Court","Martina Navratilova"],answer:2}
+],
+"Gaming":[
+{question:"Which company created Fortnite?",options:["Valve","Epic Games","Mojang","Ubisoft"],answer:1},
+{question:"Which game is known for blocks, crafting, and Creepers?",options:["Roblox","Terraria","Minecraft","LEGO Worlds"],answer:2},
+{question:"Which platform lets users create and play millions of games made by other players?",options:["Fortnite","Steam","Roblox","Nintendo Switch"],answer:2},
+{question:"Which Fortnite character is famous for the phrase Victory Royale?",options:["Jonesy","Peely","Midas","Fishstick"],answer:0},
+{question:"Which mob explodes when it gets close to the player in Minecraft?",options:["Zombie","Skeleton","Enderman","Creeper"],answer:3},
+{question:"What is the in-game currency in Roblox called?",options:["Minecoins","Robux","V-Bucks","Credits"],answer:1},
+{question:"Which company created Minecraft?",options:["Mojang","Epic Games","Rockstar Games","Nintendo"],answer:0},
+{question:"Which Fortnite season introduced the giant cube named Kevin?",options:["Chapter 1 Season 2","Chapter 1 Season 5","Chapter 2 Season 3","Chapter 3 Season 1"],answer:1},
+{question:"Which Minecraft dimension contains the Ender Dragon?",options:["Nether","Overworld","The End","Deep Dark"],answer:2},
+{question:"Which Roblox game became famous for adopting pets?",options:["Brookhaven","Jailbreak","Blox Fruits","Adopt Me!"],answer:3},
+{question:"Which Fortnite skin is a banana?",options:["Fishstick","Midas","Peely","Drift"],answer:2},
+{question:"Which material is needed to make a Nether Portal in Minecraft?",options:["Bedrock","Obsidian","Diamond Blocks","Iron Blocks"],answer:1},
+{question:"Which Roblox game is based on anime-inspired powers and pirates?",options:["Doors","Brookhaven","Blox Fruits","Arsenal"],answer:2},
+{question:"Which game became the best-selling video game of all time?",options:["GTA V","Tetris","Minecraft","Fortnite"],answer:2},
+{question:"Which Fortnite mode removed building mechanics?",options:["Creative","Save the World","Reload","Zero Build"],answer:3},
+{question:"What is the rarest ore in Minecraft traditionally found deep underground?",options:["Coal","Emerald","Diamond","Redstone"],answer:2},
+{question:"Which Roblox horror game became famous for its numbered doors?",options:["Piggy","Doors","Rainbow Friends","Mimic"],answer:1},
+{question:"Which Fortnite event featured a black hole that shut down the game?",options:["The Device Event","The End Event","Travis Scott Concert","Galactus Event"],answer:1},
+{question:"Which Minecraft creature can teleport?",options:["Creeper","Villager","Enderman","Piglin"],answer:2},
+{question:"Which Roblox game lets players roleplay in a city and houses?",options:["Brookhaven","Arsenal","Doors","Jailbreak"],answer:0},
+{question:"Which Fortnite player became world champion at age 16 in 2019?",options:["Ninja","Bugha","Clix","Mongraal"],answer:1},
+{question:"Which Minecraft update added the Deep Dark biome and the Warden?",options:["Nether Update","Wild Update","Aquatic Update","Village and Pillage"],answer:1},
+{question:"Which Roblox game involves escaping prison and robberies?",options:["Jailbreak","Adopt Me!","Doors","BedWars"],answer:0},
+{question:"Which gaming company owns Roblox?",options:["Roblox Corporation","Epic Games","Mojang","Valve"],answer:0},
+{question:"Which Fortnite collaboration added Marvel superheroes to the game?",options:["Chapter 1 Season 3","Chapter 2 Season 4","Chapter 3 Season 2","Chapter 4 Season 1"],answer:1},
+{question:"Which Minecraft boss is summoned using Soul Sand and Wither Skeleton skulls?",options:["Warden","Ender Dragon","Wither","Elder Guardian"],answer:2},
+{question:"Which Roblox game is inspired by the anime One Piece?",options:["Brookhaven","Doors","Arsenal","Blox Fruits"],answer:3},
+{question:"Which Fortnite streamer became famous for saying It's a default?",options:["Ninja","Tfue","Nick Eh 30","SypherPK"],answer:0},
+{question:"Which Minecraft villager profession trades enchanted books?",options:["Farmer","Librarian","Fletcher","Cleric"],answer:1},
+{question:"Which Roblox game mode became famous for sword fights on floating islands?",options:["Jailbreak","BedWars","Doors","Brookhaven"],answer:1},
+{question:"Which game console was released by Sony in November 2020?",options:["PS4 Pro","PS5","Xbox Series X","Nintendo Switch OLED"],answer:1},
+{question:"Which game features the characters Master Chief and Cortana?",options:["Gears of War","Call of Duty","Destiny","Halo"],answer:3},
+{question:"Which game studio made The Legend of Zelda series?",options:["Capcom","Sega","Nintendo","Square Enix"],answer:2},
+{question:"Which Minecraft biome contains giant mushrooms?",options:["Jungle","Swamp","Mushroom Island","Dark Forest"],answer:2},
+{question:"Which Roblox game is inspired by the anime Naruto?",options:["Shindo Life","Blox Fruits","Anime Fighting Simulator","Grand Piece Online"],answer:0},
+{question:"Which battle royale game was released before Fortnite?",options:["Apex Legends","Warzone","PUBG","Fall Guys"],answer:2},
+{question:"Which Minecraft feature lets you power machines and redstone circuits?",options:["TNT","Redstone","Pistons","Hoppers"],answer:1},
+{question:"Which game is set in the fictional city of Los Santos?",options:["Red Dead Redemption","Cyberpunk 2077","GTA V","Watch Dogs"],answer:2},
+{question:"Which Fortnite character is associated with the Agency storyline?",options:["Peely","Midas","Jonesy","Meowscles"],answer:1},
+{question:"Which Roblox experience lets you run your own restaurant?",options:["Work at a Pizza Place","Restaurant Tycoon","Chef Simulator","Cook Burgers"],answer:0},
+{question:"Which Nintendo game features a plumber fighting to rescue Princess Peach?",options:["Donkey Kong","Kirby","Super Mario","Metroid"],answer:2},
+{question:"Which game involves building a base and surviving zombie hordes each night in Minecraft?",options:["Survival Mode","Hardcore Mode","Adventure Mode","Siege Mode"],answer:0},
+{question:"Which year was Roblox officially launched to the public?",options:["2004","2006","2008","2010"],answer:1},
+{question:"Which Fortnite chapter introduced underwater swimming mechanics?",options:["Chapter 1","Chapter 2","Chapter 3","Chapter 4"],answer:1},
+{question:"Which gaming company made Among Us?",options:["Supercell","InnerSloth","Double Fine","Klei Entertainment"],answer:1},
+{question:"Which Minecraft hostile mob lives in the ocean and shoots laser beams?",options:["Drowned","Elder Guardian","Squid","Turtle"],answer:1},
+{question:"Which popular game involves catching and battling creatures called Pokemon?",options:["Digimon","Yokai Watch","Pokemon","Dragon Quest Monsters"],answer:2},
+{question:"Which Roblox game involves defeating waves of enemies to become the strongest?",options:["Blox Fruits","Anime Dimensions","Anime Fighters Simulator","Shindo Life"],answer:2},
+{question:"Which Fortnite item allows players to glide across the map quickly?",options:["Launch Pad","Shockwave Grenade","Grapple Glove","Rift-To-Go"],answer:2}
+],
+"Space and Science":[
+{question:"Which planet is known as the Red Planet?",options:["Venus","Mars","Jupiter","Mercury"],answer:1},
+{question:"Which animal is the largest on Earth?",options:["Elephant","Blue Whale","Giraffe","Great White Shark"],answer:1},
+{question:"Who invented the light bulb?",options:["Isaac Newton","Nikola Tesla","Thomas Edison","Galileo Galilei"],answer:2},
+{question:"Which planet is the biggest in our Solar System?",options:["Saturn","Earth","Jupiter","Neptune"],answer:2},
+{question:"Which animal can change colors to blend into its surroundings?",options:["Lion","Dolphin","Chameleon","Penguin"],answer:2},
+{question:"Which invention allows people to see faraway objects in space?",options:["Microscope","Telescope","Compass","Calculator"],answer:1},
+{question:"Which planet is closest to the Sun?",options:["Venus","Earth","Mercury","Mars"],answer:2},
+{question:"Which bird is famous for being unable to fly?",options:["Eagle","Penguin","Falcon","Parrot"],answer:1},
+{question:"Which scientist discovered gravity after watching a falling apple?",options:["Albert Einstein","Galileo","Isaac Newton","Stephen Hawking"],answer:2},
+{question:"Which planet has the most famous rings?",options:["Mars","Saturn","Uranus","Neptune"],answer:1},
+{question:"Which animal has the longest neck?",options:["Camel","Ostrich","Giraffe","Horse"],answer:2},
+{question:"Which invention is used to talk to people far away instantly?",options:["Typewriter","Telephone","Radio","Camera"],answer:1},
+{question:"Which planet is known for its giant storm called the Great Red Spot?",options:["Venus","Neptune","Jupiter","Saturn"],answer:2},
+{question:"Which animal can sleep standing up?",options:["Horse","Tiger","Rabbit","Panda"],answer:0},
+{question:"Which scientist developed the theory of relativity?",options:["Albert Einstein","Nikola Tesla","Charles Darwin","Louis Pasteur"],answer:0},
+{question:"Which planet is famous for being very hot because of its thick atmosphere?",options:["Venus","Mars","Uranus","Mercury"],answer:0},
+{question:"Which sea creature has three hearts?",options:["Shark","Octopus","Whale","Jellyfish"],answer:1},
+{question:"Which invention lets airplanes fly?",options:["Engine","Wings","Radar","Compass"],answer:1},
+{question:"Which planet spins on its side?",options:["Earth","Jupiter","Uranus","Mars"],answer:2},
+{question:"Which animal is known for having black and white stripes?",options:["Tiger","Panda","Zebra","Lemur"],answer:2},
+{question:"Which invention was created by the Wright brothers?",options:["Car","Airplane","Train","Rocket"],answer:1},
+{question:"Which dwarf planet was once considered the ninth planet?",options:["Europa","Pluto","Titan","Ceres"],answer:1},
+{question:"Which animal can regrow lost arms?",options:["Crab","Starfish","Turtle","Seal"],answer:1},
+{question:"Which weird fact is true about bananas?",options:["They glow blue naturally","They are radioactive","They grow underground","They can live forever"],answer:1},
+{question:"Which planet has the strongest winds in the Solar System?",options:["Neptune","Mars","Saturn","Venus"],answer:0},
+{question:"Which mammal is capable of true flight?",options:["Flying Squirrel","Penguin","Bat","Ostrich"],answer:2},
+{question:"Which invention helps submarines detect objects underwater?",options:["GPS","Sonar","Radar","Periscope"],answer:1},
+{question:"Which weird fact is true about honey?",options:["It freezes instantly","It never spoils","It glows in the dark","It is made from tree sap"],answer:1},
+{question:"Which planet is sometimes called Earth's twin because of its size?",options:["Mars","Venus","Mercury","Saturn"],answer:1},
+{question:"Which animal has fingerprints so similar to humans they can confuse crime investigators?",options:["Koala","Panda","Gorilla","Dolphin"],answer:0},
+{question:"Which space telescope was launched in 2021 to replace Hubble?",options:["Chandra Telescope","James Webb Telescope","Spitzer Telescope","Kepler Telescope"],answer:1},
+{question:"Which planet has the most moons in our Solar System?",options:["Jupiter","Saturn","Uranus","Neptune"],answer:1},
+{question:"What is the name of the force that holds planets in orbit around the Sun?",options:["Magnetism","Friction","Gravity","Nuclear force"],answer:2},
+{question:"Which element makes up most of the Sun?",options:["Oxygen","Helium","Nitrogen","Hydrogen"],answer:3},
+{question:"Which animal has the largest brain relative to its body size?",options:["Dolphin","Elephant","Chimpanzee","Human"],answer:3},
+{question:"What is the speed of light in a vacuum?",options:["300,000 km per second","150,000 km per second","500,000 km per second","100,000 km per second"],answer:0},
+{question:"Which planet is known for its Great Dark Spot storm?",options:["Jupiter","Saturn","Uranus","Neptune"],answer:3},
+{question:"Which animal can survive in outer space for a short time?",options:["Cockroach","Tardigrade","Scorpion","Jellyfish"],answer:1},
+{question:"Which scientist proposed the heliocentric model of the Solar System?",options:["Galileo Galilei","Isaac Newton","Nicolaus Copernicus","Johannes Kepler"],answer:2},
+{question:"Which gas do plants absorb from the atmosphere during photosynthesis?",options:["Oxygen","Nitrogen","Carbon Dioxide","Hydrogen"],answer:2},
+{question:"Which animal has the longest lifespan of any vertebrate?",options:["Giant Tortoise","Bowhead Whale","Greenland Shark","Elephant"],answer:2},
+{question:"Which moon of Jupiter is thought to have a liquid ocean under its surface?",options:["Io","Ganymede","Europa","Callisto"],answer:2},
+{question:"Which scientist discovered penicillin?",options:["Marie Curie","Louis Pasteur","Alexander Fleming","Jonas Salk"],answer:2},
+{question:"What is the closest star to Earth after the Sun?",options:["Sirius","Betelgeuse","Proxima Centauri","Vega"],answer:2},
+{question:"Which part of the human body produces insulin?",options:["Liver","Kidney","Pancreas","Stomach"],answer:2},
+{question:"Which planet rotates in the opposite direction to most other planets?",options:["Mars","Neptune","Venus","Uranus"],answer:2},
+{question:"Which animal can see ultraviolet light?",options:["Dogs","Cats","Bees","Owls"],answer:2},
+{question:"Which invention did Marie Curie contribute to by discovering radioactivity?",options:["X-ray machines","Nuclear power","Cancer treatment","All of these"],answer:3},
+{question:"Which moon is the largest in our Solar System?",options:["Titan","Europa","Ganymede","Callisto"],answer:2},
+{question:"What percentage of the Earth's surface is covered by water?",options:["51 percent","61 percent","71 percent","81 percent"],answer:2}
+]
+};
+
+const L=['A','B','C','D'];
+const TSEC=10;
+let g={};
+
+const APPS_SCRIPT_URL="https://script.google.com/macros/s/AKfycbw7xc-5qLuCxBsRwaFq2fi97uJgvZUQahQFONqN2UkV5yb_pqlk2LstW8_rsC9eD_Iu/exec";
+
+function getWeekKey(){
+  var now=new Date();
+  var jan1=new Date(now.getFullYear(),0,1);
+  var dayOfYear=Math.floor((now-jan1)/86400000);
+  var dayOfWeek=now.getDay()===0?6:now.getDay()-1;
+  var weekNum=Math.floor((dayOfYear-dayOfWeek+7)/7);
+  return now.getFullYear()+'-W'+weekNum;
+}
+
+function shuf(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+function show(id){document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');window.scrollTo(0,0);setTimeout(updateScrollHint,80);}
+
+function startGame(cat){
+  g={cat,qs:shuf(QS[cat]).slice(0,10),qi:0,score:0,streak:0,best:0,correct:0,times:[],answered:false,secsLeft:TSEC,timer:null,tstart:null,scoreSubmitted:false};
+  show('s-q'); loadQ();
+}
+
+function loadQ(){
+  const q=g.qs[g.qi];
+  g.answered=false; g.secsLeft=TSEC; g.tstart=Date.now();
+  document.getElementById('q-cat').textContent=g.cat;
+  document.getElementById('q-prog').textContent=(g.qi+1)+' / 10';
+  document.getElementById('live-score').textContent=g.score.toLocaleString();
+  document.getElementById('live-streak').textContent=g.streak>0?(g.streak+' \uD83D\uDD25'):'0';
+  document.getElementById('q-text').textContent=q.question;
+  const c=document.getElementById('opts'); c.innerHTML='';
+  q.options.forEach((o,i)=>{
+    const b=document.createElement('button'); b.className='opt';
+    b.innerHTML='<span class="opt-ltr">'+L[i]+'</span><span>'+o+'</span>';
+    b.onclick=()=>pick(i); c.appendChild(b);
+  });
+  updateBar(); clearInterval(g.timer);
+  g.timer=setInterval(()=>{g.secsLeft--;updateBar();if(g.secsLeft<=0){clearInterval(g.timer);if(!g.answered)timeout();}},1000);
+}
+
+function updateBar(){
+  const pct=(g.secsLeft/TSEC)*100;
+  const b=document.getElementById('tbar');
+  b.style.width=pct+'%';
+  b.className='tbar'+(pct<=25?' danger':pct<=50?' warn':'');
+}
+
+function timeout(){
+  g.answered=true; g.times.push(TSEC);
+  const q=g.qs[g.qi];
+  document.querySelectorAll('.opt').forEach((b,i)=>{b.classList.add('off');if(i===q.answer)b.classList.add('ok');});
+  g.streak=0; flash(false,0); setTimeout(nextQ,1300);
+}
+
+function pick(chosen){
+  if(g.answered)return; g.answered=true; clearInterval(g.timer);
+  const elapsed=(Date.now()-g.tstart)/1000; g.times.push(Math.min(elapsed,TSEC));
+  const q=g.qs[g.qi]; const ok=chosen===q.answer;
+  document.querySelectorAll('.opt').forEach((b,i)=>{
+    b.classList.add('off');
+    if(i===q.answer)b.classList.add('ok');
+    else if(i===chosen&&!ok)b.classList.add('bad');
+  });
+  let pts=0;
+  if(ok){
+    g.correct++; g.streak++; if(g.streak>g.best)g.best=g.streak;
+    const sl=Math.max(0,TSEC-elapsed);
+    pts=100+Math.round(sl*10); if(g.streak>1)pts*=g.streak; g.score+=pts;
+  } else {g.streak=0;}
+  document.getElementById('live-score').textContent=g.score.toLocaleString();
+  document.getElementById('live-streak').textContent=g.streak>0?(g.streak+' \uD83D\uDD25'):'0';
+  flash(ok,pts); setTimeout(nextQ,1300);
+}
+
+function flash(ok,pts){
+  const w=document.getElementById('fb'); const p=document.getElementById('fb-pill');
+  p.className='fb-pill '+(ok?'ok':'bad');
+  p.textContent=ok?('+'+pts.toLocaleString()+' pts'):'WRONG!';
+  w.classList.add('show'); setTimeout(()=>w.classList.remove('show'),1000);
+}
+
+function nextQ(){g.qi++; g.qi>=10?summary():loadQ();}
+
+function summary(){
+  g.scoreSubmitted=false;
+  document.getElementById('name-score-preview').textContent=g.score.toLocaleString();
+  document.getElementById('name-input').value='';
+  document.getElementById('submit-status').textContent='';
+  document.getElementById('submit-status').className='submit-status';
+  const btn=document.getElementById('btn-submit-score');
+  btn.disabled=false; btn.textContent='SAVE MY SCORE 🏆';
+  show('s-name');
+}
+
+async function submitAndContinue(){
+  if(g.scoreSubmitted){showSummaryScreen();return;}
+  const name=document.getElementById('name-input').value.trim();
+  const status=document.getElementById('submit-status');
+  if(!name){status.textContent='Please enter your name above.';status.className='submit-status err';return;}
+  const btn=document.getElementById('btn-submit-score');
+  btn.disabled=true; btn.textContent='Checking...'; status.textContent='';
+
+  try{
+    const avg=g.times.length?(g.times.reduce((a,b)=>a+b,0)/g.times.length).toFixed(1):0;
+    const acc=Math.round((g.correct/10)*100);
+    const wk=getWeekKey();
+
+    // Fetch current leaderboard and check if name already exists (case-insensitive)
+    const checkRes=await fetch(APPS_SCRIPT_URL+'?weekKey='+encodeURIComponent(wk));
+    const checkJson=await checkRes.json();
+    if(checkJson.success&&checkJson.leaderboard&&checkJson.leaderboard.length){
+      const taken=checkJson.leaderboard.some(function(entry){
+        return entry.name.trim().toLowerCase()===name.toLowerCase();
+      });
+      if(taken){
+        status.textContent='This name is taken, try another.';
+        status.className='submit-status err';
+        btn.disabled=false; btn.textContent='SAVE MY SCORE 🏆';
+        return;
+      }
+    }
+
+    btn.textContent='Saving...';
+    await fetch(APPS_SCRIPT_URL,{
+      method:'POST',
+      body:JSON.stringify({
+        name:name,score:g.score,category:g.cat,
+        correct:g.correct,streak:g.best,
+        speed:avg+'s',accuracy:acc+'%',
+        weekKey:wk
+      })
+    });
+    g.scoreSubmitted=true;
+    status.textContent='Score saved! ✅'; status.className='submit-status ok';
+  }catch(e){
+    status.textContent='Could not save - showing results anyway.'; status.className='submit-status err';
+  }
+  btn.disabled=false; btn.textContent='SAVE MY SCORE 🏆';
+  setTimeout(showSummaryScreen,900);
+}
+
+function skipToSummary(){showSummaryScreen();}
+
+function showSummaryScreen(){
+  const avg=g.times.length?(g.times.reduce((a,b)=>a+b,0)/g.times.length).toFixed(1):0;
+  const acc=Math.round((g.correct/10)*100);
+  document.getElementById('sum-cat').textContent=g.cat.toUpperCase();
+  document.getElementById('fin-score').textContent=g.score.toLocaleString();
+  document.getElementById('st-correct').textContent=g.correct+'/10';
+  document.getElementById('st-streak').textContent=g.best;
+  document.getElementById('st-speed').textContent=avg+'s';
+  document.getElementById('st-acc').textContent=acc+'%';
+  const stars=g.correct===10?'⭐⭐⭐':g.correct>=8?'⭐⭐⭐':g.correct>=6?'⭐⭐':g.correct>=4?'⭐':'💣';
+  const txt=g.correct===10?'PERFECT!':g.correct>=8?'Excellent!':g.correct>=6?'Good job!':g.correct>=4?'Not bad!':'Ouch!';
+  const sub=g.correct===10?'Flawless - you know everything!':g.correct>=8?'You really know your stuff!':g.correct>=6?'Solid - keep it up!':g.correct>=4?'Room to grow - try again!':'Better luck next time!';
+  document.getElementById('r-stars').textContent=stars;
+  document.getElementById('r-txt').textContent=txt;
+  document.getElementById('r-sub').textContent=sub;
+  document.getElementById('btn-again').onclick=()=>startGame(g.cat);
+  show('s-sum');
+}
+
+async function openLeaderboard(category){
+  show('s-lb');
+  document.getElementById('lb-cat-sel').value=category||'';
+  const tbody=document.getElementById('lb-body');
+  tbody.innerHTML='<tr><td colspan="4" class="lb-loading">Loading...</td></tr>';
+  try{
+    const wk=getWeekKey();
+    let url=APPS_SCRIPT_URL+'?weekKey='+encodeURIComponent(wk);
+    if(category)url+='&category='+encodeURIComponent(category);
+    const res=await fetch(url);
+    const json=await res.json();
+    if(!json.success||!json.leaderboard||!json.leaderboard.length){
+      tbody.innerHTML='<tr><td colspan="4" class="lb-empty">No scores this week yet - be the first!</td></tr>';
+      updateScrollHint(); return;
+    }
+    const rc=function(i){return i===0?'gold':i===1?'silver':i===2?'bronze':'';}
+    tbody.innerHTML=json.leaderboard.map(function(s,i){
+      return '<tr><td><span class="lb-rank '+rc(i)+'">'+s.rank+'</span></td>'+
+      '<td>'+s.name+'</td>'+
+      '<td style="font-size:11px;color:#9ca3c4;">'+s.category+'</td>'+
+      '<td class="r">'+Number(s.score).toLocaleString()+'</td></tr>';
+    }).join('');
+    updateScrollHint();
+  }catch(e){
+    tbody.innerHTML='<tr><td colspan="4" class="lb-empty">Could not load scores.</td></tr>';
+  }
+}
+
+// ---- HALL OF FAME ----
+async function openHallOfFame(){
+  show('s-hof');
+  const list=document.getElementById('hof-list');
+  list.innerHTML='<div class="hof-empty">Loading champions...</div>';
+  try{
+    const url=APPS_SCRIPT_URL+'?hallOfFame=1';
+    const res=await fetch(url);
+    const json=await res.json();
+    if(!json.success||!json.hallOfFame||!json.hallOfFame.length){
+      list.innerHTML='<div class="hof-empty">No champions yet — play this week to be the first!</div>';
+      updateScrollHint(); return;
+    }
+    list.innerHTML=json.hallOfFame.map(function(entry){
+      return '<div class="hof-card">'+
+        '<div class="hof-crown">👑</div>'+
+        '<div class="hof-info">'+
+          '<div class="hof-name">'+entry.name+'</div>'+
+          '<div class="hof-week">Week of '+entry.weekLabel+'</div>'+
+          '<div class="hof-cat">'+entry.category+'</div>'+
+        '</div>'+
+        '<div class="hof-score">'+Number(entry.score).toLocaleString()+'</div>'+
+      '</div>';
+    }).join('');
+    updateScrollHint();
+  }catch(e){
+    list.innerHTML='<div class="hof-empty">Could not load Hall of Fame.</div>';
+  }
+}
+
+// ---- HOME TOP SCORE ----
+async function loadHomeTopScore(){
+  const el=document.getElementById('home-top-score');
+  el.className='home-top-score loading';
+  el.textContent='Loading top score...';
+  try{
+    const wk=getWeekKey();
+    const url=APPS_SCRIPT_URL+'?weekKey='+encodeURIComponent(wk);
+    const res=await fetch(url);
+    const json=await res.json();
+    el.className='home-top-score';
+    if(json.success&&json.leaderboard&&json.leaderboard.length){
+      const top=json.leaderboard[0];
+      el.textContent='🏆 Top this week: '+Number(top.score).toLocaleString()+' pts by '+top.name;
+    } else {
+      el.textContent='No scores yet this week — be the first!';
+    }
+  }catch(e){
+    el.className='home-top-score';
+    el.textContent='Play to set the top score this week!';
+  }
+}
+
+function goHome(){clearInterval(g.timer);show('s-home');}
+
+// Scroll hint
+function updateScrollHint(){
+  const hint=document.getElementById('scroll-hint');
+  const scrollable=document.documentElement.scrollHeight>window.innerHeight+4;
+  const atBottom=window.scrollY+window.innerHeight>=document.documentElement.scrollHeight-10;
+  hint.classList.toggle('hidden',!scrollable||atBottom);
+}
+window.addEventListener('scroll',updateScrollHint,{passive:true});
+window.addEventListener('resize',updateScrollHint);
+updateScrollHint();
+
+// Give up
+function confirmGiveUp(){document.getElementById('giveup-modal').classList.add('show');}
+function closeGiveUpModal(){document.getElementById('giveup-modal').classList.remove('show');}
+function doGiveUp(){closeGiveUpModal();clearInterval(g.timer);goHome();}
+
+// App modal
+function openAppModal(){document.getElementById('app-modal').classList.add('show');}
+function closeAppModal(){document.getElementById('app-modal').classList.remove('show');}
+
+document.getElementById('giveup-modal').addEventListener('click',function(e){if(e.target===this)closeGiveUpModal();});
+document.getElementById('app-modal').addEventListener('click',function(e){if(e.target===this)closeAppModal();});
+
+// Load top score on startup
+loadHomeTopScore();
+</script>
+</body>
+</html>
