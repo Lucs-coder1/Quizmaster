@@ -302,7 +302,6 @@
       <div class="vs-code" id="vs-room-code">------</div>
       <div class="vs-code-sub">Ask your friend to enter this code</div>
     </div>
-    <button class="btn-primary" style="background:#c473ff;color:#0d0d1a;margin-top:16px;" onclick="copyVersusLink()">📋 Copy Link</button>
     <button class="btn-ghost" onclick="goHome()">Cancel</button>
   </div>
 
@@ -1202,7 +1201,20 @@ updateScrollHint();
 // Give up
 function confirmGiveUp(){document.getElementById('giveup-modal').classList.add('show');}
 function closeGiveUpModal(){document.getElementById('giveup-modal').classList.remove('show');}
-function doGiveUp(){closeGiveUpModal();clearInterval(g.timer);goHome();}
+function doGiveUp(){
+  closeGiveUpModal();
+  clearInterval(g.timer);
+  if(vs.active){
+    // Tell the backend this player abandoned
+    var img=new Image();
+    img.src=APPS_SCRIPT_URL+'?action=updateVersus&code='+vs.code+'&player='+vs.player+'&score='+g.score+'&q='+g.qi+'&done=2';
+    clearInterval(vs.pollTimer);vs.pollTimer=null;
+    vs.active=false;
+    document.getElementById('vs-live').style.display='none';
+    document.getElementById('btn-give-up').style.display='';
+  }
+  goHome();
+}
 
 // App modal
 function openAppModal(){document.getElementById('app-modal').classList.add('show');}
@@ -1290,12 +1302,11 @@ function updateVersusScore(){
 
 function waitForOpponent(){
   if(!vs.active)return;
-  // Show waiting message
+  var waitingOnQ=g.qi; // the question we just answered
   vs.waitingForOpponent=true;
   document.getElementById('q-text').textContent='⏳ Waiting for opponent...';
   document.querySelectorAll('.opt').forEach(function(b){b.classList.add('off');});
   document.getElementById('btn-give-up').style.display='none';
-  // Poll until opponent has answered this question
   vs.pollTimer=setInterval(function(){
     fetch(APPS_SCRIPT_URL+'?action=pollRoom&code='+vs.code)
       .then(function(r){return r.json();})
@@ -1305,13 +1316,31 @@ function waitForOpponent(){
         var theirScore=vs.player===1?data.p2score:data.p1score;
         var theirScoreEl=vs.player===1?'vl-p2score':'vl-p1score';
         document.getElementById(theirScoreEl).textContent=Number(theirScore||0).toLocaleString();
-        // If opponent has moved to the same question or beyond, proceed
-        if(theirQ>=g.qi||data.status==='done'||data.status==='p1done'||data.status==='p2done'){
+        // Check if opponent gave up
+        if(data.status==='abandoned'){
           clearInterval(vs.pollTimer);vs.pollTimer=null;
           vs.waitingForOpponent=false;
           document.getElementById('btn-give-up').style.display='';
-          // Check if game is done
-          if(g.qi>=10){
+          var myName=vs.player===1?vs.p1name:vs.p2name;
+          var theirName=vs.player===1?vs.p2name:vs.p1name;
+          document.getElementById('vr-crown').textContent='🏆';
+          document.getElementById('vr-winner').textContent='YOU WIN!';
+          document.getElementById('vr-sub').textContent=theirName+' gave up!';
+          document.getElementById('vr-p1name').textContent=myName+' (You)';
+          document.getElementById('vr-p2name').textContent=theirName;
+          document.getElementById('vr-p1score').textContent=g.score.toLocaleString();
+          document.getElementById('vr-p2score').textContent=Number(theirScore||0).toLocaleString();
+          vs.active=false;
+          document.getElementById('vs-live').style.display='none';
+          show('s-vs-result');
+          return;
+        }
+        // Opponent has answered this question (their q index moved past waitingOnQ)
+        if(theirQ>waitingOnQ||data.status==='done'||data.status==='p1done'||data.status==='p2done'){
+          clearInterval(vs.pollTimer);vs.pollTimer=null;
+          vs.waitingForOpponent=false;
+          document.getElementById('btn-give-up').style.display='';
+          if(waitingOnQ>=10){
             var myFinal=g.score;
             var theirFinal=Number(theirScore||0);
             showVersusResult(
