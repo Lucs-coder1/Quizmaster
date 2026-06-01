@@ -129,7 +129,35 @@
   .hof-score{font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:700;color:#00d48a;flex-shrink:0;}
   .hof-empty{text-align:center;color:#9ca3c4;font-size:14px;padding:40px 0;}
 
-  /* SHARED BUTTONS */
+  /* VERSUS MODE */
+  .vs-setup{display:flex;flex-direction:column;gap:12px;width:100%;}
+  .vs-or{text-align:center;color:#9ca3c4;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin:4px 0;}
+  .vs-code-display{background:#161628;border:2px solid #c473ff;border-radius:16px;padding:20px;text-align:center;margin:8px 0;}
+  .vs-code-label{font-size:11px;color:#c473ff;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+  .vs-code{font-family:'Rajdhani',sans-serif;font-size:48px;font-weight:700;color:#fff;letter-spacing:8px;}
+  .vs-code-sub{font-size:12px;color:#9ca3c4;margin-top:6px;}
+  .vs-waiting{text-align:center;padding:20px 0;}
+  .vs-waiting-icon{font-size:40px;margin-bottom:12px;animation:spin 2s linear infinite;}
+  @keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+  .vs-waiting-txt{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:#fff;margin-bottom:6px;}
+  .vs-waiting-sub{font-size:13px;color:#9ca3c4;}
+  .vs-live{display:flex;gap:8px;margin-bottom:16px;}
+  .vs-player{flex:1;background:#161628;border:1.5px solid #2a2a42;border-radius:12px;padding:10px 12px;text-align:center;}
+  .vs-player.me{border-color:#00d48a;}
+  .vs-player.them{border-color:#c473ff;}
+  .vs-player-name{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#9ca3c4;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .vs-player-score{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;color:#fff;}
+  .vs-player.me .vs-player-score{color:#00d48a;}
+  .vs-player.them .vs-player-score{color:#c473ff;}
+  .vs-player-q{font-size:10px;color:#9ca3c4;margin-top:2px;}
+  .vs-result{width:100%;background:#161628;border:1px solid #2a2a42;border-radius:16px;padding:20px;text-align:center;margin-bottom:16px;}
+  .vs-winner-crown{font-size:40px;margin-bottom:8px;}
+  .vs-winner-txt{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;color:#ffe033;margin-bottom:4px;}
+  .vs-winner-sub{font-size:13px;color:#9ca3c4;}
+  .vs-scores{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0;}
+  .vs-score-card{background:#0d0d1a;border-radius:12px;padding:14px;text-align:center;}
+  .vs-score-name{font-size:11px;color:#9ca3c4;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+  .vs-score-val{font-family:'Rajdhani',sans-serif;font-size:32px;font-weight:700;}
   .btn-primary{width:100%;padding:16px;background:#00d48a;border:none;border-radius:13px;font-family:'Rajdhani',sans-serif;font-size:21px;font-weight:700;letter-spacing:1px;color:#001a0a;cursor:pointer;margin-bottom:12px;transition:opacity .12s,transform .12s;}
   .btn-primary:hover{opacity:.9;}.btn-primary:active{transform:scale(.98);}
   .btn-primary:disabled{opacity:.5;cursor:default;transform:none;}
@@ -174,6 +202,7 @@
     <div class="home-btns">
       <button class="btn-ghost" onclick="openLeaderboard(null)">🎆 Weekly Leaderboard</button>
       <button class="btn-ghost" onclick="openHallOfFame()">👑 Hall of Fame</button>
+      <button class="btn-ghost" onclick="show('s-vs-setup')" style="border-color:#c473ff;color:#c473ff;">⚔️ Versus Mode</button>
       <button class="btn-ghost" onclick="openAppModal()">📱 How to turn this into an app</button>
     </div>
   </div>
@@ -236,8 +265,83 @@
     <button class="btn-ghost" onclick="goHome()">← Back</button>
   </div>
 
-  <!-- QUIZ -->
+  <!-- VERSUS SETUP -->
+  <div id="s-vs-setup" class="scr">
+    <div style="font-family:'Rajdhani',sans-serif;font-size:32px;font-weight:700;color:#fff;text-align:center;margin:20px 0 6px;">⚔️ VERSUS MODE</div>
+    <div style="font-size:12px;color:#9ca3c4;text-align:center;margin-bottom:24px;">Challenge a friend in real time!</div>
+    <div class="vs-setup">
+      <input class="name-input" id="vs-name" type="text" maxlength="20" placeholder="Your name..." autocomplete="off" style="margin-bottom:0;" />
+      <select class="lb-cat-sel" id="vs-cat" style="width:100%;padding:14px;font-size:15px;border-radius:13px;background:#161628;border:1.5px solid #2a2a42;color:#fff;outline:none;">
+        <option value="Football">Football</option>
+        <option value="Portugal">Portugal</option>
+        <option value="Algarve">Algarve</option>
+        <option value="Celebrities and TikTok">Celebs &amp; TikTok</option>
+        <option value="Famous Athletes">Famous Athletes</option>
+        <option value="Gaming">Gaming</option>
+        <option value="Space and Science">Space &amp; Science</option>
+      </select>
+      <button class="btn-primary" style="background:#c473ff;color:#0d0d1a;margin-bottom:0;" onclick="createVersusRoom()">CREATE ROOM ⚔️</button>
+      <div class="vs-or">— or join a room —</div>
+      <input class="name-input" id="vs-join-name" type="text" maxlength="20" placeholder="Your name..." autocomplete="off" style="margin-bottom:0;" />
+      <input class="name-input" id="vs-code-input" type="text" maxlength="6" placeholder="Enter room code..." autocomplete="off" style="margin-bottom:0;letter-spacing:6px;text-transform:uppercase;" />
+      <button class="btn-primary" style="background:#c473ff;color:#0d0d1a;margin-bottom:0;" onclick="joinVersusRoom()">JOIN ROOM 🎮</button>
+      <div class="submit-status" id="vs-status"></div>
+      <button class="btn-ghost" onclick="goHome()">← Back</button>
+    </div>
+  </div>
+
+  <!-- VERSUS WAITING (HOST) -->
+  <div id="s-vs-wait" class="scr">
+    <div class="vs-waiting">
+      <div class="vs-waiting-icon">⏳</div>
+      <div class="vs-waiting-txt">Waiting for friend...</div>
+      <div class="vs-waiting-sub">Share this code:</div>
+    </div>
+    <div class="vs-code-display">
+      <div class="vs-code-label">Room Code</div>
+      <div class="vs-code" id="vs-room-code">------</div>
+      <div class="vs-code-sub">Ask your friend to enter this code</div>
+    </div>
+    <button class="btn-primary" style="background:#c473ff;color:#0d0d1a;margin-top:16px;" onclick="copyVersusLink()">📋 Copy Link</button>
+    <button class="btn-ghost" onclick="goHome()">Cancel</button>
+  </div>
+
+  <!-- VERSUS RESULT -->
+  <div id="s-vs-result" class="scr">
+    <div class="vs-result">
+      <div class="vs-winner-crown" id="vr-crown">🏆</div>
+      <div class="vs-winner-txt" id="vr-winner">Winner!</div>
+      <div class="vs-winner-sub" id="vr-sub"></div>
+    </div>
+    <div class="vs-scores">
+      <div class="vs-score-card">
+        <div class="vs-score-name" id="vr-p1name">Player 1</div>
+        <div class="vs-score-val" id="vr-p1score" style="color:#00d48a;">0</div>
+      </div>
+      <div class="vs-score-card">
+        <div class="vs-score-name" id="vr-p2name">Player 2</div>
+        <div class="vs-score-val" id="vr-p2score" style="color:#c473ff;">0</div>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="goHome()">Back to Home</button>
+    <button class="btn-ghost" onclick="show('s-vs-setup')">Play Again ⚔️</button>
+  </div>
+
+
   <div id="s-q" class="scr">
+    <div class="vs-live" id="vs-live" style="display:none;">
+      <div class="vs-player me">
+        <div class="vs-player-name" id="vl-p1name">You</div>
+        <div class="vs-player-score" id="vl-p1score">0</div>
+        <div class="vs-player-q" id="vl-p1q">Q0</div>
+      </div>
+      <div style="display:flex;align-items:center;font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:#9ca3c4;">VS</div>
+      <div class="vs-player them">
+        <div class="vs-player-name" id="vl-p2name">Opponent</div>
+        <div class="vs-player-score" id="vl-p2score">0</div>
+        <div class="vs-player-q" id="vl-p2q">Q0</div>
+      </div>
+    </div>
     <div class="q-top">
       <span class="cat-pill" id="q-cat">Football</span>
       <span class="prog" id="q-prog">1 / 10</span>
@@ -892,7 +996,7 @@ function pick(chosen){
   } else {g.streak=0;}
   document.getElementById('live-score').textContent=g.score.toLocaleString();
   document.getElementById('live-streak').textContent=g.streak>0?(g.streak+' \uD83D\uDD25'):'0';
-  flash(ok,pts); setTimeout(nextQ,1300);
+  flash(ok,pts); updateVersusScore(); setTimeout(nextQ,1300);
 }
 
 function flash(ok,pts){
@@ -902,7 +1006,7 @@ function flash(ok,pts){
   w.classList.add('show'); setTimeout(()=>w.classList.remove('show'),1000);
 }
 
-function nextQ(){clearInterval(g.timer);g.timer=null;g.qi++; g.qi>=10?summary():loadQ();}
+function nextQ(){clearInterval(g.timer);g.timer=null;g.qi++; if(g.qi>=10){if(vs.active)finishVersusGame(); summary();}else{loadQ();}}
 
 function summary(){
   g.scoreSubmitted=false;
@@ -1073,7 +1177,7 @@ async function loadHomeTopScore(){
   }
 }
 
-function goHome(){clearInterval(g.timer);show('s-home');}
+function goHome(){clearInterval(g.timer);clearInterval(vs.pollTimer);vs.active=false;document.getElementById('vs-live').style.display='none';show('s-home');}
 
 // Scroll hint
 function updateScrollHint(){
@@ -1098,8 +1202,165 @@ function closeAppModal(){document.getElementById('app-modal').classList.remove('
 document.getElementById('giveup-modal').addEventListener('click',function(e){if(e.target===this)closeGiveUpModal();});
 document.getElementById('app-modal').addEventListener('click',function(e){if(e.target===this)closeAppModal();});
 
-// Load top score on startup
+// ---- VERSUS MODE ----
+var vs={active:false,code:'',player:0,p1name:'',p2name:'',pollTimer:null};
+
+function createVersusRoom(){
+  var name=document.getElementById('vs-name').value.trim();
+  var cat=document.getElementById('vs-cat').value;
+  var status=document.getElementById('vs-status');
+  if(!name){status.textContent='Please enter your name.';status.className='submit-status err';return;}
+  status.textContent='Creating room...';status.className='submit-status';
+  var qs=shuf(QS[cat]).slice(0,10);
+  var qIds=qs.map(function(q){return QS[cat].indexOf(q);}).join(',');
+  var img=new Image();
+  img.onload=img.onerror=function(){
+    // Now poll for the room code
+    var img2=new Image();
+    img2.src=APPS_SCRIPT_URL+'?action=createRoom&name='+encodeURIComponent(name)+'&category='+encodeURIComponent(cat)+'&questions='+encodeURIComponent(qIds);
+  };
+  fetch(APPS_SCRIPT_URL+'?action=createRoom&name='+encodeURIComponent(name)+'&category='+encodeURIComponent(cat)+'&questions='+encodeURIComponent(qIds))
+    .then(function(r){return r.json();})
+    .then(function(j){
+      if(!j.success){status.textContent='Error: '+j.error;status.className='submit-status err';return;}
+      vs={active:true,code:j.code,player:1,p1name:name,p2name:'',cat:cat,qs:qs,pollTimer:null};
+      document.getElementById('vs-room-code').textContent=j.code;
+      show('s-vs-wait');
+      status.textContent='';
+      // Poll waiting for player 2
+      vs.pollTimer=setInterval(function(){
+        fetch(APPS_SCRIPT_URL+'?action=pollRoom&code='+vs.code)
+          .then(function(r){return r.json();})
+          .then(function(data){
+            if(data.success&&data.p2name&&data.status==='ready'){
+              clearInterval(vs.pollTimer);
+              vs.p2name=data.p2name;
+              startVersusGame();
+            }
+          }).catch(function(){});
+      },2000);
+    }).catch(function(){status.textContent='Could not create room.';status.className='submit-status err';});
+}
+
+function joinVersusRoom(){
+  var name=document.getElementById('vs-join-name').value.trim();
+  var code=document.getElementById('vs-code-input').value.trim().toUpperCase();
+  var status=document.getElementById('vs-status');
+  if(!name){status.textContent='Please enter your name.';status.className='submit-status err';return;}
+  if(code.length!==6){status.textContent='Please enter a 6-character code.';status.className='submit-status err';return;}
+  status.textContent='Joining...';status.className='submit-status';
+  fetch(APPS_SCRIPT_URL+'?action=joinRoom&code='+encodeURIComponent(code)+'&name='+encodeURIComponent(name))
+    .then(function(r){return r.json();})
+    .then(function(j){
+      if(!j.success){status.textContent=j.error||'Room not found.';status.className='submit-status err';return;}
+      var qIndexes=j.questions.split(',');
+      var qs=qIndexes.map(function(idx){return QS[j.category][parseInt(idx)];});
+      vs={active:true,code:code,player:2,p1name:j.host,p2name:name,cat:j.category,qs:qs,pollTimer:null};
+      status.textContent='';
+      startVersusGame();
+    }).catch(function(){status.textContent='Could not join room.';status.className='submit-status err';});
+}
+
+function startVersusGame(){
+  document.getElementById('vs-live').style.display='flex';
+  document.getElementById('vl-p1name').textContent=vs.p1name;
+  document.getElementById('vl-p2name').textContent=vs.p2name;
+  document.getElementById('vl-p1score').textContent='0';
+  document.getElementById('vl-p2score').textContent='0';
+  document.getElementById('vl-p1q').textContent='Q1';
+  document.getElementById('vl-p2q').textContent='Q1';
+  g={cat:vs.cat,qs:vs.qs,qi:0,score:0,streak:0,best:0,correct:0,times:[],answered:false,secsLeft:TSEC,timer:null,tstart:null,scoreSubmitted:false};
+  show('s-q');loadQ();
+  // Poll opponent score every 2 seconds
+  vs.pollTimer=setInterval(function(){
+    fetch(APPS_SCRIPT_URL+'?action=pollRoom&code='+vs.code)
+      .then(function(r){return r.json();})
+      .then(function(data){
+        if(!data.success)return;
+        var myScore=vs.player===1?data.p1score:data.p2score;
+        var theirScore=vs.player===1?data.p2score:data.p1score;
+        var theirQ=vs.player===1?data.p2q:data.p1q;
+        var meEl=vs.player===1?'vl-p1score':'vl-p2score';
+        var themEl=vs.player===1?'vl-p2score':'vl-p1score';
+        var themQ=vs.player===1?'vl-p2q':'vl-p1q';
+        document.getElementById(themEl).textContent=Number(theirScore||0).toLocaleString();
+        document.getElementById(themQ).textContent='Q'+(parseInt(theirQ||0)+1);
+        if(data.status==='done'||data.status==='p1done'||data.status==='p2done'){
+          // Check if both done
+          var myDone=vs.player===1?(data.status==='p1done'||data.status==='done'):(data.status==='p2done'||data.status==='done');
+          var theirDone=vs.player===1?(data.status==='p2done'||data.status==='done'):(data.status==='p1done'||data.status==='done');
+          if(myDone&&theirDone){
+            clearInterval(vs.pollTimer);
+            showVersusResult(data.p1score,data.p2score,data.p1name||vs.p1name,data.p2name||vs.p2name);
+          }
+        }
+      }).catch(function(){});
+  },2000);
+}
+
+function updateVersusScore(){
+  if(!vs.active)return;
+  var myScoreEl=vs.player===1?'vl-p1score':'vl-p2score';
+  var myQEl=vs.player===1?'vl-p1q':'vl-p2q';
+  document.getElementById(myScoreEl).textContent=g.score.toLocaleString();
+  document.getElementById(myQEl).textContent='Q'+(g.qi+1);
+  var img=new Image();
+  img.src=APPS_SCRIPT_URL+'?action=updateVersus&code='+vs.code+'&player='+vs.player+'&score='+g.score+'&q='+g.qi+'&done=0';
+}
+
+function finishVersusGame(){
+  if(!vs.active)return;
+  var img=new Image();
+  img.src=APPS_SCRIPT_URL+'?action=updateVersus&code='+vs.code+'&player='+vs.player+'&score='+g.score+'&q=10&done=1';
+}
+
+function showVersusResult(p1score,p2score,p1name,p2name){
+  clearInterval(vs.pollTimer);
+  document.getElementById('vs-live').style.display='none';
+  var myScore=vs.player===1?p1score:p2score;
+  var theirScore=vs.player===1?p2score:p1score;
+  var myName=vs.player===1?p1name:p2name;
+  var theirName=vs.player===1?p2name:p1name;
+  document.getElementById('vr-p1name').textContent=myName;
+  document.getElementById('vr-p2name').textContent=theirName;
+  document.getElementById('vr-p1score').textContent=Number(myScore).toLocaleString();
+  document.getElementById('vr-p2score').textContent=Number(theirScore).toLocaleString();
+  if(myScore>theirScore){
+    document.getElementById('vr-crown').textContent='🏆';
+    document.getElementById('vr-winner').textContent='YOU WIN!';
+    document.getElementById('vr-sub').textContent='You beat '+theirName+'!';
+  } else if(theirScore>myScore){
+    document.getElementById('vr-crown').textContent='😢';
+    document.getElementById('vr-winner').textContent=theirName+' WINS!';
+    document.getElementById('vr-sub').textContent='Better luck next time!';
+  } else {
+    document.getElementById('vr-crown').textContent='🤝';
+    document.getElementById('vr-winner').textContent="IT'S A TIE!";
+    document.getElementById('vr-sub').textContent='Incredible — same score!';
+  }
+  vs.active=false;
+  show('s-vs-result');
+}
+
+function copyVersusLink(){
+  var link='https://lucs-coder1.github.io/Quizmaster?code='+vs.code;
+  navigator.clipboard.writeText(link).then(function(){
+    var btn=document.querySelector('#s-vs-wait .btn-primary');
+    btn.textContent='✅ Copied!';
+    setTimeout(function(){btn.textContent='📋 Copy Link';},2000);
+  });
+}
 loadHomeTopScore();
+
+// Handle shared versus link
+(function(){
+  var urlParams=new URLSearchParams(window.location.search);
+  var code=urlParams.get('code');
+  if(code){
+    document.getElementById('vs-code-input').value=code.toUpperCase();
+    show('s-vs-setup');
+  }
+})();
 </script>
 </body>
 </html>
