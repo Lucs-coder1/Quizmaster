@@ -1295,19 +1295,22 @@ function startVersusGame(){
 
 function updateVersusScore(){
   if(!vs.active)return;
-  // Update my score display
   var myScoreEl=vs.player===1?'vl-p1score':'vl-p2score';
   var myQEl=vs.player===1?'vl-p1q':'vl-p2q';
   document.getElementById(myScoreEl).textContent=g.score.toLocaleString();
-  document.getElementById(myQEl).textContent='Q'+(g.qi+2);
-  // Save to backend — send g.qi+1 meaning "I finished question g.qi, now on g.qi+1"
-  fetch(APPS_SCRIPT_URL+'?action=updateVersus&code='+encodeURIComponent(vs.code)+'&player='+vs.player+'&score='+g.score+'&q='+(g.qi+1)+'&done=0')
+  document.getElementById(myQEl).textContent='Q'+(g.qi+1);
+  // g.qi has been incremented already. Save it so opponent can compare.
+  fetch(APPS_SCRIPT_URL+'?action=updateVersus&code='+encodeURIComponent(vs.code)+'&player='+vs.player+'&score='+g.score+'&q='+g.qi+'&done=0')
     .catch(function(){});
 }
 
 function waitForOpponent(){
   if(!vs.active)return;
-  var waitingOnQ=g.qi; // just answered this question index
+  // g.qi already incremented. We answered question (g.qi-1).
+  // Wait until opponent's saved q >= g.qi (meaning they also answered question g.qi-1)
+  var needQ=g.qi;
+  clearInterval(g.timer);g.timer=null;
+  document.getElementById('tbar').style.width='100%';
   document.getElementById('q-text').textContent='⏳ Waiting for opponent...';
   document.querySelectorAll('.opt').forEach(function(b){b.classList.add('off');});
   document.getElementById('btn-give-up').style.display='none';
@@ -1320,7 +1323,6 @@ function waitForOpponent(){
         var theirScore=vs.player===1?data.p2score:data.p1score;
         var theirScoreEl=vs.player===1?'vl-p2score':'vl-p1score';
         document.getElementById(theirScoreEl).textContent=Number(theirScore||0).toLocaleString();
-        // Opponent abandoned
         if(data.status==='abandoned'){
           clearInterval(vs.pollTimer);vs.pollTimer=null;
           document.getElementById('btn-give-up').style.display='';
@@ -1337,17 +1339,13 @@ function waitForOpponent(){
           show('s-vs-result');
           return;
         }
-        // theirQ is the next question they are on.
-        // If theirQ > waitingOnQ they have answered question waitingOnQ
-        if(theirQ>waitingOnQ){
+        // Opponent has answered when their saved q >= needQ
+        if(theirQ>=needQ){
           clearInterval(vs.pollTimer);vs.pollTimer=null;
           document.getElementById('btn-give-up').style.display='';
           if(g.qi>=10){
-            // Both finished — show result
-            var myFinal=g.score;
-            var theirFinal=Number(theirScore||0);
-            var p1=vs.player===1?myFinal:theirFinal;
-            var p2=vs.player===1?theirFinal:myFinal;
+            var p1=vs.player===1?g.score:Number(theirScore||0);
+            var p2=vs.player===1?Number(theirScore||0):g.score;
             showVersusResult(p1,p2,vs.p1name,vs.p2name);
           } else {
             loadQ();
