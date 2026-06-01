@@ -996,7 +996,7 @@ function pick(chosen){
   } else {g.streak=0;}
   document.getElementById('live-score').textContent=g.score.toLocaleString();
   document.getElementById('live-streak').textContent=g.streak>0?(g.streak+' \uD83D\uDD25'):'0';
-  flash(ok,pts); updateVersusScore(); setTimeout(nextQ,1300);
+  flash(ok,pts); setTimeout(nextQ,1300);
 }
 
 function flash(ok,pts){
@@ -1006,7 +1006,16 @@ function flash(ok,pts){
   w.classList.add('show'); setTimeout(()=>w.classList.remove('show'),1000);
 }
 
-function nextQ(){clearInterval(g.timer);g.timer=null;g.qi++; if(g.qi>=10){if(vs.active)finishVersusGame(); summary();}else{loadQ();}}
+function nextQ(){
+  clearInterval(g.timer);g.timer=null;g.qi++;
+  if(g.qi>=10){
+    if(vs.active){finishVersusGame();waitForOpponent();}
+    else{summary();}
+  } else {
+    if(vs.active){updateVersusScore();waitForOpponent();}
+    else{loadQ();}
+  }
+}
 
 function summary(){
   g.scoreSubmitted=false;
@@ -1203,7 +1212,164 @@ document.getElementById('giveup-modal').addEventListener('click',function(e){if(
 document.getElementById('app-modal').addEventListener('click',function(e){if(e.target===this)closeAppModal();});
 
 // ---- VERSUS MODE ----
-var vs={active:false,code:'',player:0,p1name:'',p2name:'',pollTimer:null};
+var vs={active:false,code:'',player:0,p1name:'',p2name:'',pollTimer:null,waitingForOpponent:false};
+
+function createVersusRoom(){
+  var name=document.getElementById('vs-name').value.trim();
+  var cat=document.getElementById('vs-cat').value;
+  var status=document.getElementById('vs-status');
+  if(!name){status.textContent='Please enter your name.';status.className='submit-status err';return;}
+  status.textContent='Creating room...';status.className='submit-status';
+  var qs=shuf(QS[cat]).slice(0,10);
+  var qIds=qs.map(function(q){return QS[cat].indexOf(q);}).join(',');
+  fetch(APPS_SCRIPT_URL+'?action=createRoom&name='+encodeURIComponent(name)+'&category='+encodeURIComponent(cat)+'&questions='+encodeURIComponent(qIds))
+    .then(function(r){return r.json();})
+    .then(function(j){
+      if(!j.success){status.textContent='Error: '+j.error;status.className='submit-status err';return;}
+      vs={active:true,code:j.code,player:1,p1name:name,p2name:'',cat:cat,qs:qs,pollTimer:null,waitingForOpponent:false};
+      document.getElementById('vs-room-code').textContent=j.code;
+      show('s-vs-wait');
+      status.textContent='';
+      vs.pollTimer=setInterval(function(){
+        fetch(APPS_SCRIPT_URL+'?action=pollRoom&code='+vs.code)
+          .then(function(r){return r.json();})
+          .then(function(data){
+            if(data.success&&data.p2name&&data.status==='ready'){
+              clearInterval(vs.pollTimer);vs.pollTimer=null;
+              vs.p2name=data.p2name;
+              startVersusGame();
+            }
+          }).catch(function(){});
+      },2000);
+    }).catch(function(){status.textContent='Could not create room.';status.className='submit-status err';});
+}
+
+function joinVersusRoom(){
+  var name=document.getElementById('vs-join-name').value.trim();
+  var code=document.getElementById('vs-code-input').value.trim().toUpperCase();
+  var status=document.getElementById('vs-status');
+  if(!name){status.textContent='Please enter your name.';status.className='submit-status err';return;}
+  if(code.length!==6){status.textContent='Please enter a 6-character code.';status.className='submit-status err';return;}
+  status.textContent='Joining...';status.className='submit-status';
+  fetch(APPS_SCRIPT_URL+'?action=joinRoom&code='+encodeURIComponent(code)+'&name='+encodeURIComponent(name))
+    .then(function(r){return r.json();})
+    .then(function(j){
+      if(!j.success){status.textContent=j.error||'Room not found.';status.className='submit-status err';return;}
+      var qIndexes=j.questions.split(',');
+      var qs=qIndexes.map(function(idx){return QS[j.category][parseInt(idx)];});
+      vs={active:true,code:code,player:2,p1name:j.host,p2name:name,cat:j.category,qs:qs,pollTimer:null,waitingForOpponent:false};
+      status.textContent='';
+      startVersusGame();
+    }).catch(function(){status.textContent='Could not join room.';status.className='submit-status err';});
+}
+
+function startVersusGame(){
+  document.getElementById('vs-live').style.display='flex';
+  document.getElementById('vl-p1name').textContent=vs.p1name;
+  document.getElementById('vl-p2name').textContent=vs.p2name;
+  document.getElementById('vl-p1score').textContent='0';
+  document.getElementById('vl-p2score').textContent='0';
+  document.getElementById('vl-p1q').textContent='Q1';
+  document.getElementById('vl-p2q').textContent='Q1';
+  g={cat:vs.cat,qs:vs.qs,qi:0,score:0,streak:0,best:0,correct:0,times:[],answered:false,secsLeft:TSEC,timer:null,tstart:null,scoreSubmitted:false};
+  show('s-q');
+  loadQ();
+}
+
+function updateVersusScore(){
+  if(!vs.active)return;
+  var myScoreEl=vs.player===1?'vl-p1score':'vl-p2score';
+  var myQEl=vs.player===1?'vl-p1q':'vl-p2q';
+  document.getElementById(myScoreEl).textContent=g.score.toLocaleString();
+  document.getElementById(myQEl).textContent='Q'+(g.qi+1);
+  // Save my answer to backend
+  var done=g.qi>=10?1:0;
+  var img=new Image();
+  img.src=APPS_SCRIPT_URL+'?action=updateVersus&code='+vs.code+'&player='+vs.player+'&score='+g.score+'&q='+g.qi+'&done='+done;
+}
+
+function waitForOpponent(){
+  if(!vs.active)return;
+  // Show waiting message
+  vs.waitingForOpponent=true;
+  document.getElementById('q-text').textContent='⏳ Waiting for opponent...';
+  document.querySelectorAll('.opt').forEach(function(b){b.classList.add('off');});
+  document.getElementById('btn-give-up').style.display='none';
+  // Poll until opponent has answered this question
+  vs.pollTimer=setInterval(function(){
+    fetch(APPS_SCRIPT_URL+'?action=pollRoom&code='+vs.code)
+      .then(function(r){return r.json();})
+      .then(function(data){
+        if(!data.success)return;
+        var theirQ=vs.player===1?parseInt(data.p2q||0):parseInt(data.p1q||0);
+        var theirScore=vs.player===1?data.p2score:data.p1score;
+        var theirScoreEl=vs.player===1?'vl-p2score':'vl-p1score';
+        document.getElementById(theirScoreEl).textContent=Number(theirScore||0).toLocaleString();
+        // If opponent has moved to the same question or beyond, proceed
+        if(theirQ>=g.qi||data.status==='done'||data.status==='p1done'||data.status==='p2done'){
+          clearInterval(vs.pollTimer);vs.pollTimer=null;
+          vs.waitingForOpponent=false;
+          document.getElementById('btn-give-up').style.display='';
+          // Check if game is done
+          if(g.qi>=10){
+            var myFinal=g.score;
+            var theirFinal=Number(theirScore||0);
+            showVersusResult(
+              vs.player===1?myFinal:theirFinal,
+              vs.player===1?theirFinal:myFinal,
+              vs.p1name,vs.p2name
+            );
+          } else {
+            loadQ();
+          }
+        }
+      }).catch(function(){});
+  },1500);
+}
+
+function finishVersusGame(){
+  if(!vs.active)return;
+  var img=new Image();
+  img.src=APPS_SCRIPT_URL+'?action=updateVersus&code='+vs.code+'&player='+vs.player+'&score='+g.score+'&q=10&done=1';
+}
+
+function showVersusResult(p1score,p2score,p1name,p2name){
+  clearInterval(vs.pollTimer);vs.pollTimer=null;
+  document.getElementById('vs-live').style.display='none';
+  document.getElementById('btn-give-up').style.display='';
+  var myScore=vs.player===1?Number(p1score):Number(p2score);
+  var theirScore=vs.player===1?Number(p2score):Number(p1score);
+  var myName=vs.player===1?p1name:p2name;
+  var theirName=vs.player===1?p2name:p1name;
+  document.getElementById('vr-p1name').textContent=myName+' (You)';
+  document.getElementById('vr-p2name').textContent=theirName;
+  document.getElementById('vr-p1score').textContent=myScore.toLocaleString();
+  document.getElementById('vr-p2score').textContent=theirScore.toLocaleString();
+  if(myScore>theirScore){
+    document.getElementById('vr-crown').textContent='🏆';
+    document.getElementById('vr-winner').textContent='YOU WIN!';
+    document.getElementById('vr-sub').textContent='You beat '+theirName+'!';
+  } else if(theirScore>myScore){
+    document.getElementById('vr-crown').textContent='😢';
+    document.getElementById('vr-winner').textContent=theirName+' WINS!';
+    document.getElementById('vr-sub').textContent='Better luck next time!';
+  } else {
+    document.getElementById('vr-crown').textContent='🤝';
+    document.getElementById('vr-winner').textContent="IT'S A TIE!";
+    document.getElementById('vr-sub').textContent='Incredible — same score!';
+  }
+  vs.active=false;
+  show('s-vs-result');
+}
+
+function copyVersusLink(){
+  var link='https://lucs-coder1.github.io/Quizmaster?code='+vs.code;
+  navigator.clipboard.writeText(link).then(function(){
+    var btn=document.querySelector('#s-vs-wait .btn-primary');
+    btn.textContent='✅ Copied!';
+    setTimeout(function(){btn.textContent='📋 Copy Link';},2000);
+  });
+}
 
 function createVersusRoom(){
   var name=document.getElementById('vs-name').value.trim();
@@ -1310,8 +1476,24 @@ function updateVersusScore(){
 
 function finishVersusGame(){
   if(!vs.active)return;
+  vs.myFinalScore=g.score;
   var img=new Image();
   img.src=APPS_SCRIPT_URL+'?action=updateVersus&code='+vs.code+'&player='+vs.player+'&score='+g.score+'&q=10&done=1';
+  // Start polling for opponent to finish
+  var waitTimer=setInterval(function(){
+    fetch(APPS_SCRIPT_URL+'?action=pollRoom&code='+vs.code)
+      .then(function(r){return r.json();})
+      .then(function(data){
+        if(!data.success)return;
+        if(data.status==='done'){
+          clearInterval(waitTimer);
+          clearInterval(vs.pollTimer);
+          var p1score=vs.player===1?vs.myFinalScore:data.p1score;
+          var p2score=vs.player===2?vs.myFinalScore:data.p2score;
+          showVersusResult(p1score,p2score,data.p1name||vs.p1name,data.p2name||vs.p2name);
+        }
+      }).catch(function(){});
+  },1500);
 }
 
 function showVersusResult(p1score,p2score,p1name,p2name){
