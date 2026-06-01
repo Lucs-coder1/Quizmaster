@@ -822,11 +822,10 @@ const APPS_SCRIPT_URL="https://script.google.com/macros/s/AKfycbw7xc-5qLuCxBsRwa
 
 function getWeekKey(){
   var now=new Date();
-  var jan1=new Date(now.getFullYear(),0,1);
-  var dayOfYear=Math.floor((now-jan1)/86400000);
-  var dayOfWeek=now.getDay()===0?6:now.getDay()-1;
-  var weekNum=Math.floor((dayOfYear-dayOfWeek+7)/7);
-  return now.getFullYear()+'-W'+weekNum;
+  var utcDay=now.getUTCDay();
+  var dayOfWeek=utcDay===0?6:utcDay-1;
+  var monday=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate()-dayOfWeek));
+  return monday.getUTCFullYear()+'-W'+(monday.getUTCMonth()+1)+'-'+monday.getUTCDate();
 }
 
 function shuf(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
