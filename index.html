@@ -1294,15 +1294,14 @@ function updateVersusScore(){
   var myQEl=vs.player===1?'vl-p1q':'vl-p2q';
   document.getElementById(myScoreEl).textContent=g.score.toLocaleString();
   document.getElementById(myQEl).textContent='Q'+(g.qi+1);
-  // Save my answer to backend
-  var done=g.qi>=10?1:0;
+  // Send g.qi+1 so opponent knows we finished question g.qi
   var img=new Image();
-  img.src=APPS_SCRIPT_URL+'?action=updateVersus&code='+vs.code+'&player='+vs.player+'&score='+g.score+'&q='+g.qi+'&done='+done;
+  img.src=APPS_SCRIPT_URL+'?action=updateVersus&code='+vs.code+'&player='+vs.player+'&score='+g.score+'&q='+(g.qi+1)+'&done=0';
 }
 
 function waitForOpponent(){
   if(!vs.active)return;
-  var waitingOnQ=g.qi; // the question we just answered
+  var waitingOnQ=g.qi; // we just answered question g.qi, wait until opponent's q > waitingOnQ
   vs.waitingForOpponent=true;
   document.getElementById('q-text').textContent='⏳ Waiting for opponent...';
   document.querySelectorAll('.opt').forEach(function(b){b.classList.add('off');});
