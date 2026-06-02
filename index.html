@@ -1324,67 +1324,6 @@ function updateVersusScore(){
     .catch(function(){});
 }
 
-function waitForOpponent(){
-  if(!vs.active)return;
-  if(vs.pollTimer)return; // already waiting
-  // g.qi already incremented. We answered question (g.qi-1).
-  // Wait until opponent's saved q >= g.qi (meaning they also answered question g.qi-1)
-  var needQ=g.qi;
-  clearInterval(g.timer);g.timer=null;
-  clearInterval(vs.pollTimer);vs.pollTimer=null;
-  g.answered=true;
-  var tbar=document.getElementById('tbar');
-  if(tbar)tbar.style.width='100%';
-  var qtext=document.getElementById('q-text');
-  if(qtext)qtext.textContent='⏳ Waiting for opponent...';
-  document.querySelectorAll('.opt').forEach(function(b){b.classList.add('off');});
-  var giveup=document.getElementById('btn-give-up');
-  if(giveup)giveup.style.display='none';
-  console.log('WAITING: player='+vs.player+' needQ='+needQ+' g.qi='+g.qi);
-  vs.pollTimer=setInterval(function(){
-    fetch(APPS_SCRIPT_URL+'?action=pollRoom&code='+encodeURIComponent(vs.code))
-      .then(function(r){return r.json();})
-      .then(function(data){
-        if(!data.success)return;
-        var theirQ=vs.player===1?parseInt(data.p2q||0):parseInt(data.p1q||0);
-        var theirScore=vs.player===1?data.p2score:data.p1score;
-        var theirScoreEl=vs.player===1?'vl-p2score':'vl-p1score';
-        console.log('POLL: player='+vs.player+' needQ='+needQ+' theirQ='+theirQ+' p1q='+data.p1q+' p2q='+data.p2q+' status='+data.status);
-        document.getElementById(theirScoreEl).textContent=Number(theirScore||0).toLocaleString();
-        if(data.status==='abandoned'){
-          clearInterval(vs.pollTimer);vs.pollTimer=null;
-          var gu=document.getElementById('btn-give-up');if(gu)gu.style.display='';
-          var theirName=vs.player===1?vs.p2name:vs.p1name;
-          document.getElementById('vr-crown').textContent='🏆';
-          document.getElementById('vr-winner').textContent='YOU WIN!';
-          document.getElementById('vr-sub').textContent=theirName+' gave up!';
-          document.getElementById('vr-p1name').textContent=(vs.player===1?vs.p1name:vs.p2name)+' (You)';
-          document.getElementById('vr-p2name').textContent=theirName;
-          document.getElementById('vr-p1score').textContent=g.score.toLocaleString();
-          document.getElementById('vr-p2score').textContent=Number(theirScore||0).toLocaleString();
-          vs.active=false;
-          document.getElementById('vs-live').style.display='none';
-          show('s-vs-result');
-          return;
-        }
-        // Opponent has answered when their saved q >= needQ
-        if(theirQ>=needQ){
-          if(vs.advancing)return; // lock — only advance once
-          vs.advancing=true;
-          clearInterval(vs.pollTimer);vs.pollTimer=null;
-          var gu2=document.getElementById('btn-give-up');if(gu2)gu2.style.display='';
-          if(g.qi>=10){
-            var p1=vs.player===1?g.score:Number(theirScore||0);
-            var p2=vs.player===1?Number(theirScore||0):g.score;
-            showVersusResult(p1,p2,vs.p1name,vs.p2name);
-          } else {
-            setTimeout(loadQ,600);
-          }
-        }
-      }).catch(function(){});
-  },1500);
-}
-
 function finishVersusGame(){
   if(!vs.active)return;
   fetch(APPS_SCRIPT_URL+'?action=updateVersus&code='+encodeURIComponent(vs.code)+'&player='+vs.player+'&score='+g.score+'&q=10&done=1')
