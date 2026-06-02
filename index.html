@@ -1315,6 +1315,7 @@ function waitForOpponent(){
   document.getElementById('q-text').textContent='⏳ Waiting for opponent...';
   document.querySelectorAll('.opt').forEach(function(b){b.classList.add('off');});
   document.getElementById('btn-give-up').style.display='none';
+  console.log('WAITING: player='+vs.player+' needQ='+needQ+' g.qi='+g.qi);
   vs.pollTimer=setInterval(function(){
     fetch(APPS_SCRIPT_URL+'?action=pollRoom&code='+encodeURIComponent(vs.code))
       .then(function(r){return r.json();})
@@ -1323,6 +1324,7 @@ function waitForOpponent(){
         var theirQ=vs.player===1?parseInt(data.p2q||0):parseInt(data.p1q||0);
         var theirScore=vs.player===1?data.p2score:data.p1score;
         var theirScoreEl=vs.player===1?'vl-p2score':'vl-p1score';
+        console.log('POLL: player='+vs.player+' needQ='+needQ+' theirQ='+theirQ+' p1q='+data.p1q+' p2q='+data.p2q+' status='+data.status);
         document.getElementById(theirScoreEl).textContent=Number(theirScore||0).toLocaleString();
         if(data.status==='abandoned'){
           clearInterval(vs.pollTimer);vs.pollTimer=null;
