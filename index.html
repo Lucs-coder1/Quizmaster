@@ -1381,10 +1381,11 @@ function showVersusResult(p1score,p2score,p1name,p2name){
   clearInterval(vs.pollTimer);vs.pollTimer=null;
   document.getElementById('vs-live').style.display='none';
   document.getElementById('btn-give-up').style.display='';
-  var myScore=vs.player===1?Number(p1score):Number(p2score);
-  var theirScore=vs.player===1?Number(p2score):Number(p1score);
-  var myName=vs.player===1?p1name:p2name;
-  var theirName=vs.player===1?p2name:p1name;
+  // Always use local g.score for current player — don't trust sheet timing
+  var myScore=g.score;
+  var theirScore=vs.player===1?Number(p2score||0):Number(p1score||0);
+  var myName=vs.player===1?(p1name||vs.p1name):(p2name||vs.p2name);
+  var theirName=vs.player===1?(p2name||vs.p2name):(p1name||vs.p1name);
   document.getElementById('vr-p1name').textContent=myName+' (You)';
   document.getElementById('vr-p2name').textContent=theirName;
   document.getElementById('vr-p1score').textContent=myScore.toLocaleString();
