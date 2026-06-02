@@ -1012,13 +1012,27 @@ function flash(ok,pts){
 function nextQ(){
   clearInterval(g.timer);g.timer=null;
   g.qi++;
-  if(vs.active){
-    updateVersusScore();
-    if(g.qi>=10){finishVersusGame();}
-    waitForOpponent();
+  if(vs.active) updateVersusScore();
+  if(g.qi>=10){
+    if(vs.active){
+      finishVersusGame();
+      // Poll once more to get opponent's latest score then show result
+      setTimeout(function(){
+        fetch(APPS_SCRIPT_URL+'?action=pollRoom&code='+encodeURIComponent(vs.code))
+          .then(function(r){return r.json();})
+          .then(function(data){
+            var p1s=data.p1score||0;
+            var p2s=data.p2score||0;
+            showVersusResult(p1s,p2s,data.p1name||vs.p1name,data.p2name||vs.p2name);
+          }).catch(function(){
+            showVersusResult(g.score,0,vs.p1name,vs.p2name);
+          });
+      },1500);
+    } else {
+      summary();
+    }
   } else {
-    if(g.qi>=10){summary();}
-    else{loadQ();}
+    loadQ();
   }
 }
 
