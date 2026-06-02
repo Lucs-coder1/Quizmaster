@@ -942,6 +942,7 @@ function startGame(cat){
 function loadQ(){
   const q=g.qs[g.qi];
   clearInterval(g.timer); g.timer=null;
+  clearInterval(vs.pollTimer); vs.pollTimer=null;
   g.answered=false; g.secsLeft=TSEC; g.tstart=Date.now();
   document.getElementById('q-cat').textContent=g.cat;
   document.getElementById('q-prog').textContent=(g.qi+1)+' / 10';
@@ -1359,7 +1360,7 @@ function waitForOpponent(){
             var p2=vs.player===1?Number(theirScore||0):g.score;
             showVersusResult(p1,p2,vs.p1name,vs.p2name);
           } else {
-            loadQ();
+            setTimeout(loadQ,600);
           }
         }
       }).catch(function(){});
