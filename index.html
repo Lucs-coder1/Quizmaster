@@ -972,6 +972,7 @@ function updateBar(){
 }
 
 function timeout(){
+  if(vs.active&&vs.pollTimer)return; // already waiting for opponent
   g.answered=true; g.times.push(TSEC);
   const q=g.qs[g.qi];
   document.querySelectorAll('.opt').forEach((b,i)=>{b.classList.add('off');if(i===q.answer)b.classList.add('ok');});
@@ -1006,12 +1007,14 @@ function flash(ok,pts){
 }
 
 function nextQ(){
-  clearInterval(g.timer);g.timer=null;g.qi++;
-  if(g.qi>=10){
-    if(vs.active){finishVersusGame();setTimeout(waitForOpponent,800);}
-    else{summary();}
+  clearInterval(g.timer);g.timer=null;
+  g.qi++;
+  if(vs.active){
+    updateVersusScore();
+    if(g.qi>=10){finishVersusGame();}
+    waitForOpponent();
   } else {
-    if(vs.active){updateVersusScore();setTimeout(waitForOpponent,800);}
+    if(g.qi>=10){summary();}
     else{loadQ();}
   }
 }
@@ -1306,6 +1309,7 @@ function updateVersusScore(){
 
 function waitForOpponent(){
   if(!vs.active)return;
+  if(vs.pollTimer)return; // already waiting
   // g.qi already incremented. We answered question (g.qi-1).
   // Wait until opponent's saved q >= g.qi (meaning they also answered question g.qi-1)
   var needQ=g.qi;
