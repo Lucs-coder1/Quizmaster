@@ -944,6 +944,7 @@ function loadQ(){
   clearInterval(g.timer); g.timer=null;
   clearInterval(vs.pollTimer); vs.pollTimer=null;
   g.answered=false; g.secsLeft=TSEC; g.tstart=Date.now();
+  vs.advancing=false; // reset lock
   document.getElementById('q-cat').textContent=g.cat;
   document.getElementById('q-prog').textContent=(g.qi+1)+' / 10';
   document.getElementById('live-score').textContent=g.score.toLocaleString();
@@ -965,6 +966,7 @@ function loadQ(){
 }
 
 function updateBar(){
+  if(g.answered)return; // freeze bar while waiting or after answering
   const elapsed=(Date.now()-g.tstart)/1000;
   const pct=Math.max(0,((TSEC-elapsed)/TSEC)*100);
   const b=document.getElementById('tbar');
@@ -1353,6 +1355,8 @@ function waitForOpponent(){
         }
         // Opponent has answered when their saved q >= needQ
         if(theirQ>=needQ){
+          if(vs.advancing)return; // lock — only advance once
+          vs.advancing=true;
           clearInterval(vs.pollTimer);vs.pollTimer=null;
           var gu2=document.getElementById('btn-give-up');if(gu2)gu2.style.display='';
           if(g.qi>=10){
