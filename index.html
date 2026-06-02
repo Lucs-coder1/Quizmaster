@@ -1310,8 +1310,9 @@ function waitForOpponent(){
   // Wait until opponent's saved q >= g.qi (meaning they also answered question g.qi-1)
   var needQ=g.qi;
   clearInterval(g.timer);g.timer=null;
-  g.answered=true; // prevent timer from firing timeout again
-  document.getElementById('tbar').style.width='100%';
+  g.answered=true;
+  var tbar=document.getElementById('tbar');
+  if(tbar)tbar.style.width='100%';
   document.getElementById('q-text').textContent='⏳ Waiting for opponent...';
   document.querySelectorAll('.opt').forEach(function(b){b.classList.add('off');});
   document.getElementById('btn-give-up').style.display='none';
