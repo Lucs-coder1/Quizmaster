@@ -352,7 +352,7 @@
     <div class="tbar-wrap"><div class="tbar" id="tbar"></div></div>
     <div class="q-text" id="q-text"></div>
     <div class="opts" id="opts"></div>
-    <button class="btn-give-up" onclick="confirmGiveUp()">⚑ Give up</button>
+    <button id="btn-give-up" class="btn-give-up" onclick="confirmGiveUp()">⚑ Give up</button>
   </div>
 
   <!-- SUMMARY -->
@@ -1313,9 +1313,11 @@ function waitForOpponent(){
   g.answered=true;
   var tbar=document.getElementById('tbar');
   if(tbar)tbar.style.width='100%';
-  document.getElementById('q-text').textContent='⏳ Waiting for opponent...';
+  var qtext=document.getElementById('q-text');
+  if(qtext)qtext.textContent='⏳ Waiting for opponent...';
   document.querySelectorAll('.opt').forEach(function(b){b.classList.add('off');});
-  document.getElementById('btn-give-up').style.display='none';
+  var giveup=document.getElementById('btn-give-up');
+  if(giveup)giveup.style.display='none';
   console.log('WAITING: player='+vs.player+' needQ='+needQ+' g.qi='+g.qi);
   vs.pollTimer=setInterval(function(){
     fetch(APPS_SCRIPT_URL+'?action=pollRoom&code='+encodeURIComponent(vs.code))
@@ -1329,7 +1331,7 @@ function waitForOpponent(){
         document.getElementById(theirScoreEl).textContent=Number(theirScore||0).toLocaleString();
         if(data.status==='abandoned'){
           clearInterval(vs.pollTimer);vs.pollTimer=null;
-          document.getElementById('btn-give-up').style.display='';
+          var gu=document.getElementById('btn-give-up');if(gu)gu.style.display='';
           var theirName=vs.player===1?vs.p2name:vs.p1name;
           document.getElementById('vr-crown').textContent='🏆';
           document.getElementById('vr-winner').textContent='YOU WIN!';
@@ -1346,7 +1348,7 @@ function waitForOpponent(){
         // Opponent has answered when their saved q >= needQ
         if(theirQ>=needQ){
           clearInterval(vs.pollTimer);vs.pollTimer=null;
-          document.getElementById('btn-give-up').style.display='';
+          var gu2=document.getElementById('btn-give-up');if(gu2)gu2.style.display='';
           if(g.qi>=10){
             var p1=vs.player===1?g.score:Number(theirScore||0);
             var p2=vs.player===1?Number(theirScore||0):g.score;
