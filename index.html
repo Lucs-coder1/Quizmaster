@@ -921,7 +921,16 @@ const L=['A','B','C','D'];
 const TSEC=10;
 let g={};
 
-const APPS_SCRIPT_URL="https://script.google.com/macros/s/AKfycbw7xc-5qLuCxBsRwaFq2fi97uJgvZUQahQFONqN2UkV5yb_pqlk2LstW8_rsC9eD_Iu/exec";
+const SUPABASE_URL="https://movxlchiqytbtfvbauel.supabase.co";
+const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1vdnhsY2hpcXl0YnRmdmJhdWVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA0Mzk3MTUsImV4cCI6MjA5NjAxNTcxNX0.mYhCGSXmjC892XIciCDBkoKvJ4t_GyAoy0ESx1imkyE";
+
+// Supabase API helper
+async function sbFetch(path, method, body){
+  var opts={method:method||'GET',headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'return=representation'}};
+  if(body)opts.body=JSON.stringify(body);
+  var res=await fetch(SUPABASE_URL+path,opts);
+  return res.json();
+}
 
 function getWeekKey(){
   var now=new Date();
@@ -999,6 +1008,13 @@ function pick(chosen){
   } else {g.streak=0;}
   document.getElementById('live-score').textContent=g.score.toLocaleString();
   document.getElementById('live-streak').textContent=g.streak>0?(g.streak+' \uD83D\uDD25'):'0';
+  // Update versus top bar instantly
+  if(vs.active){
+    var myScoreEl=vs.player===1?'vl-p1score':'vl-p2score';
+    var myQEl=vs.player===1?'vl-p1q':'vl-p2q';
+    document.getElementById(myScoreEl).textContent=g.score.toLocaleString();
+    document.getElementById(myQEl).textContent='Q'+(g.qi+1);
+  }
   flash(ok,pts); setTimeout(nextQ,1300);
 }
 
@@ -1048,45 +1064,23 @@ async function submitAndContinue(){
   if(!name){status.textContent='Please enter your name above.';status.className='submit-status err';return;}
   const btn=document.getElementById('btn-submit-score');
   btn.disabled=true; btn.textContent='Checking...'; status.textContent='';
-
   try{
+    const wk=getWeekKey();
+    // Check for duplicate name this week
+    const check=await sbFetch('/rest/v1/scores?week_key=eq.'+encodeURIComponent(wk)+'&name=eq.'+encodeURIComponent(name)+'&select=name');
+    if(Array.isArray(check)&&check.length>0){
+      status.textContent='This name is taken this week, try another.';
+      status.className='submit-status err';
+      btn.disabled=false; btn.textContent='SAVE MY SCORE 🏆';
+      return;
+    }
+    btn.textContent='Saving...';
     const avg=g.times.length?(g.times.reduce((a,b)=>a+b,0)/g.times.length).toFixed(1):0;
     const acc=Math.round((g.correct/10)*100);
-    const wk=getWeekKey();
-
-    // Check for duplicate names - if check fails, proceed anyway
-    try{
-      const checkRes=await fetch(APPS_SCRIPT_URL+'?weekKey='+encodeURIComponent(wk));
-      const checkJson=await checkRes.json();
-      if(checkJson.success&&checkJson.leaderboard&&checkJson.leaderboard.length){
-        const taken=checkJson.leaderboard.some(function(entry){
-          return entry.name.trim().toLowerCase()===name.toLowerCase();
-        });
-        if(taken){
-          status.textContent='This name is taken this week, try another.';
-          status.className='submit-status err';
-          btn.disabled=false; btn.textContent='SAVE MY SCORE 🏆';
-          return;
-        }
-      }
-    }catch(checkErr){
-      // Check failed - proceed to save anyway
-    }
-
-    btn.textContent='Saving...';
-    const saveUrl=APPS_SCRIPT_URL+'?action=save'+
-      '&name='+encodeURIComponent(name)+
-      '&score='+encodeURIComponent(g.score)+
-      '&category='+encodeURIComponent(g.cat)+
-      '&correct='+encodeURIComponent(g.correct)+
-      '&streak='+encodeURIComponent(g.best)+
-      '&speed='+encodeURIComponent(avg+'s')+
-      '&accuracy='+encodeURIComponent(acc+'%')+
-      '&weekKey='+encodeURIComponent(wk);
-    await new Promise(function(resolve){
-      var img=new Image();
-      img.onload=img.onerror=resolve;
-      img.src=saveUrl;
+    await sbFetch('/rest/v1/scores','POST',{
+      name:name, score:g.score, category:g.cat,
+      correct:String(g.correct), streak:String(g.best),
+      speed:avg+'s', accuracy:acc+'%', week_key:wk
     });
     g.scoreSubmitted=true;
     status.textContent='Score saved! ✅'; status.className='submit-status ok';
@@ -1125,17 +1119,16 @@ async function openLeaderboard(category){
   tbody.innerHTML='<tr><td colspan="4" class="lb-loading">Loading...</td></tr>';
   try{
     const wk=getWeekKey();
-    let url=APPS_SCRIPT_URL+'?weekKey='+encodeURIComponent(wk);
-    if(category)url+='&category='+encodeURIComponent(category);
-    const res=await fetch(url);
-    const json=await res.json();
-    if(!json.success||!json.leaderboard||!json.leaderboard.length){
+    let url='/rest/v1/scores?week_key=eq.'+encodeURIComponent(wk)+'&order=score.desc&limit=50&select=name,score,category';
+    if(category) url+='&category=eq.'+encodeURIComponent(category);
+    const data=await sbFetch(url);
+    if(!Array.isArray(data)||!data.length){
       tbody.innerHTML='<tr><td colspan="4" class="lb-empty">No scores this week yet - be the first!</td></tr>';
       updateScrollHint(); return;
     }
     const rc=function(i){return i===0?'gold':i===1?'silver':i===2?'bronze':'';}
-    tbody.innerHTML=json.leaderboard.map(function(s,i){
-      return '<tr><td><span class="lb-rank '+rc(i)+'">'+s.rank+'</span></td>'+
+    tbody.innerHTML=data.map(function(s,i){
+      return '<tr><td><span class="lb-rank '+rc(i)+'">'+(i+1)+'</span></td>'+
       '<td>'+s.name+'</td>'+
       '<td style="font-size:11px;color:#9ca3c4;">'+s.category+'</td>'+
       '<td class="r">'+Number(s.score).toLocaleString()+'</td></tr>';
@@ -1152,19 +1145,17 @@ async function openHallOfFame(){
   const list=document.getElementById('hof-list');
   list.innerHTML='<div class="hof-empty">Loading champions...</div>';
   try{
-    const url=APPS_SCRIPT_URL+'?hallOfFame=1';
-    const res=await fetch(url);
-    const json=await res.json();
-    if(!json.success||!json.hallOfFame||!json.hallOfFame.length){
+    const data=await sbFetch('/rest/v1/hall_of_fame?order=created_at.desc&select=name,score,category,week_label');
+    if(!Array.isArray(data)||!data.length){
       list.innerHTML='<div class="hof-empty">No champions yet — play this week to be the first!</div>';
       updateScrollHint(); return;
     }
-    list.innerHTML=json.hallOfFame.map(function(entry){
+    list.innerHTML=data.map(function(entry){
       return '<div class="hof-card">'+
         '<div class="hof-crown">👑</div>'+
         '<div class="hof-info">'+
           '<div class="hof-name">'+entry.name+'</div>'+
-          '<div class="hof-week">Week of '+entry.weekLabel+'</div>'+
+          '<div class="hof-week">Week of '+entry.week_label+'</div>'+
           '<div class="hof-cat">'+entry.category+'</div>'+
         '</div>'+
         '<div class="hof-score">'+Number(entry.score).toLocaleString()+'</div>'+
@@ -1183,13 +1174,10 @@ async function loadHomeTopScore(){
   el.textContent='Loading top score...';
   try{
     const wk=getWeekKey();
-    const url=APPS_SCRIPT_URL+'?weekKey='+encodeURIComponent(wk);
-    const res=await fetch(url);
-    const json=await res.json();
+    const data=await sbFetch('/rest/v1/scores?week_key=eq.'+encodeURIComponent(wk)+'&order=score.desc&limit=1&select=name,score');
     el.className='home-top-score';
-    if(json.success&&json.leaderboard&&json.leaderboard.length){
-      const top=json.leaderboard[0];
-      el.textContent='🏆 Top this week: '+Number(top.score).toLocaleString()+' pts by '+top.name;
+    if(Array.isArray(data)&&data.length){
+      el.textContent='🏆 Top this week: '+Number(data[0].score).toLocaleString()+' pts by '+data[0].name;
     } else {
       el.textContent='No scores yet this week — be the first!';
     }
@@ -1241,58 +1229,66 @@ document.getElementById('giveup-modal').addEventListener('click',function(e){if(
 document.getElementById('app-modal').addEventListener('click',function(e){if(e.target===this)closeAppModal();});
 
 // ---- VERSUS MODE ----
-var vs={active:false,code:'',player:0,p1name:'',p2name:'',cat:'',qs:[],pollTimer:null};
+var vs={active:false,code:'',player:0,p1name:'',p2name:'',cat:'',qs:[],pollTimer:null,waitingForOpponent:false};
 
-function createVersusRoom(){
+async function createVersusRoom(){
   var name=document.getElementById('vs-name').value.trim();
   var cat=document.getElementById('vs-cat').value;
   var status=document.getElementById('vs-status');
   if(!name){status.textContent='Please enter your name.';status.className='submit-status err';return;}
   status.textContent='Creating room...';status.className='submit-status';
-  var qs=shuf(QS[cat]).slice(0,10);
-  var qIds=qs.map(function(q){return QS[cat].indexOf(q);}).join(',');
-  fetch(APPS_SCRIPT_URL+'?action=createRoom&name='+encodeURIComponent(name)+'&category='+encodeURIComponent(cat)+'&questions='+encodeURIComponent(qIds))
-    .then(function(r){return r.json();})
-    .then(function(j){
-      if(!j.success){status.textContent='Error: '+(j.error||'unknown');status.className='submit-status err';return;}
-      vs={active:true,code:j.code,player:1,p1name:name,p2name:'',cat:cat,qs:qs,pollTimer:null};
-      document.getElementById('vs-room-code').textContent=j.code;
-      show('s-vs-wait');
-      status.textContent='';
-      vs.pollTimer=setInterval(function(){
-        fetch(APPS_SCRIPT_URL+'?action=pollRoom&code='+vs.code)
-          .then(function(r){return r.json();})
-          .then(function(data){
-            if(data.success&&data.p2name&&data.status==='ready'){
-              clearInterval(vs.pollTimer);vs.pollTimer=null;
-              vs.p2name=data.p2name;
-              startVersusGame();
-            }
-          }).catch(function(){});
-      },2000);
-    }).catch(function(){status.textContent='Could not create room.';status.className='submit-status err';});
+  try{
+    var qs=shuf(QS[cat]).slice(0,10);
+    var qIds=qs.map(function(q){return QS[cat].indexOf(q);}).join(',');
+    var chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    var code='';
+    for(var i=0;i<6;i++)code+=chars[Math.floor(Math.random()*chars.length)];
+    await sbFetch('/rest/v1/versus_rooms','POST',{
+      code:code,category:cat,questions:qIds,
+      p1_name:name,p2_name:'',p1_score:0,p1_q:0,p2_score:0,p2_q:0,status:'waiting'
+    });
+    vs={active:true,code:code,player:1,p1name:name,p2name:'',cat:cat,qs:qs,pollTimer:null,waitingForOpponent:false};
+    document.getElementById('vs-room-code').textContent=code;
+    show('s-vs-wait');
+    status.textContent='';
+    // Poll for player 2 joining
+    vs.pollTimer=setInterval(async function(){
+      try{
+        var data=await sbFetch('/rest/v1/versus_rooms?code=eq.'+code+'&select=p2_name,status');
+        if(Array.isArray(data)&&data.length&&data[0].p2_name&&data[0].status==='ready'){
+          clearInterval(vs.pollTimer);vs.pollTimer=null;
+          vs.p2name=data[0].p2_name;
+          startVersusGame();
+        }
+      }catch(e){}
+    },1500);
+  }catch(e){status.textContent='Could not create room.';status.className='submit-status err';}
 }
 
-function joinVersusRoom(){
+async function joinVersusRoom(){
   var name=document.getElementById('vs-join-name').value.trim();
   var code=document.getElementById('vs-code-input').value.trim().toUpperCase();
   var status=document.getElementById('vs-status');
   if(!name){status.textContent='Please enter your name.';status.className='submit-status err';return;}
   if(code.length!==6){status.textContent='Please enter a 6-character code.';status.className='submit-status err';return;}
   status.textContent='Joining...';status.className='submit-status';
-  fetch(APPS_SCRIPT_URL+'?action=joinRoom&code='+encodeURIComponent(code)+'&name='+encodeURIComponent(name))
-    .then(function(r){return r.json();})
-    .then(function(j){
-      if(!j.success){status.textContent=j.error||'Room not found.';status.className='submit-status err';return;}
-      var qIndexes=j.questions.split(',');
-      var qs=qIndexes.map(function(idx){return QS[j.category][parseInt(idx)];}).filter(Boolean);
-      vs={active:true,code:code,player:2,p1name:j.host,p2name:name,cat:j.category,qs:qs,pollTimer:null};
-      status.textContent='';
-      startVersusGame();
-    }).catch(function(){status.textContent='Could not join room.';status.className='submit-status err';});
+  try{
+    var data=await sbFetch('/rest/v1/versus_rooms?code=eq.'+code+'&select=*');
+    if(!Array.isArray(data)||!data.length){status.textContent='Room not found.';status.className='submit-status err';return;}
+    var room=data[0];
+    if(room.status!=='waiting'){status.textContent='Room already started.';status.className='submit-status err';return;}
+    // Update room with player 2
+    await sbFetch('/rest/v1/versus_rooms?code=eq.'+code,'PATCH',{p2_name:name,status:'ready'});
+    var qIndexes=room.questions.split(',');
+    var qs=qIndexes.map(function(idx){return QS[room.category][parseInt(idx)];}).filter(Boolean);
+    vs={active:true,code:code,player:2,p1name:room.p1_name,p2name:name,cat:room.category,qs:qs,pollTimer:null,waitingForOpponent:false};
+    status.textContent='';
+    startVersusGame();
+  }catch(e){status.textContent='Could not join room.';status.className='submit-status err';}
 }
 
 function startVersusGame(){
+  clearInterval(g.timer);g.timer=null;
   document.getElementById('vs-live').style.display='flex';
   var myName=vs.player===1?vs.p1name:vs.p2name;
   var theirName=vs.player===1?vs.p2name:vs.p1name;
@@ -1303,35 +1299,32 @@ function startVersusGame(){
   document.getElementById('vl-p1q').textContent='Q1';
   document.getElementById('vl-p2q').textContent='Q1';
   g={cat:vs.cat,qs:vs.qs,qi:0,score:0,streak:0,best:0,correct:0,times:[],answered:false,secsLeft:TSEC,timer:null,tstart:null,scoreSubmitted:false};
+  vs.waitingForOpponent=false;
   show('s-q');
-  loadQ();
-  // Start background poll to keep opponent score live
+  setTimeout(function(){loadQ();},300);
+  // Live poll for opponent score
   clearInterval(vs.pollTimer);
-  vs.pollTimer=setInterval(function(){
-    fetch(APPS_SCRIPT_URL+'?action=pollRoom&code='+encodeURIComponent(vs.code))
-      .then(function(r){return r.json();})
-      .then(function(data){
-        if(!data.success)return;
-        var theirScore=vs.player===1?Number(data.p2score||0):Number(data.p1score||0);
-        var theirQ=vs.player===1?parseInt(data.p2q||0):parseInt(data.p1q||0);
-        var theirScoreEl=vs.player===1?'vl-p2score':'vl-p1score';
-        var theirQEl=vs.player===1?'vl-p2q':'vl-p1q';
-        document.getElementById(theirScoreEl).textContent=theirScore.toLocaleString();
-        document.getElementById(theirQEl).textContent='Q'+(Math.min(theirQ,9)+1);
-        vs.lastTheirScore=theirScore;
-        vs.lastP1name=data.p1name||vs.p1name;
-        vs.lastP2name=data.p2name||vs.p2name;
-        // Opponent is done when their q reaches 10
-        if(vs.waitingForOpponent&&theirQ>=10){
-          clearInterval(vs.pollTimer);vs.pollTimer=null;
-          vs.waitingForOpponent=false;
-          showVersusResult(
-            vs.player===1?g.score:theirScore,
-            vs.player===1?theirScore:g.score,
-            vs.p1name,vs.p2name
-          );
-        }
-      }).catch(function(){});
+  vs.pollTimer=setInterval(async function(){
+    try{
+      var data=await sbFetch('/rest/v1/versus_rooms?code=eq.'+encodeURIComponent(vs.code)+'&select=p1_score,p1_q,p2_score,p2_q,p1_name,p2_name');
+      if(!Array.isArray(data)||!data.length)return;
+      var room=data[0];
+      var theirScore=vs.player===1?Number(room.p2_score||0):Number(room.p1_score||0);
+      var theirQ=vs.player===1?parseInt(room.p2_q||0):parseInt(room.p1_q||0);
+      var theirScoreEl=vs.player===1?'vl-p2score':'vl-p1score';
+      var theirQEl=vs.player===1?'vl-p2q':'vl-p1q';
+      document.getElementById(theirScoreEl).textContent=theirScore.toLocaleString();
+      document.getElementById(theirQEl).textContent='Q'+(Math.min(theirQ,9)+1);
+      if(vs.waitingForOpponent&&Number(theirQ)>=10){
+        clearInterval(vs.pollTimer);vs.pollTimer=null;
+        vs.waitingForOpponent=false;
+        showVersusResult(
+          vs.player===1?g.score:theirScore,
+          vs.player===1?theirScore:g.score,
+          vs.p1name,vs.p2name
+        );
+      }
+    }catch(e){}
   },1500);
 }
 
@@ -1341,21 +1334,20 @@ function updateVersusScore(){
   var myQEl=vs.player===1?'vl-p1q':'vl-p2q';
   document.getElementById(myScoreEl).textContent=g.score.toLocaleString();
   document.getElementById(myQEl).textContent='Q'+(g.qi+1);
-  var img=new Image();
-  img.src=APPS_SCRIPT_URL+'?action=updateVersus&code='+encodeURIComponent(vs.code)+'&player='+vs.player+'&score='+g.score+'&q='+g.qi+'&done=0';
+  var patch=vs.player===1?{p1_score:g.score,p1_q:g.qi}:{p2_score:g.score,p2_q:g.qi};
+  sbFetch('/rest/v1/versus_rooms?code=eq.'+encodeURIComponent(vs.code),'PATCH',patch).catch(function(){});
 }
 
 function finishVersusGame(){
   if(!vs.active)return;
-  var img=new Image();
-  img.src=APPS_SCRIPT_URL+'?action=updateVersus&code='+encodeURIComponent(vs.code)+'&player='+vs.player+'&score='+g.score+'&q=10&done=1';
+  var patch=vs.player===1?{p1_score:g.score,p1_q:10}:{p2_score:g.score,p2_q:10};
+  sbFetch('/rest/v1/versus_rooms?code=eq.'+encodeURIComponent(vs.code),'PATCH',patch).catch(function(){});
 }
 
 function showVersusResult(p1score,p2score,p1name,p2name){
   clearInterval(vs.pollTimer);vs.pollTimer=null;
   document.getElementById('vs-live').style.display='none';
   document.getElementById('btn-give-up').style.display='';
-  // Always use local g.score for current player — don't trust sheet timing
   var myScore=g.score;
   var theirScore=vs.player===1?Number(p2score||0):Number(p1score||0);
   var myName=vs.player===1?(p1name||vs.p1name):(p2name||vs.p2name);
