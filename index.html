@@ -1016,18 +1016,12 @@ function nextQ(){
   if(g.qi>=10){
     if(vs.active){
       finishVersusGame();
-      // Poll once more to get opponent's latest score then show result
-      setTimeout(function(){
-        fetch(APPS_SCRIPT_URL+'?action=pollRoom&code='+encodeURIComponent(vs.code))
-          .then(function(r){return r.json();})
-          .then(function(data){
-            var p1s=data.p1score||0;
-            var p2s=data.p2score||0;
-            showVersusResult(p1s,p2s,data.p1name||vs.p1name,data.p2name||vs.p2name);
-          }).catch(function(){
-            showVersusResult(g.score,0,vs.p1name,vs.p2name);
-          });
-      },1500);
+      vs.waitingForOpponent=true;
+      // Show waiting message on quiz screen
+      document.getElementById('q-text').textContent='✅ You finished! Waiting for opponent...';
+      document.getElementById('opts').innerHTML='';
+      document.getElementById('btn-give-up').style.display='none';
+      document.getElementById('tbar').style.width='0%';
     } else {
       summary();
     }
@@ -1311,6 +1305,31 @@ function startVersusGame(){
   g={cat:vs.cat,qs:vs.qs,qi:0,score:0,streak:0,best:0,correct:0,times:[],answered:false,secsLeft:TSEC,timer:null,tstart:null,scoreSubmitted:false};
   show('s-q');
   loadQ();
+  // Start background poll to keep opponent score live
+  clearInterval(vs.pollTimer);
+  vs.pollTimer=setInterval(function(){
+    fetch(APPS_SCRIPT_URL+'?action=pollRoom&code='+encodeURIComponent(vs.code))
+      .then(function(r){return r.json();})
+      .then(function(data){
+        if(!data.success)return;
+        var theirScore=vs.player===1?Number(data.p2score||0):Number(data.p1score||0);
+        var theirQ=vs.player===1?parseInt(data.p2q||0):parseInt(data.p1q||0);
+        var theirScoreEl=vs.player===1?'vl-p2score':'vl-p1score';
+        var theirQEl=vs.player===1?'vl-p2q':'vl-p1q';
+        document.getElementById(theirScoreEl).textContent=theirScore.toLocaleString();
+        document.getElementById(theirQEl).textContent='Q'+(theirQ+1);
+        // If we already finished, check if opponent is now done too
+        if(vs.waitingForOpponent&&(data.status==='done'||data.status==='p1done'||data.status==='p2done')){
+          var myDone=vs.player===1?(data.status==='p1done'||data.status==='done'):(data.status==='p2done'||data.status==='done');
+          var theirDone=vs.player===1?(data.status==='p2done'||data.status==='done'):(data.status==='p1done'||data.status==='done');
+          if(theirDone){
+            clearInterval(vs.pollTimer);vs.pollTimer=null;
+            vs.waitingForOpponent=false;
+            showVersusResult(data.p1score,data.p2score,data.p1name||vs.p1name,data.p2name||vs.p2name);
+          }
+        }
+      }).catch(function(){});
+  },1500);
 }
 
 function updateVersusScore(){
