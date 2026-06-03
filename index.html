@@ -1025,13 +1025,13 @@ function flash(ok,pts){
   w.classList.add('show'); setTimeout(()=>w.classList.remove('show'),1000);
 }
 
-function nextQ(){
+async function nextQ(){
   clearInterval(g.timer);g.timer=null;
   g.qi++;
   if(vs.active) updateVersusScore();
   if(g.qi>=10){
     if(vs.active){
-      finishVersusGame();
+      await finishVersusGame();
       vs.waitingForOpponent=true;
       // Show waiting message on quiz screen
       document.getElementById('q-text').textContent='✅ You finished! Waiting for opponent...';
@@ -1187,7 +1187,7 @@ async function loadHomeTopScore(){
   }
 }
 
-function goHome(){clearInterval(g.timer);clearInterval(vs.pollTimer);vs.active=false;document.getElementById('vs-live').style.display='none';show('s-home');}
+function goHome(){clearInterval(g.timer);clearInterval(vs.pollTimer);if(vs.ws){vs.ws.close();vs.ws=null;}vs.active=false;document.getElementById('vs-live').style.display='none';show('s-home');}
 
 // Scroll hint
 function updateScrollHint(){
@@ -1302,30 +1302,65 @@ function startVersusGame(){
   vs.waitingForOpponent=false;
   show('s-q');
   setTimeout(function(){loadQ();},300);
-  // Live poll for opponent score
-  clearInterval(vs.pollTimer);
-  vs.pollTimer=setInterval(async function(){
+
+  // Use Supabase Realtime for instant updates
+  if(vs.realtimeChannel){vs.realtimeChannel.unsubscribe();}
+  var wsUrl='wss://movxlchiqytbtfvbauel.supabase.co/realtime/v1/websocket?apikey='+SUPABASE_KEY+'&vsn=1.0.0';
+  vs.ws=new WebSocket(wsUrl);
+  vs.ws.onopen=function(){
+    // Join the realtime channel for this room
+    vs.ws.send(JSON.stringify({topic:'realtime:public:versus_rooms:code=eq.'+vs.code,event:'phx_join',payload:{},ref:'1'}));
+  };
+  vs.ws.onmessage=function(e){
     try{
-      var data=await sbFetch('/rest/v1/versus_rooms?code=eq.'+encodeURIComponent(vs.code)+'&select=p1_score,p1_q,p2_score,p2_q,p1_name,p2_name');
-      if(!Array.isArray(data)||!data.length)return;
-      var room=data[0];
-      var theirScore=vs.player===1?Number(room.p2_score||0):Number(room.p1_score||0);
-      var theirQ=vs.player===1?parseInt(room.p2_q||0):parseInt(room.p1_q||0);
-      var theirScoreEl=vs.player===1?'vl-p2score':'vl-p1score';
-      var theirQEl=vs.player===1?'vl-p2q':'vl-p1q';
-      document.getElementById(theirScoreEl).textContent=theirScore.toLocaleString();
-      document.getElementById(theirQEl).textContent='Q'+(Math.min(theirQ,9)+1);
-      if(vs.waitingForOpponent&&Number(theirQ)>=10){
-        clearInterval(vs.pollTimer);vs.pollTimer=null;
-        vs.waitingForOpponent=false;
-        showVersusResult(
-          vs.player===1?g.score:theirScore,
-          vs.player===1?theirScore:g.score,
-          vs.p1name,vs.p2name
-        );
+      var msg=JSON.parse(e.data);
+      if(msg.event==='postgres_changes'||msg.event==='UPDATE'){
+        var record=msg.payload&&(msg.payload.record||msg.payload.new||msg.payload.data);
+        if(!record)return;
+        var theirScore=vs.player===1?Number(record.p2_score||0):Number(record.p1_score||0);
+        var theirQ=vs.player===1?parseInt(record.p2_q||0):parseInt(record.p1_q||0);
+        var theirScoreEl=vs.player===1?'vl-p2score':'vl-p1score';
+        var theirQEl=vs.player===1?'vl-p2q':'vl-p1q';
+        document.getElementById(theirScoreEl).textContent=theirScore.toLocaleString();
+        document.getElementById(theirQEl).textContent='Q'+(Math.min(theirQ,9)+1);
+        if(vs.waitingForOpponent&&parseInt(theirQ)>=10){
+          if(vs.ws){vs.ws.close();vs.ws=null;}
+          vs.waitingForOpponent=false;
+          showVersusResult(
+            vs.player===1?g.score:theirScore,
+            vs.player===1?theirScore:g.score,
+            vs.p1name,vs.p2name
+          );
+        }
       }
-    }catch(e){}
-  },1500);
+    }catch(err){}
+  };
+  vs.ws.onerror=function(){
+    // Fallback to polling if WebSocket fails
+    clearInterval(vs.pollTimer);
+    vs.pollTimer=setInterval(async function(){
+      try{
+        var data=await sbFetch('/rest/v1/versus_rooms?code=eq.'+encodeURIComponent(vs.code)+'&select=p1_score,p1_q,p2_score,p2_q');
+        if(!Array.isArray(data)||!data.length)return;
+        var room=data[0];
+        var theirScore=vs.player===1?Number(room.p2_score||0):Number(room.p1_score||0);
+        var theirQ=vs.player===1?parseInt(room.p2_q||0):parseInt(room.p1_q||0);
+        var theirScoreEl=vs.player===1?'vl-p2score':'vl-p1score';
+        var theirQEl=vs.player===1?'vl-p2q':'vl-p1q';
+        document.getElementById(theirScoreEl).textContent=theirScore.toLocaleString();
+        document.getElementById(theirQEl).textContent='Q'+(Math.min(theirQ,9)+1);
+        if(vs.waitingForOpponent&&parseInt(theirQ)>=10){
+          clearInterval(vs.pollTimer);vs.pollTimer=null;
+          vs.waitingForOpponent=false;
+          showVersusResult(
+            vs.player===1?g.score:theirScore,
+            vs.player===1?theirScore:g.score,
+            vs.p1name,vs.p2name
+          );
+        }
+      }catch(e){}
+    },1500);
+  };
 }
 
 function updateVersusScore(){
@@ -1338,10 +1373,10 @@ function updateVersusScore(){
   sbFetch('/rest/v1/versus_rooms?code=eq.'+encodeURIComponent(vs.code),'PATCH',patch).catch(function(){});
 }
 
-function finishVersusGame(){
+async function finishVersusGame(){
   if(!vs.active)return;
   var patch=vs.player===1?{p1_score:g.score,p1_q:10}:{p2_score:g.score,p2_q:10};
-  sbFetch('/rest/v1/versus_rooms?code=eq.'+encodeURIComponent(vs.code),'PATCH',patch).catch(function(){});
+  try{await sbFetch('/rest/v1/versus_rooms?code=eq.'+encodeURIComponent(vs.code),'PATCH',patch);}catch(e){}
 }
 
 function showVersusResult(p1score,p2score,p1name,p2name){
