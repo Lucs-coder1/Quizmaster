@@ -1317,16 +1317,19 @@ function startVersusGame(){
         var theirScoreEl=vs.player===1?'vl-p2score':'vl-p1score';
         var theirQEl=vs.player===1?'vl-p2q':'vl-p1q';
         document.getElementById(theirScoreEl).textContent=theirScore.toLocaleString();
-        document.getElementById(theirQEl).textContent='Q'+(theirQ+1);
-        // If we already finished, check if opponent is now done too
-        if(vs.waitingForOpponent&&(data.status==='done'||data.status==='p1done'||data.status==='p2done')){
-          var myDone=vs.player===1?(data.status==='p1done'||data.status==='done'):(data.status==='p2done'||data.status==='done');
-          var theirDone=vs.player===1?(data.status==='p2done'||data.status==='done'):(data.status==='p1done'||data.status==='done');
-          if(theirDone){
-            clearInterval(vs.pollTimer);vs.pollTimer=null;
-            vs.waitingForOpponent=false;
-            showVersusResult(data.p1score,data.p2score,data.p1name||vs.p1name,data.p2name||vs.p2name);
-          }
+        document.getElementById(theirQEl).textContent='Q'+(Math.min(theirQ,9)+1);
+        vs.lastTheirScore=theirScore;
+        vs.lastP1name=data.p1name||vs.p1name;
+        vs.lastP2name=data.p2name||vs.p2name;
+        // Opponent is done when their q reaches 10
+        if(vs.waitingForOpponent&&theirQ>=10){
+          clearInterval(vs.pollTimer);vs.pollTimer=null;
+          vs.waitingForOpponent=false;
+          showVersusResult(
+            vs.player===1?g.score:theirScore,
+            vs.player===1?theirScore:g.score,
+            vs.p1name,vs.p2name
+          );
         }
       }).catch(function(){});
   },1500);
@@ -1338,15 +1341,14 @@ function updateVersusScore(){
   var myQEl=vs.player===1?'vl-p1q':'vl-p2q';
   document.getElementById(myScoreEl).textContent=g.score.toLocaleString();
   document.getElementById(myQEl).textContent='Q'+(g.qi+1);
-  // g.qi has been incremented already. Save it so opponent can compare.
-  fetch(APPS_SCRIPT_URL+'?action=updateVersus&code='+encodeURIComponent(vs.code)+'&player='+vs.player+'&score='+g.score+'&q='+g.qi+'&done=0')
-    .catch(function(){});
+  var img=new Image();
+  img.src=APPS_SCRIPT_URL+'?action=updateVersus&code='+encodeURIComponent(vs.code)+'&player='+vs.player+'&score='+g.score+'&q='+g.qi+'&done=0';
 }
 
 function finishVersusGame(){
   if(!vs.active)return;
-  fetch(APPS_SCRIPT_URL+'?action=updateVersus&code='+encodeURIComponent(vs.code)+'&player='+vs.player+'&score='+g.score+'&q=10&done=1')
-    .catch(function(){});
+  var img=new Image();
+  img.src=APPS_SCRIPT_URL+'?action=updateVersus&code='+encodeURIComponent(vs.code)+'&player='+vs.player+'&score='+g.score+'&q=10&done=1';
 }
 
 function showVersusResult(p1score,p2score,p1name,p2name){
