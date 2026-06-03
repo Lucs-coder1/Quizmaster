@@ -1008,12 +1008,15 @@ function pick(chosen){
   } else {g.streak=0;}
   document.getElementById('live-score').textContent=g.score.toLocaleString();
   document.getElementById('live-streak').textContent=g.streak>0?(g.streak+' \uD83D\uDD25'):'0';
-  // Update versus top bar instantly
+  // Update versus top bar instantly for own score
   if(vs.active){
     var myScoreEl=vs.player===1?'vl-p1score':'vl-p2score';
     var myQEl=vs.player===1?'vl-p1q':'vl-p2q';
     document.getElementById(myScoreEl).textContent=g.score.toLocaleString();
     document.getElementById(myQEl).textContent='Q'+(g.qi+1);
+    // Save to Supabase — g.qi is current question (0-indexed), g.score is updated
+    var patch=vs.player===1?{p1_score:g.score,p1_q:g.qi+1}:{p2_score:g.score,p2_q:g.qi+1};
+    sbFetch('/rest/v1/versus_rooms?code=eq.'+encodeURIComponent(vs.code),'PATCH',patch).catch(function(){});
   }
   flash(ok,pts); setTimeout(nextQ,1300);
 }
@@ -1028,7 +1031,6 @@ function flash(ok,pts){
 async function nextQ(){
   clearInterval(g.timer);g.timer=null;
   g.qi++;
-  if(vs.active) updateVersusScore();
   if(g.qi>=10){
     if(vs.active){
       await finishVersusGame();
@@ -1336,6 +1338,7 @@ function startVersusGame(){
       if(msg.event==='postgres_changes'&&msg.payload&&msg.payload.data){
         var record=msg.payload.data.record;
         if(!record)return;
+        // Only update OPPONENT's score — our own score is already shown locally
         var theirScore=vs.player===1?Number(record.p2_score||0):Number(record.p1_score||0);
         var theirQ=vs.player===1?parseInt(record.p2_q||0):parseInt(record.p1_q||0);
         var theirScoreEl=vs.player===1?'vl-p2score':'vl-p1score';
@@ -1368,6 +1371,7 @@ function startVersusGame(){
           var theirQ=vs.player===1?parseInt(room.p2_q||0):parseInt(room.p1_q||0);
           var theirScoreEl=vs.player===1?'vl-p2score':'vl-p1score';
           var theirQEl=vs.player===1?'vl-p2q':'vl-p1q';
+          // Only update opponent's display — own score is shown locally
           document.getElementById(theirScoreEl).textContent=theirScore.toLocaleString();
           document.getElementById(theirQEl).textContent='Q'+(Math.min(theirQ,9)+1);
           if(vs.waitingForOpponent&&parseInt(theirQ)>=10){
@@ -1383,16 +1387,6 @@ function startVersusGame(){
       },1500);
     }
   };
-}
-
-function updateVersusScore(){
-  if(!vs.active)return;
-  var myScoreEl=vs.player===1?'vl-p1score':'vl-p2score';
-  var myQEl=vs.player===1?'vl-p1q':'vl-p2q';
-  document.getElementById(myScoreEl).textContent=g.score.toLocaleString();
-  document.getElementById(myQEl).textContent='Q'+(g.qi+1);
-  var patch=vs.player===1?{p1_score:g.score,p1_q:g.qi}:{p2_score:g.score,p2_q:g.qi};
-  sbFetch('/rest/v1/versus_rooms?code=eq.'+encodeURIComponent(vs.code),'PATCH',patch).catch(function(){});
 }
 
 async function finishVersusGame(){
