@@ -1477,50 +1477,6 @@ async function loadHomeTopScore(){
   }
 }
 
-// ---- LIVE FEED ----
-var feedItems=[];
-var feedIdx=0;
-var feedTimer=null;
-async function loadLiveFeed(){
-  try{
-    var data=await sbFetch('/rest/v1/scores?order=created_at.desc&limit=8&select=name,score,category');
-    if(!Array.isArray(data)||!data.length)return;
-    feedItems=data.map(function(s){
-      return '<span>'+s.name+'</span> scored '+Number(s.score).toLocaleString()+' on '+s.category;
-    });
-    startFeedTicker();
-  }catch(e){}
-}
-function startFeedTicker(){
-  if(feedItems.length===0)return;
-  var inner=document.getElementById('live-feed-inner');
-  if(!inner)return;
-  inner.innerHTML='';
-  feedItems.forEach(function(txt){
-    var div=document.createElement('div');
-    div.className='live-feed-item';
-    div.innerHTML=txt;
-    inner.appendChild(div);
-  });
-  feedIdx=0;
-  if(feedTimer)clearInterval(feedTimer);
-  feedTimer=setInterval(function(){
-    feedIdx=(feedIdx+1)%feedItems.length;
-    inner.style.transform='translateY(-'+feedIdx*28+'px)';
-  },3000);
-}
-
-function goHome(){
-  clearInterval(g.timer);
-  if(typeof vs!=='undefined'){
-    clearInterval(vs.pollTimer);
-    if(vs.ws){vs.ws.close();vs.ws=null;}
-    vs.active=false;
-    document.getElementById('vs-live').style.display='none';
-  }
-  show('s-home');
-}
-
 // Scroll hint
 function updateScrollHint(){
   var hint=document.getElementById('scroll-hint');
