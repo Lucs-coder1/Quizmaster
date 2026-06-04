@@ -11,26 +11,58 @@
   html,body{height:100%;}
   body{font-family:'Nunito',sans-serif;background:#0d0d1a;color:#e8eaf6;display:flex;justify-content:center;}
   #app{width:100%;max-width:480px;min-height:100vh;padding:0 16px;}
-
   .scr{display:none;flex-direction:column;padding:20px 0 40px;}
   .scr.on{display:flex;}
 
   /* HOME */
   .big-title{font-family:'Rajdhani',sans-serif;font-size:46px;font-weight:700;color:#fff;text-align:center;letter-spacing:2px;margin:40px 0 4px;}
   .big-sub{font-size:12px;color:#9ca3c4;text-align:center;letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;}
-  .home-top-score{font-size:12px;color:#00d48a;text-align:center;font-weight:700;margin-bottom:22px;min-height:20px;letter-spacing:.5px;background:#00d48a11;border:1px solid #00d48a33;border-radius:20px;padding:7px 14px;}
+  .home-top-score{font-size:12px;color:#00d48a;text-align:center;font-weight:700;margin-bottom:10px;min-height:20px;letter-spacing:.5px;background:#00d48a11;border:1px solid #00d48a33;border-radius:20px;padding:7px 14px;}
   .home-top-score.loading{color:#9ca3c4;border-color:#2a2a42;background:transparent;animation:pulse .8s ease-in-out infinite alternate;}
   @keyframes pulse{from{opacity:.4;}to{opacity:1;}}
+
+  /* LIVE FEED */
+  .live-feed{width:100%;height:28px;overflow:hidden;margin-bottom:14px;position:relative;}
+  .live-feed-inner{display:flex;flex-direction:column;transition:transform .5s ease;}
+  .live-feed-item{font-size:11px;color:#9ca3c4;text-align:center;padding:4px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;height:28px;display:flex;align-items:center;justify-content:center;}
+  .live-feed-item span{color:#00d48a;font-weight:700;}
+
+  /* SUDDEN DEATH TOGGLE */
+  .sd-toggle-row{display:flex;align-items:center;justify-content:space-between;background:#161628;border:1.5px solid #ff5c5c44;border-radius:13px;padding:12px 16px;margin-bottom:12px;cursor:pointer;}
+  .sd-toggle-row.on{border-color:#ff5c5c;background:#200008;}
+  .sd-toggle-label{font-size:13px;font-weight:700;color:#ff5c5c88;}
+  .sd-toggle-row.on .sd-toggle-label{color:#ff5c5c;}
+  .sd-toggle-sub{font-size:10px;color:#9ca3c4;margin-top:2px;}
+  .sd-switch{width:40px;height:22px;background:#2a2a42;border-radius:11px;position:relative;transition:background .2s;flex-shrink:0;}
+  .sd-switch::after{content:'';position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;top:3px;left:3px;transition:transform .2s;}
+  .sd-toggle-row.on .sd-switch{background:#ff5c5c;}
+  .sd-toggle-row.on .sd-switch::after{transform:translateX(18px);}
+
+  /* DAILY CHALLENGE TOGGLE */
+  .dc-toggle-row{display:flex;align-items:center;justify-content:space-between;background:#161628;border:1.5px solid #ffaa3344;border-radius:13px;padding:12px 16px;margin-bottom:12px;cursor:pointer;}
+  .dc-toggle-row.on{border-color:#ffaa33;background:#1a1000;}
+  .dc-toggle-label{font-size:13px;font-weight:700;color:#ffaa3388;}
+  .dc-toggle-row.on .dc-toggle-label{color:#ffaa33;}
+  .dc-toggle-sub{font-size:10px;color:#9ca3c4;margin-top:2px;}
+  .dc-switch{width:40px;height:22px;background:#2a2a42;border-radius:11px;position:relative;transition:background .2s;flex-shrink:0;}
+  .dc-switch::after{content:'';position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;top:3px;left:3px;transition:transform .2s;}
+  .dc-toggle-row.on .dc-switch{background:#ffaa33;}
+  .dc-toggle-row.on .dc-switch::after{transform:translateX(18px);}
+
   .cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;}
-  .cat-btn{background:#161628;border:1.5px solid #2a2a42;border-radius:16px;padding:20px 12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;transition:transform .12s,background .12s;}
+  .cat-btn{background:#161628;border:1.5px solid #2a2a42;border-radius:16px;padding:14px 12px 10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;transition:transform .12s,background .12s;}
   .cat-btn:hover{background:#1d1d32;}.cat-btn:active{transform:scale(.96);}
-  .cat-icon{font-size:28px;}
+  .cat-icon{font-size:26px;}
   .cat-name{font-size:13px;font-weight:700;color:#d0d4f0;text-align:center;line-height:1.3;}
+  .cat-best{font-size:10px;color:#9ca3c4;font-weight:700;letter-spacing:.5px;}
   .cat-btn.fc{border-color:#00d48a;}.cat-btn.pt{border-color:#ff5c7a;}
   .cat-btn.al{border-color:#ffaa33;}.cat-btn.ce{border-color:#c473ff;}
   .cat-btn.at{border-color:#ffe033;}.cat-btn.gm{border-color:#33d4ff;}
   .cat-btn.sc{border-color:#ff70c0;}.span2{grid-column:span 2;}
   .home-btns{display:flex;flex-direction:column;gap:10px;margin-top:16px;}
+
+  /* SUDDEN DEATH BADGE */
+  .sd-badge{display:inline-block;background:#ff5c5c;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;letter-spacing:1px;text-transform:uppercase;margin-left:8px;}
 
   /* QUIZ */
   .q-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
@@ -57,6 +89,12 @@
   .btn-give-up{width:100%;margin-top:20px;padding:12px;background:transparent;border:1.5px solid #ff5c5c44;border-radius:13px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;color:#ff5c5c88;cursor:pointer;transition:background .12s,color .12s,border-color .12s;}
   .btn-give-up:hover{background:#ff5c5c12;color:#ff5c5c;border-color:#ff5c5c;}
 
+  /* SUDDEN DEATH GAME OVER */
+  .sd-gameover{background:#200008;border:2px solid #ff5c5c;border-radius:16px;padding:20px;text-align:center;margin-bottom:20px;}
+  .sd-gameover-icon{font-size:48px;margin-bottom:8px;}
+  .sd-gameover-txt{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;color:#ff5c5c;}
+  .sd-gameover-sub{font-size:13px;color:#9ca3c4;margin-top:6px;}
+
   /* FEEDBACK FLASH */
   .fb-wrap{position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:99;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s;}
   .fb-wrap.show{opacity:1;}
@@ -80,7 +118,13 @@
   .rating-sub{font-size:13px;color:#b0b8d8;margin-top:5px;}
   .sum-btns{display:flex;flex-direction:column;gap:10px;}
 
-  /* NAME SCREEN — more prominent */
+  /* CHALLENGE BANNER on summary */
+  .challenge-banner{width:100%;background:#161628;border:1.5px solid #c473ff;border-radius:13px;padding:14px 16px;margin-bottom:16px;text-align:center;}
+  .challenge-banner-lbl{font-size:11px;color:#c473ff;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;}
+  .challenge-link{font-size:12px;color:#9ca3c4;word-break:break-all;margin-bottom:10px;}
+  .btn-copy{background:#c473ff22;border:1px solid #c473ff;color:#c473ff;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;padding:8px 16px;border-radius:10px;cursor:pointer;}
+
+  /* NAME SCREEN */
   #s-name{padding-top:40px;align-items:center;}
   .name-hero{width:100%;background:linear-gradient(135deg,#001a0a,#002a14);border:1.5px solid #00d48a44;border-radius:20px;padding:28px 20px 24px;text-align:center;margin-bottom:24px;}
   .name-trophy{font-size:40px;margin-bottom:10px;}
@@ -158,6 +202,14 @@
   .vs-score-card{background:#0d0d1a;border-radius:12px;padding:14px;text-align:center;}
   .vs-score-name{font-size:11px;color:#9ca3c4;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
   .vs-score-val{font-family:'Rajdhani',sans-serif;font-size:32px;font-weight:700;}
+
+  /* SHAREABLE CARD */
+  .share-card-wrap{width:100%;margin-bottom:16px;}
+  canvas#share-canvas{width:100%;border-radius:16px;display:block;}
+  .btn-share{width:100%;padding:14px;background:#c473ff22;border:1.5px solid #c473ff;border-radius:13px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;color:#c473ff;cursor:pointer;margin-bottom:10px;}
+  .btn-share:hover{background:#c473ff33;}
+
+  /* SHARED BUTTONS */
   .btn-primary{width:100%;padding:16px;background:#00d48a;border:none;border-radius:13px;font-family:'Rajdhani',sans-serif;font-size:21px;font-weight:700;letter-spacing:1px;color:#001a0a;cursor:pointer;margin-bottom:12px;transition:opacity .12s,transform .12s;}
   .btn-primary:hover{opacity:.9;}.btn-primary:active{transform:scale(.98);}
   .btn-primary:disabled{opacity:.5;cursor:default;transform:none;}
@@ -189,17 +241,27 @@
   <div id="s-home" class="scr on">
     <div class="big-title">QUIZMASTER</div>
     <div class="big-sub">Pick a category</div>
-    <div class="home-top-score" id="home-top-score">Loading top score...</div>
+    <div class="home-top-score loading" id="home-top-score">Loading top score...</div>
+    <div class="live-feed" id="live-feed"><div class="live-feed-inner" id="live-feed-inner"><div class="live-feed-item">Loading recent scores...</div></div></div>
+    <div class="sd-toggle-row" id="sd-toggle" onclick="toggleSuddenDeath()">
+      <div><div class="sd-toggle-label">⚡ Sudden Death</div><div class="sd-toggle-sub">One wrong answer ends the game</div></div>
+      <div class="sd-switch"></div>
+    </div>
+    <div class="dc-toggle-row" id="dc-toggle" onclick="toggleDailyChallenge()">
+      <div><div class="dc-toggle-label">🔥 Daily Challenge</div><div class="dc-toggle-sub" id="dc-sub">Same questions for everyone today · One attempt</div></div>
+      <div class="dc-switch"></div>
+    </div>
     <div class="cat-grid">
-      <button class="cat-btn fc" onclick="startGame('Football')"><span class="cat-icon">⚽</span><span class="cat-name">Football</span></button>
-      <button class="cat-btn pt" onclick="startGame('Portugal')"><span class="cat-icon">🇵🇹</span><span class="cat-name">Portugal</span></button>
-      <button class="cat-btn al" onclick="startGame('Algarve')"><span class="cat-icon">🏖</span><span class="cat-name">Algarve</span></button>
-      <button class="cat-btn ce" onclick="startGame('Celebrities and TikTok')"><span class="cat-icon">🎵</span><span class="cat-name">Celebs &amp; TikTok</span></button>
-      <button class="cat-btn at" onclick="startGame('Famous Athletes')"><span class="cat-icon">🏆</span><span class="cat-name">Famous Athletes</span></button>
-      <button class="cat-btn gm" onclick="startGame('Gaming')"><span class="cat-icon">🎮</span><span class="cat-name">Gaming</span></button>
-      <button class="cat-btn sc span2" onclick="startGame('Space and Science')"><span class="cat-icon">🚀</span><span class="cat-name">Space &amp; Science</span></button>
+      <button class="cat-btn fc" onclick="startGame('Football')"><span class="cat-icon">⚽</span><span class="cat-name">Football</span><span class="cat-best" id="best-Football">—</span></button>
+      <button class="cat-btn pt" onclick="startGame('Portugal')"><span class="cat-icon">🇵🇹</span><span class="cat-name">Portugal</span><span class="cat-best" id="best-Portugal">—</span></button>
+      <button class="cat-btn al" onclick="startGame('Algarve')"><span class="cat-icon">🏖</span><span class="cat-name">Algarve</span><span class="cat-best" id="best-Algarve">—</span></button>
+      <button class="cat-btn ce" onclick="startGame('Celebrities and TikTok')"><span class="cat-icon">🎵</span><span class="cat-name">Celebs &amp; TikTok</span><span class="cat-best" id="best-Celebrities and TikTok">—</span></button>
+      <button class="cat-btn at" onclick="startGame('Famous Athletes')"><span class="cat-icon">🏆</span><span class="cat-name">Famous Athletes</span><span class="cat-best" id="best-Famous Athletes">—</span></button>
+      <button class="cat-btn gm" onclick="startGame('Gaming')"><span class="cat-icon">🎮</span><span class="cat-name">Gaming</span><span class="cat-best" id="best-Gaming">—</span></button>
+      <button class="cat-btn sc span2" onclick="startGame('Space and Science')"><span class="cat-icon">🚀</span><span class="cat-name">Space &amp; Science</span><span class="cat-best" id="best-Space and Science">—</span></button>
     </div>
     <div class="home-btns">
+      <button class="btn-ghost" onclick="startMixedMarathon()">🌍 Mixed Marathon</button>
       <button class="btn-ghost" onclick="openLeaderboard(null)">🎆 Weekly Leaderboard</button>
       <button class="btn-ghost" onclick="openHallOfFame()">👑 Hall of Fame</button>
       <button class="btn-ghost" onclick="show('s-vs-setup')">⚔️ Versus Mode</button>
@@ -207,7 +269,7 @@
     </div>
   </div>
 
-  <!-- NAME ENTRY — redesigned for clarity -->
+  <!-- NAME ENTRY -->
   <div id="s-name" class="scr">
     <div class="name-hero">
       <div class="name-trophy">🏅</div>
@@ -240,6 +302,7 @@
         <option value="Famous Athletes">Famous Athletes</option>
         <option value="Gaming">Gaming</option>
         <option value="Space and Science">Space &amp; Science</option>
+        <option value="Mixed Marathon">Mixed Marathon</option>
       </select>
     </div>
     <div class="lb-back-row" style="margin-bottom:12px;">
@@ -255,13 +318,9 @@
 
   <!-- HALL OF FAME -->
   <div id="s-hof" class="scr">
-    <div class="hof-header">
-      <div class="hof-title">👑 HALL OF FAME</div>
-    </div>
+    <div class="hof-header"><div class="hof-title">👑 HALL OF FAME</div></div>
     <span class="hof-sub">Weekly Champions — Past Winners</span>
-    <div class="hof-list" id="hof-list">
-      <div class="hof-empty">Loading champions...</div>
-    </div>
+    <div class="hof-list" id="hof-list"><div class="hof-empty">Loading champions...</div></div>
     <button class="btn-ghost" onclick="goHome()">← Back</button>
   </div>
 
@@ -272,13 +331,9 @@
     <div class="vs-setup">
       <input class="name-input" id="vs-name" type="text" maxlength="20" placeholder="Your name..." autocomplete="off" style="margin-bottom:0;" />
       <select class="lb-cat-sel" id="vs-cat" style="width:100%;padding:14px;font-size:15px;border-radius:13px;background:#161628;border:1.5px solid #2a2a42;color:#fff;outline:none;">
-        <option value="Football">Football</option>
-        <option value="Portugal">Portugal</option>
-        <option value="Algarve">Algarve</option>
-        <option value="Celebrities and TikTok">Celebs &amp; TikTok</option>
-        <option value="Famous Athletes">Famous Athletes</option>
-        <option value="Gaming">Gaming</option>
-        <option value="Space and Science">Space &amp; Science</option>
+        <option value="Football">Football</option><option value="Portugal">Portugal</option><option value="Algarve">Algarve</option>
+        <option value="Celebrities and TikTok">Celebs &amp; TikTok</option><option value="Famous Athletes">Famous Athletes</option>
+        <option value="Gaming">Gaming</option><option value="Space and Science">Space &amp; Science</option>
       </select>
       <button class="btn-primary" style="background:#c473ff;color:#0d0d1a;margin-bottom:0;" onclick="createVersusRoom()">CREATE ROOM ⚔️</button>
       <div class="vs-or">— or join a room —</div>
@@ -290,7 +345,7 @@
     </div>
   </div>
 
-  <!-- VERSUS WAITING (HOST) -->
+  <!-- VERSUS WAITING -->
   <div id="s-vs-wait" class="scr">
     <div class="vs-waiting">
       <div class="vs-waiting-icon">⏳</div>
@@ -313,33 +368,19 @@
       <div class="vs-winner-sub" id="vr-sub"></div>
     </div>
     <div class="vs-scores">
-      <div class="vs-score-card">
-        <div class="vs-score-name" id="vr-p1name">Player 1</div>
-        <div class="vs-score-val" id="vr-p1score" style="color:#00d48a;">0</div>
-      </div>
-      <div class="vs-score-card">
-        <div class="vs-score-name" id="vr-p2name">Player 2</div>
-        <div class="vs-score-val" id="vr-p2score" style="color:#c473ff;">0</div>
-      </div>
+      <div class="vs-score-card"><div class="vs-score-name" id="vr-p1name">Player 1</div><div class="vs-score-val" id="vr-p1score" style="color:#00d48a;">0</div></div>
+      <div class="vs-score-card"><div class="vs-score-name" id="vr-p2name">Player 2</div><div class="vs-score-val" id="vr-p2score" style="color:#c473ff;">0</div></div>
     </div>
     <button class="btn-primary" onclick="goHome()">Back to Home</button>
     <button class="btn-ghost" onclick="show('s-vs-setup')">Play Again ⚔️</button>
   </div>
 
-
+  <!-- QUIZ -->
   <div id="s-q" class="scr">
     <div class="vs-live" id="vs-live" style="display:none;">
-      <div class="vs-player me">
-        <div class="vs-player-name" id="vl-p1name">You</div>
-        <div class="vs-player-score" id="vl-p1score">0</div>
-        <div class="vs-player-q" id="vl-p1q">Q0</div>
-      </div>
+      <div class="vs-player me"><div class="vs-player-name" id="vl-p1name">You</div><div class="vs-player-score" id="vl-p1score">0</div><div class="vs-player-q" id="vl-p1q">Q0</div></div>
       <div style="display:flex;align-items:center;font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:#9ca3c4;">VS</div>
-      <div class="vs-player them">
-        <div class="vs-player-name" id="vl-p2name">Opponent</div>
-        <div class="vs-player-score" id="vl-p2score">0</div>
-        <div class="vs-player-q" id="vl-p2q">Q0</div>
-      </div>
+      <div class="vs-player them"><div class="vs-player-name" id="vl-p2name">Opponent</div><div class="vs-player-score" id="vl-p2score">0</div><div class="vs-player-q" id="vl-p2q">Q0</div></div>
     </div>
     <div class="q-top">
       <span class="cat-pill" id="q-cat">Football</span>
@@ -360,6 +401,11 @@
     <div class="sum-title">GAME OVER</div>
     <div class="sum-cat" id="sum-cat"></div>
     <div class="score-box"><div class="score-lbl">Final Score</div><div class="score-num" id="fin-score">0</div></div>
+    <div id="sd-gameover-box" style="display:none;" class="sd-gameover">
+      <div class="sd-gameover-icon">💀</div>
+      <div class="sd-gameover-txt">SUDDEN DEATH</div>
+      <div class="sd-gameover-sub" id="sd-gameover-sub">You answered wrong on question 5</div>
+    </div>
     <div class="sgrid">
       <div class="scard"><div class="scard-lbl">Correct</div><div class="scard-val" id="st-correct">0/10</div><div class="scard-sub">questions</div></div>
       <div class="scard"><div class="scard-lbl">Best streak</div><div class="scard-val" id="st-streak">0</div><div class="scard-sub">in a row</div></div>
@@ -370,6 +416,15 @@
       <div class="rating-stars" id="r-stars">⭐⭐⭐</div>
       <div class="rating-txt" id="r-txt">Nice work!</div>
       <div class="rating-sub" id="r-sub">Keep playing to improve</div>
+    </div>
+    <!-- Shareable card -->
+    <div class="share-card-wrap"><canvas id="share-canvas"></canvas></div>
+    <button class="btn-share" onclick="downloadShareCard()">📸 Save Result Image</button>
+    <!-- Challenge friend -->
+    <div class="challenge-banner" id="challenge-banner">
+      <div class="challenge-banner-lbl">⚔️ Challenge a Friend</div>
+      <div class="challenge-link" id="challenge-link">generating link...</div>
+      <button class="btn-copy" onclick="copyChallenge()">📋 Copy Link</button>
     </div>
     <div class="sum-btns">
       <button class="btn-primary" id="btn-again">PLAY AGAIN</button>
@@ -390,34 +445,29 @@
   </div>
 </div>
 
+<!-- Daily Challenge Already Played Modal -->
+<div class="modal-overlay" id="dc-done-modal">
+  <div class="modal-box">
+    <div class="modal-title">🔥 Already Played Today!</div>
+    <p style="font-size:14px;color:#b0b8d8;text-align:center;margin-bottom:8px;line-height:1.6;">You've already done today's Daily Challenge.</p>
+    <p style="font-size:13px;color:#ffaa33;text-align:center;margin-bottom:24px;font-weight:700;" id="dc-done-score"></p>
+    <button class="btn-ghost" onclick="document.getElementById('dc-done-modal').classList.remove('show')">OK</button>
+  </div>
+</div>
+
 <!-- App Install Modal -->
 <div class="modal-overlay" id="app-modal">
   <div class="modal-box">
     <div class="modal-title">📱 Turn This Into An App</div>
-    <div class="modal-section">
-      <div class="modal-os">🍎 iPhone</div>
-      <div class="modal-text">Open this site in Safari → tap the <strong>Share</strong> button → tap <strong>Add to Home Screen</strong>.</div>
-    </div>
-    <div class="modal-section">
-      <div class="modal-os">🤖 Android</div>
-      <div class="modal-text">Open this site in Google Chrome → tap the <strong>three dots</strong> (top right) → tap <strong>Add to Home Screen</strong>.</div>
-    </div>
-    <div class="modal-section">
-      <div class="modal-os">💻 PC (Windows)</div>
-      <div class="modal-text">Resize your browser so you can see part of your desktop → look at the address bar at the top → find the small padlock or icon to the left of the URL → click and hold that icon, then drag it directly onto your desktop.</div>
-    </div>
-    <div class="modal-section">
-      <div class="modal-os">🍎 Mac</div>
-      <div class="modal-text">Open Safari and go to this site → click <strong>File</strong> in the top menu bar and select <strong>Add to Dock</strong> (or click the Share button in the toolbar and select <strong>Add to Dock</strong>) → choose a custom name or icon, then click <strong>Add</strong>. The web app will instantly appear in your Dock and Applications folder.</div>
-    </div>
+    <div class="modal-section"><div class="modal-os">🍎 iPhone</div><div class="modal-text">Open this site in Safari → tap the <strong>Share</strong> button → tap <strong>Add to Home Screen</strong>.</div></div>
+    <div class="modal-section"><div class="modal-os">🤖 Android</div><div class="modal-text">Open this site in Google Chrome → tap the <strong>three dots</strong> (top right) → tap <strong>Add to Home Screen</strong>.</div></div>
+    <div class="modal-section"><div class="modal-os">💻 PC (Windows)</div><div class="modal-text">Resize your browser so you can see part of your desktop → look at the address bar at the top → find the small padlock or icon to the left of the URL → click and hold that icon, then drag it directly onto your desktop.</div></div>
+    <div class="modal-section"><div class="modal-os">🍎 Mac</div><div class="modal-text">Open Safari and go to this site → click <strong>File</strong> in the top menu bar and select <strong>Add to Dock</strong> → choose a custom name or icon, then click <strong>Add</strong>.</div></div>
     <button class="btn-ghost modal-close" onclick="closeAppModal()">Got it ✓</button>
   </div>
 </div>
 
-<div class="scroll-hint" id="scroll-hint">
-  <div class="scroll-hint-text">Scroll for more</div>
-  <div class="scroll-hint-arrow"></div>
-</div>
+<div class="scroll-hint" id="scroll-hint"><div class="scroll-hint-text">Scroll for more</div><div class="scroll-hint-arrow"></div></div>
 <div class="fb-wrap" id="fb"><div class="fb-pill" id="fb-pill">+200</div></div>
 
 <script>
@@ -616,19 +666,14 @@ const QS={
 {question:"Which Algarve town is famous for its annual jazz festival?",options:["Faro","Lagos","Loule","Portimao"],answer:1},
 {question:"What is the name of the natural park on the western Algarve coast?",options:["Ria Formosa","Costa Vicentina","Serra de Monchique","Vale do Guadiana"],answer:1},
 {question:"Which Algarve city has a famous Roman fish-salting factory ruins?",options:["Silves","Tavira","Faro","Lagos"],answer:3},
-{question:"What is the traditional name for the Algarve fishing boats with painted eyes on the bow?",options:["Caravela","Caique","Barco do Xaval","Bateira"],answer:1},
-{question:"Which Algarve beach is famous for its sea cave accessible only by swimming?",options:["Praia de Odeceixe","Praia do Camilo","Praia da Marinha","Praia do Carvalho"],answer:3},
 {question:"What is the name of the Algarve's famous sweet liqueur made from medronho berries?",options:["Ginjinha","Aguardente","Medronho","Amendoa amarga"],answer:2},
 {question:"Which town in the western Algarve is known for its stunning waterfall?",options:["Monchique","Alte","Silves","Alcoutim"],answer:1},
 {question:"What is the name of the Algarve festival celebrating seafood held in Portimao?",options:["Festa da Sardinha","Festival do Marisco","Festa do Mar","Festival do Atum"],answer:1},
 {question:"Which Algarve beach is famous for its vast sand dunes?",options:["Meia Praia","Praia da Ilha de Tavira","Praia de Cacela Velha","Praia de Faro"],answer:1},
-{question:"What is the approximate population of Faro city?",options:["20,000","40,000","60,000","100,000"],answer:2},
 {question:"Which Algarve town is closest to the village of Cacela Velha?",options:["Tavira","Vila Real de Santo Antonio","Olhao","Faro"],answer:0},
 {question:"What type of cuisine is the Algarve most famous for?",options:["Meat dishes","Pastries","Seafood","Rice dishes"],answer:2},
 {question:"Which Algarve beach is known as the most beautiful in Europe by many travel guides?",options:["Praia da Rocha","Praia da Marinha","Praia do Camilo","Meia Praia"],answer:1},
-{question:"What is the name of the Algarve's famous almond blossom season?",options:["Primavera","Amendoeira em Flor","Flor de Primavera","Festa da Amendoa"],answer:1},
 {question:"Which Algarve town hosts a famous international motorbike rally each year?",options:["Lagos","Faro","Portimao","Albufeira"],answer:2},
-{question:"What is the name of the Algarve's most famous golf resort area?",options:["Vilamoura","Vale do Lobo","Quinta do Lago","Golden Triangle"],answer:3},
 {question:"Which river runs through the city of Portimao?",options:["Guadiana","Arade","Gilao","Odelouca"],answer:1},
 {question:"What is the name of the ancient Moorish city that preceded modern Silves?",options:["Xelb","Ossoba","Balsa","Lacobriga"],answer:0},
 {question:"Which Algarve town is famous for its lacemaking tradition?",options:["Olhao","Tavira","Lagos","Azinhal"],answer:1}
@@ -694,14 +739,11 @@ const QS={
 {question:"Which YouTuber is famous for the series Sidemen Charity Matches?",options:["KSI","W2S","Miniminter","Zerkaa"],answer:0},
 {question:"Which TikTok trend involved people freezing like mannequins in public?",options:["NPC trend","Mannequin Challenge","Statue trend","Freeze trend"],answer:1},
 {question:"Which artist released the album Short n Sweet in 2024?",options:["Olivia Rodrigo","Ariana Grande","Sabrina Carpenter","Dua Lipa"],answer:2},
-{question:"Which streamer is famous for the show First We Feast Hot Ones?",options:["Sean Evans","MrBeast","Logan Paul","Mark Rober"],answer:0},
 {question:"Which celebrity couple is known as Hailey and Justin?",options:["Hailey Bieber and Justin Timberlake","Hailey Baldwin and Justin Bieber","Hailey Steinfeld and Justin Bieber","Hailey Baldwin and Justin Timberlake"],answer:1},
 {question:"Which artist went viral with the song Rich Flex?",options:["Drake and Lil Baby","Drake and 21 Savage","Future and Drake","Lil Durk and Drake"],answer:1},
-{question:"Which YouTuber is famous for the channel Dude Perfect?",options:["5 friends doing trick shots","MrBeast and friends","Mark Rober","Ryan Trahan"],answer:0},
 {question:"Which social media platform introduced Reels to compete with TikTok?",options:["Twitter","Snapchat","Instagram","YouTube"],answer:2},
 {question:"Which artist is known for the hit song Die With A Smile with Bruno Mars?",options:["Dua Lipa","Lady Gaga","Ariana Grande","Selena Gomez"],answer:1},
 {question:"Which streamer became famous for react content and GTA V roleplay on NoPixel?",options:["xQc","Adin Ross","Pokimane","Sykkuno"],answer:0},
-{question:"Which viral TikTok sound was from the show Bluey?",options:["Daddy Pig","Bluey theme","Dad jokes song","Hammerbarn"],answer:1},
 {question:"Which artist released the debut album Pink Friday in 2010?",options:["Cardi B","Nicki Minaj","Iggy Azalea","Lil Kim"],answer:1}
 ],
 "Famous Athletes":[
@@ -824,7 +866,6 @@ const QS={
 {question:"Which popular game involves catching and battling creatures called Pokemon?",options:["Digimon","Yokai Watch","Pokemon","Dragon Quest Monsters"],answer:2},
 {question:"Which Roblox game involves defeating waves of enemies to become the strongest?",options:["Blox Fruits","Anime Dimensions","Anime Fighters Simulator","Shindo Life"],answer:2},
 {question:"Which Fortnite item allows players to glide across the map quickly?",options:["Launch Pad","Shockwave Grenade","Grapple Glove","Rift-To-Go"],answer:2},
-{question:"Which game features the character Master Chief fighting the Covenant?",options:["Call of Duty","Destiny","Halo","Gears of War"],answer:2},
 {question:"Which Minecraft update introduced frogs and the mangrove swamp?",options:["Wild Update","Nether Update","Caves and Cliffs","Aquatic Update"],answer:0},
 {question:"Which Roblox game is inspired by the anime Dragon Ball?",options:["Anime Dimensions","Dragon Ball Rage","Shindo Life","Anime Fighting Simulator"],answer:0},
 {question:"Which game features the open world city of Night City?",options:["GTA VI","Watch Dogs","Cyberpunk 2077","Spider-Man"],answer:2},
@@ -838,7 +879,6 @@ const QS={
 {question:"Which game features the open world kingdom of Hyrule?",options:["Fire Emblem","Xenoblade","The Legend of Zelda","Pokemon"],answer:2},
 {question:"Which gaming platform has the most users worldwide?",options:["PlayStation","Xbox","Nintendo Switch","Mobile gaming"],answer:3},
 {question:"Which Minecraft mob drops ender pearls when killed?",options:["Endermite","Shulker","Enderman","Elder Guardian"],answer:2},
-{question:"Which Roblox tycoon game involves building and managing a theme park?",options:["Theme Park Tycoon 2","Tycoon Factory","Park Builder","Funland Tycoon"],answer:0},
 {question:"Which game features the character Joel and Ellie surviving in a zombie apocalypse?",options:["Days Gone","Dying Light","The Last of Us","Resident Evil"],answer:2},
 {question:"Which Fortnite collaborator added a lightsaber as a weapon?",options:["Marvel","DC","Star Wars","Dragon Ball"],answer:2},
 {question:"Which game studio made the Red Dead Redemption series?",options:["Ubisoft","Rockstar Games","Bethesda","CD Projekt Red"],answer:1},
@@ -920,12 +960,13 @@ const QS={
 const L=['A','B','C','D'];
 const TSEC=10;
 let g={};
+let suddenDeath=false;
+let dailyChallenge=false;
 
 const SUPABASE_URL="https://movxlchiqytbtfvbauel.supabase.co";
 const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1vdnhsY2hpcXl0YnRmdmJhdWVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA0Mzk3MTUsImV4cCI6MjA5NjAxNTcxNX0.mYhCGSXmjC892XIciCDBkoKvJ4t_GyAoy0ESx1imkyE";
 
-// Supabase API helper
-async function sbFetch(path, method, body){
+async function sbFetch(path,method,body){
   var opts={method:method||'GET',headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'return=representation'}};
   if(body)opts.body=JSON.stringify(body);
   var res=await fetch(SUPABASE_URL+path,opts);
@@ -935,39 +976,139 @@ async function sbFetch(path, method, body){
 function getWeekKey(){
   var now=new Date();
   var utcDay=now.getUTCDay();
-  var dayOfWeek=utcDay===0?6:utcDay-1;
-  var monday=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate()-dayOfWeek));
-  return monday.getUTCFullYear()+'-W'+(monday.getUTCMonth()+1)+'-'+monday.getUTCDate();
+  var dow=utcDay===0?6:utcDay-1;
+  var mon=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate()-dow));
+  return mon.getUTCFullYear()+'-W'+(mon.getUTCMonth()+1)+'-'+mon.getUTCDate();
+}
+
+function getDayKey(){
+  var now=new Date();
+  return now.getUTCFullYear()+'-'+(now.getUTCMonth()+1)+'-'+now.getUTCDate();
+}
+
+// Seeded random for daily challenge
+function seededRand(seed){
+  var x=Math.sin(seed+1)*10000;
+  return x-Math.floor(x);
+}
+function seededShuffle(arr,seed){
+  var a=[...arr];
+  for(var i=a.length-1;i>0;i--){
+    var j=Math.floor(seededRand(seed+i)*(i+1));
+    var tmp=a[i];a[i]=a[j];a[j]=tmp;
+  }
+  return a;
 }
 
 function shuf(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
 function show(id){document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');window.scrollTo(0,0);setTimeout(updateScrollHint,80);}
 
+// ---- TOGGLES ----
+function toggleSuddenDeath(){
+  suddenDeath=!suddenDeath;
+  document.getElementById('sd-toggle').classList.toggle('on',suddenDeath);
+}
+function toggleDailyChallenge(){
+  dailyChallenge=!dailyChallenge;
+  document.getElementById('dc-toggle').classList.toggle('on',dailyChallenge);
+  var sub=document.getElementById('dc-sub');
+  sub.textContent=dailyChallenge?'ON — same 10 questions for everyone today':'Same questions for everyone today · One attempt';
+}
+
+// ---- PERSONAL BESTS ----
+function loadPersonalBests(){
+  var cats=Object.keys(QS);
+  cats.forEach(function(cat){
+    var best=localStorage.getItem('pb_'+cat);
+    var el=document.getElementById('best-'+cat);
+    if(el) el.textContent=best?'Best: '+Number(best).toLocaleString():'—';
+  });
+  // Mixed marathon
+  var mbest=localStorage.getItem('pb_Mixed Marathon');
+  // (no separate element needed)
+}
+function savePersonalBest(cat,score){
+  var key='pb_'+cat;
+  var prev=parseInt(localStorage.getItem(key)||'0');
+  if(score>prev) localStorage.setItem(key,score);
+}
+
+// ---- GAME START ----
 function startGame(cat){
-  g={cat,qs:shuf(QS[cat]).slice(0,10),qi:0,score:0,streak:0,best:0,correct:0,times:[],answered:false,secsLeft:TSEC,timer:null,tstart:null,scoreSubmitted:false};
-  show('s-q'); loadQ();
+  // Daily challenge check
+  if(dailyChallenge){
+    var dk=getDayKey();
+    var dcKey='dc_'+cat+'_'+dk;
+    var played=localStorage.getItem(dcKey);
+    if(played){
+      document.getElementById('dc-done-score').textContent='Your score: '+Number(played).toLocaleString()+' pts';
+      document.getElementById('dc-done-modal').classList.add('show');
+      return;
+    }
+  }
+  var qs;
+  if(dailyChallenge){
+    // Use date-based seed for same questions every day
+    var dk2=getDayKey();
+    var seed=dk2.split('-').reduce(function(a,b){return a*100+parseInt(b);},0)+cat.length*7;
+    qs=seededShuffle(QS[cat],seed).slice(0,10);
+  } else {
+    qs=shuf(QS[cat]).slice(0,10);
+  }
+  g={cat:cat,qs:qs,qi:0,score:0,streak:0,best:0,correct:0,times:[],answered:false,secsLeft:TSEC,timer:null,tstart:null,scoreSubmitted:false,isDaily:dailyChallenge,isSuddenDeath:suddenDeath,sdDied:false,sdDeathQ:0};
+  document.getElementById('q-cat').textContent=cat+(suddenDeath?' ⚡':'');
+  show('s-q');
+  loadQ();
+}
+
+function startMixedMarathon(){
+  if(dailyChallenge){
+    var dk=getDayKey();
+    var played=localStorage.getItem('dc_Mixed Marathon_'+dk);
+    if(played){
+      document.getElementById('dc-done-score').textContent='Your score: '+Number(played).toLocaleString()+' pts';
+      document.getElementById('dc-done-modal').classList.add('show');
+      return;
+    }
+  }
+  // Pick 10 random questions from all categories combined
+  var allCats=Object.keys(QS);
+  var pool=[];
+  allCats.forEach(function(cat){
+    QS[cat].forEach(function(q){pool.push({...q,_cat:cat});});
+  });
+  var qs;
+  if(dailyChallenge){
+    var seed2=getDayKey().split('-').reduce(function(a,b){return a*100+parseInt(b);},0)+777;
+    qs=seededShuffle(pool,seed2).slice(0,10);
+  } else {
+    qs=shuf(pool).slice(0,10);
+  }
+  g={cat:'Mixed Marathon',qs:qs,qi:0,score:0,streak:0,best:0,correct:0,times:[],answered:false,secsLeft:TSEC,timer:null,tstart:null,scoreSubmitted:false,isDaily:dailyChallenge,isSuddenDeath:suddenDeath,sdDied:false,sdDeathQ:0};
+  show('s-q');
+  loadQ();
 }
 
 function loadQ(){
-  const q=g.qs[g.qi];
-  clearInterval(g.timer); g.timer=null;
-  clearInterval(vs.pollTimer); vs.pollTimer=null;
-  g.answered=false; g.secsLeft=TSEC; g.tstart=Date.now();
-  vs.advancing=false; // reset lock
-  document.getElementById('q-cat').textContent=g.cat;
+  var q=g.qs[g.qi];
+  clearInterval(g.timer);g.timer=null;
+  if(typeof vs!=='undefined'){clearInterval(vs.pollTimer);vs.pollTimer=null;}
+  g.answered=false;g.secsLeft=TSEC;g.tstart=Date.now();
+  if(typeof vs!=='undefined')vs.advancing=false;
+  document.getElementById('q-cat').textContent=g.cat+(g.isSuddenDeath?' ⚡':'');
   document.getElementById('q-prog').textContent=(g.qi+1)+' / 10';
   document.getElementById('live-score').textContent=g.score.toLocaleString();
   document.getElementById('live-streak').textContent=g.streak>0?(g.streak+' \uD83D\uDD25'):'0';
   document.getElementById('q-text').textContent=q.question;
-  const c=document.getElementById('opts'); c.innerHTML='';
-  q.options.forEach((o,i)=>{
-    const b=document.createElement('button'); b.className='opt';
+  var c=document.getElementById('opts');c.innerHTML='';
+  q.options.forEach(function(o,i){
+    var b=document.createElement('button');b.className='opt';
     b.innerHTML='<span class="opt-ltr">'+L[i]+'</span><span>'+o+'</span>';
-    b.onclick=()=>pick(i); c.appendChild(b);
+    b.onclick=function(){pick(i);};c.appendChild(b);
   });
   updateBar();
-  g.timer=setInterval(()=>{
-    const elapsed=(Date.now()-g.tstart)/1000;
+  g.timer=setInterval(function(){
+    var elapsed=(Date.now()-g.tstart)/1000;
     g.secsLeft=Math.max(0,TSEC-elapsed);
     updateBar();
     if(g.secsLeft<=0){clearInterval(g.timer);g.timer=null;if(!g.answered)timeout();}
@@ -975,67 +1116,87 @@ function loadQ(){
 }
 
 function updateBar(){
-  if(g.answered)return; // freeze bar while waiting or after answering
-  const elapsed=(Date.now()-g.tstart)/1000;
-  const pct=Math.max(0,((TSEC-elapsed)/TSEC)*100);
-  const b=document.getElementById('tbar');
+  if(g.answered)return;
+  var elapsed=(Date.now()-g.tstart)/1000;
+  var pct=Math.max(0,((TSEC-elapsed)/TSEC)*100);
+  var b=document.getElementById('tbar');
   b.style.width=pct+'%';
   b.className='tbar'+(pct<=25?' danger':pct<=50?' warn':'');
 }
 
 function timeout(){
-  if(vs.active&&vs.pollTimer)return; // already waiting for opponent
-  g.answered=true; g.times.push(TSEC);
-  const q=g.qs[g.qi];
-  document.querySelectorAll('.opt').forEach((b,i)=>{b.classList.add('off');if(i===q.answer)b.classList.add('ok');});
-  g.streak=0; flash(false,0); setTimeout(nextQ,1300);
+  if(typeof vs!=='undefined'&&vs.active&&vs.pollTimer)return;
+  g.answered=true;g.times.push(TSEC);
+  var q=g.qs[g.qi];
+  document.querySelectorAll('.opt').forEach(function(b,i){b.classList.add('off');if(i===q.answer)b.classList.add('ok');});
+  g.streak=0;
+  // Sudden death: timeout counts as wrong
+  if(g.isSuddenDeath&&!g.sdDied){
+    g.sdDied=true;g.sdDeathQ=g.qi+1;
+    flash(false,0);
+    setTimeout(function(){summary();},1300);
+    return;
+  }
+  flash(false,0);setTimeout(nextQ,1300);
 }
 
 function pick(chosen){
-  if(g.answered)return; g.answered=true; clearInterval(g.timer); g.timer=null;
-  const elapsed=(Date.now()-g.tstart)/1000; g.times.push(Math.min(elapsed,TSEC));
-  const q=g.qs[g.qi]; const ok=chosen===q.answer;
-  document.querySelectorAll('.opt').forEach((b,i)=>{
+  if(g.answered)return;g.answered=true;clearInterval(g.timer);g.timer=null;
+  var elapsed=(Date.now()-g.tstart)/1000;g.times.push(Math.min(elapsed,TSEC));
+  var q=g.qs[g.qi];var ok=chosen===q.answer;
+  document.querySelectorAll('.opt').forEach(function(b,i){
     b.classList.add('off');
     if(i===q.answer)b.classList.add('ok');
     else if(i===chosen&&!ok)b.classList.add('bad');
   });
-  let pts=0;
+  var pts=0;
   if(ok){
-    g.correct++; g.streak++; if(g.streak>g.best)g.best=g.streak;
-    const sl=Math.max(0,TSEC-elapsed);
-    pts=100+Math.round(sl*10); if(g.streak>1)pts*=g.streak; g.score+=pts;
-  } else {g.streak=0;}
+    g.correct++;g.streak++;if(g.streak>g.best)g.best=g.streak;
+    var sl=Math.max(0,TSEC-elapsed);
+    pts=100+Math.round(sl*10);if(g.streak>1)pts*=g.streak;g.score+=pts;
+  } else {
+    g.streak=0;
+    // Sudden death: wrong answer = game over
+    if(g.isSuddenDeath&&!g.sdDied){
+      g.sdDied=true;g.sdDeathQ=g.qi+1;
+      document.getElementById('live-score').textContent=g.score.toLocaleString();
+      document.getElementById('live-streak').textContent='0';
+      flash(false,0);
+      if(typeof vs!=='undefined'&&vs.active){
+        var myScoreEl=vs.player===1?'vl-p1score':'vl-p2score';
+        document.getElementById(myScoreEl).textContent=g.score.toLocaleString();
+      }
+      setTimeout(function(){summary();},1300);
+      return;
+    }
+  }
   document.getElementById('live-score').textContent=g.score.toLocaleString();
   document.getElementById('live-streak').textContent=g.streak>0?(g.streak+' \uD83D\uDD25'):'0';
-  // Update versus top bar instantly for own score
-  if(vs.active){
-    var myScoreEl=vs.player===1?'vl-p1score':'vl-p2score';
+  if(typeof vs!=='undefined'&&vs.active){
+    var myScoreEl2=vs.player===1?'vl-p1score':'vl-p2score';
     var myQEl=vs.player===1?'vl-p1q':'vl-p2q';
-    document.getElementById(myScoreEl).textContent=g.score.toLocaleString();
+    document.getElementById(myScoreEl2).textContent=g.score.toLocaleString();
     document.getElementById(myQEl).textContent='Q'+(g.qi+1);
-    // Save to Supabase — g.qi is current question (0-indexed), g.score is updated
     var patch=vs.player===1?{p1_score:g.score,p1_q:g.qi+1}:{p2_score:g.score,p2_q:g.qi+1};
     sbFetch('/rest/v1/versus_rooms?code=eq.'+encodeURIComponent(vs.code),'PATCH',patch).catch(function(){});
   }
-  flash(ok,pts); setTimeout(nextQ,1300);
+  flash(ok,pts);setTimeout(nextQ,1300);
 }
 
 function flash(ok,pts){
-  const w=document.getElementById('fb'); const p=document.getElementById('fb-pill');
+  var w=document.getElementById('fb');var p=document.getElementById('fb-pill');
   p.className='fb-pill '+(ok?'ok':'bad');
   p.textContent=ok?('+'+pts.toLocaleString()+' pts'):'WRONG!';
-  w.classList.add('show'); setTimeout(()=>w.classList.remove('show'),1000);
+  w.classList.add('show');setTimeout(function(){w.classList.remove('show');},1000);
 }
 
 async function nextQ(){
   clearInterval(g.timer);g.timer=null;
   g.qi++;
   if(g.qi>=10){
-    if(vs.active){
+    if(typeof vs!=='undefined'&&vs.active){
       await finishVersusGame();
       vs.waitingForOpponent=true;
-      // Show waiting message on quiz screen
       document.getElementById('q-text').textContent='✅ You finished! Waiting for opponent...';
       document.getElementById('opts').innerHTML='';
       document.getElementById('btn-give-up').style.display='none';
@@ -1050,90 +1211,223 @@ async function nextQ(){
 
 function summary(){
   g.scoreSubmitted=false;
+  // Save personal best
+  savePersonalBest(g.cat,g.score);
+  loadPersonalBests();
+  // Save daily challenge attempt
+  if(g.isDaily){
+    var dk=getDayKey();
+    localStorage.setItem('dc_'+g.cat+'_'+dk,g.score);
+  }
   document.getElementById('name-score-preview').textContent=g.score.toLocaleString();
   document.getElementById('name-input').value='';
   document.getElementById('submit-status').textContent='';
   document.getElementById('submit-status').className='submit-status';
-  const btn=document.getElementById('btn-submit-score');
-  btn.disabled=false; btn.textContent='SAVE MY SCORE 🏆';
+  var btn=document.getElementById('btn-submit-score');
+  btn.disabled=false;btn.textContent='SAVE MY SCORE 🏆';
   show('s-name');
 }
 
 async function submitAndContinue(){
   if(g.scoreSubmitted){showSummaryScreen();return;}
-  const name=document.getElementById('name-input').value.trim();
-  const status=document.getElementById('submit-status');
+  var name=document.getElementById('name-input').value.trim();
+  var status=document.getElementById('submit-status');
   if(!name){status.textContent='Please enter your name above.';status.className='submit-status err';return;}
-  const btn=document.getElementById('btn-submit-score');
-  btn.disabled=true; btn.textContent='Checking...'; status.textContent='';
+  var btn=document.getElementById('btn-submit-score');
+  btn.disabled=true;btn.textContent='Checking...';status.textContent='';
   try{
-    const wk=getWeekKey();
-    // Check for duplicate name this week
-    const check=await sbFetch('/rest/v1/scores?week_key=eq.'+encodeURIComponent(wk)+'&name=eq.'+encodeURIComponent(name)+'&select=name');
+    var wk=getWeekKey();
+    var check=await sbFetch('/rest/v1/scores?week_key=eq.'+encodeURIComponent(wk)+'&name=eq.'+encodeURIComponent(name)+'&select=name');
     if(Array.isArray(check)&&check.length>0){
       status.textContent='This name is taken this week, try another.';
       status.className='submit-status err';
-      btn.disabled=false; btn.textContent='SAVE MY SCORE 🏆';
+      btn.disabled=false;btn.textContent='SAVE MY SCORE 🏆';
       return;
     }
     btn.textContent='Saving...';
-    const avg=g.times.length?(g.times.reduce((a,b)=>a+b,0)/g.times.length).toFixed(1):0;
-    const acc=Math.round((g.correct/10)*100);
+    var avg=g.times.length?(g.times.reduce(function(a,b){return a+b;},0)/g.times.length).toFixed(1):0;
+    var acc=Math.round((g.correct/10)*100);
     await sbFetch('/rest/v1/scores','POST',{
-      name:name, score:g.score, category:g.cat,
-      correct:String(g.correct), streak:String(g.best),
-      speed:avg+'s', accuracy:acc+'%', week_key:wk
+      name:name,score:g.score,category:g.cat,
+      correct:String(g.correct),streak:String(g.best),
+      speed:avg+'s',accuracy:acc+'%',week_key:wk
     });
     g.scoreSubmitted=true;
-    status.textContent='Score saved! ✅'; status.className='submit-status ok';
+    g.savedName=name;
+    status.textContent='Score saved! ✅';status.className='submit-status ok';
   }catch(e){
-    status.textContent='Could not save - showing results anyway.'; status.className='submit-status err';
+    status.textContent='Could not save - showing results anyway.';status.className='submit-status err';
   }
-  btn.disabled=false; btn.textContent='SAVE MY SCORE 🏆';
+  btn.disabled=false;btn.textContent='SAVE MY SCORE 🏆';
   setTimeout(showSummaryScreen,900);
 }
 
 function skipToSummary(){showSummaryScreen();}
 
 function showSummaryScreen(){
-  const avg=g.times.length?(g.times.reduce((a,b)=>a+b,0)/g.times.length).toFixed(1):0;
-  const acc=Math.round((g.correct/10)*100);
-  document.getElementById('sum-cat').textContent=g.cat.toUpperCase();
+  var avg=g.times.length?(g.times.reduce(function(a,b){return a+b;},0)/g.times.length).toFixed(1):0;
+  var acc=Math.round((g.correct/10)*100);
+  var displayCat=g.cat+(g.isSuddenDeath?' ⚡':'')+(g.isDaily?' 🔥':'');
+  document.getElementById('sum-cat').textContent=displayCat.toUpperCase();
   document.getElementById('fin-score').textContent=g.score.toLocaleString();
   document.getElementById('st-correct').textContent=g.correct+'/10';
   document.getElementById('st-streak').textContent=g.best;
   document.getElementById('st-speed').textContent=avg+'s';
   document.getElementById('st-acc').textContent=acc+'%';
-  const stars=g.correct===10?'⭐⭐⭐':g.correct>=8?'⭐⭐⭐':g.correct>=6?'⭐⭐':g.correct>=4?'⭐':'💣';
-  const txt=g.correct===10?'PERFECT!':g.correct>=8?'Excellent!':g.correct>=6?'Good job!':g.correct>=4?'Not bad!':'Ouch!';
-  const sub=g.correct===10?'Flawless - you know everything!':g.correct>=8?'You really know your stuff!':g.correct>=6?'Solid - keep it up!':g.correct>=4?'Room to grow - try again!':'Better luck next time!';
+  // Sudden death box
+  var sdBox=document.getElementById('sd-gameover-box');
+  if(g.isSuddenDeath&&g.sdDied){
+    sdBox.style.display='block';
+    document.getElementById('sd-gameover-sub').textContent='You got it wrong on question '+g.sdDeathQ;
+  } else {
+    sdBox.style.display='none';
+  }
+  var correct=g.sdDied?g.correct:g.correct;
+  var stars=correct===10?'⭐⭐⭐':correct>=8?'⭐⭐⭐':correct>=6?'⭐⭐':correct>=4?'⭐':'💣';
+  var txt=correct===10?'PERFECT!':correct>=8?'Excellent!':correct>=6?'Good job!':correct>=4?'Not bad!':'Ouch!';
+  var sub=correct===10?'Flawless - you know everything!':correct>=8?'You really know your stuff!':correct>=6?'Solid - keep it up!':correct>=4?'Room to grow - try again!':'Better luck next time!';
   document.getElementById('r-stars').textContent=stars;
   document.getElementById('r-txt').textContent=txt;
   document.getElementById('r-sub').textContent=sub;
-  document.getElementById('btn-again').onclick=()=>startGame(g.cat);
+  document.getElementById('btn-again').onclick=function(){startGame(g.cat);};
+  // Challenge link
+  var baseUrl=window.location.origin+window.location.pathname;
+  var challengeUrl=baseUrl+'?challenge='+g.score+':'+encodeURIComponent(g.cat);
+  document.getElementById('challenge-link').textContent=challengeUrl;
+  // Draw share card
+  drawShareCard(g.savedName||'Anonymous',g.score,g.correct,g.best,avg,acc,g.cat,new Date().toLocaleDateString('en-GB'));
   show('s-sum');
 }
 
+// ---- CHALLENGE LINK ----
+function copyChallenge(){
+  var link=document.getElementById('challenge-link').textContent;
+  navigator.clipboard.writeText(link).then(function(){
+    var btn=document.querySelector('.btn-copy');
+    btn.textContent='✅ Copied!';
+    setTimeout(function(){btn.textContent='📋 Copy Link';},2000);
+  }).catch(function(){
+    // Fallback
+    var ta=document.createElement('textarea');ta.value=link;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+  });
+}
+
+// Check for challenge param on load
+(function(){
+  var params=new URLSearchParams(window.location.search);
+  var challenge=params.get('challenge');
+  if(challenge){
+    var parts=challenge.split(':');
+    var score=parseInt(parts[0]);
+    var cat=decodeURIComponent(parts[1]||'');
+    if(score&&cat){
+      // Show banner on home screen
+      var banner=document.createElement('div');
+      banner.style.cssText='background:#c473ff22;border:1.5px solid #c473ff;border-radius:13px;padding:14px 16px;margin-bottom:14px;text-align:center;';
+      banner.innerHTML='<div style="font-size:11px;color:#c473ff;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;">⚔️ Challenge!</div>'+
+        '<div style="font-size:15px;font-weight:700;color:#fff;">Beat <span style="color:#c473ff">'+score.toLocaleString()+'</span> pts on <span style="color:#c473ff">'+cat+'</span></div>';
+      var homeEl=document.getElementById('s-home');
+      homeEl.insertBefore(banner,homeEl.querySelector('.cat-grid'));
+    }
+  }
+})();
+
+// ---- SHARE CARD ----
+function drawShareCard(name,score,correct,streak,speed,acc,cat,date){
+  var canvas=document.getElementById('share-canvas');
+  var W=600,H=320;
+  canvas.width=W;canvas.height=H;
+  var ctx=canvas.getContext('2d');
+  // Background
+  var grad=ctx.createLinearGradient(0,0,W,H);
+  grad.addColorStop(0,'#0d0d1a');
+  grad.addColorStop(1,'#161628');
+  ctx.fillStyle=grad;
+  ctx.beginPath();
+  ctx.roundRect(0,0,W,H,20);
+  ctx.fill();
+  // Border
+  ctx.strokeStyle='#00d48a44';
+  ctx.lineWidth=2;
+  ctx.beginPath();
+  ctx.roundRect(1,1,W-2,H-2,20);
+  ctx.stroke();
+  // Title
+  ctx.fillStyle='#00d48a';
+  ctx.font='bold 14px sans-serif';
+  ctx.fillText('QUIZMASTER',30,36);
+  // Category
+  ctx.fillStyle='#9ca3c4';
+  ctx.font='12px sans-serif';
+  ctx.fillText(cat.toUpperCase(),30,56);
+  // Score
+  ctx.fillStyle='#00d48a';
+  ctx.font='bold 72px sans-serif';
+  ctx.fillText(Number(score).toLocaleString(),30,145);
+  ctx.fillStyle='#9ca3c4';
+  ctx.font='12px sans-serif';
+  ctx.fillText('FINAL SCORE',30,168);
+  // Stats grid
+  var stats=[
+    {label:'CORRECT',value:correct+'/10'},
+    {label:'STREAK',value:streak+'x'},
+    {label:'AVG SPEED',value:speed+'s'},
+    {label:'ACCURACY',value:acc+'%'}
+  ];
+  stats.forEach(function(s,i){
+    var x=30+(i%2)*260;
+    var y=i<2?210:270;
+    ctx.fillStyle='#2a2a42';
+    ctx.beginPath();
+    ctx.roundRect(x,y-22,230,50,10);
+    ctx.fill();
+    ctx.fillStyle='#9ca3c4';
+    ctx.font='10px sans-serif';
+    ctx.fillText(s.label,x+12,y-6);
+    ctx.fillStyle='#fff';
+    ctx.font='bold 22px sans-serif';
+    ctx.fillText(s.value,x+12,y+18);
+  });
+  // Name + date
+  ctx.fillStyle='#9ca3c4';
+  ctx.font='12px sans-serif';
+  ctx.fillText(name+' · '+date,30,H-20);
+  // lucs-coder1.github.io/Quizmaster
+  ctx.fillStyle='#3a3a55';
+  ctx.font='11px sans-serif';
+  var link='lucs-coder1.github.io/Quizmaster';
+  ctx.fillText(link,W-ctx.measureText(link).width-20,H-20);
+}
+
+function downloadShareCard(){
+  var canvas=document.getElementById('share-canvas');
+  var a=document.createElement('a');
+  a.download='quizmaster-result.png';
+  a.href=canvas.toDataURL('image/png');
+  a.click();
+}
+
+// ---- LEADERBOARD ----
 async function openLeaderboard(category){
   show('s-lb');
   document.getElementById('lb-cat-sel').value=category||'';
-  const tbody=document.getElementById('lb-body');
+  var tbody=document.getElementById('lb-body');
   tbody.innerHTML='<tr><td colspan="4" class="lb-loading">Loading...</td></tr>';
   try{
-    const wk=getWeekKey();
-    let url='/rest/v1/scores?week_key=eq.'+encodeURIComponent(wk)+'&order=score.desc&limit=50&select=name,score,category';
-    if(category) url+='&category=eq.'+encodeURIComponent(category);
-    const data=await sbFetch(url);
+    var wk=getWeekKey();
+    var url='/rest/v1/scores?week_key=eq.'+encodeURIComponent(wk)+'&order=score.desc&limit=50&select=name,score,category';
+    if(category)url+='&category=eq.'+encodeURIComponent(category);
+    var data=await sbFetch(url);
     if(!Array.isArray(data)||!data.length){
       tbody.innerHTML='<tr><td colspan="4" class="lb-empty">No scores this week yet - be the first!</td></tr>';
-      updateScrollHint(); return;
+      updateScrollHint();return;
     }
-    const rc=function(i){return i===0?'gold':i===1?'silver':i===2?'bronze':'';}
+    var rc=function(i){return i===0?'gold':i===1?'silver':i===2?'bronze':'';};
     tbody.innerHTML=data.map(function(s,i){
       return '<tr><td><span class="lb-rank '+rc(i)+'">'+(i+1)+'</span></td>'+
-      '<td>'+s.name+'</td>'+
-      '<td style="font-size:11px;color:#9ca3c4;">'+s.category+'</td>'+
-      '<td class="r">'+Number(s.score).toLocaleString()+'</td></tr>';
+        '<td>'+s.name+'</td>'+
+        '<td style="font-size:11px;color:#9ca3c4;">'+s.category+'</td>'+
+        '<td class="r">'+Number(s.score).toLocaleString()+'</td></tr>';
     }).join('');
     updateScrollHint();
   }catch(e){
@@ -1144,13 +1438,13 @@ async function openLeaderboard(category){
 // ---- HALL OF FAME ----
 async function openHallOfFame(){
   show('s-hof');
-  const list=document.getElementById('hof-list');
+  var list=document.getElementById('hof-list');
   list.innerHTML='<div class="hof-empty">Loading champions...</div>';
   try{
-    const data=await sbFetch('/rest/v1/hall_of_fame?order=created_at.desc&select=name,score,category,week_label');
+    var data=await sbFetch('/rest/v1/hall_of_fame?order=created_at.desc&select=name,score,category,week_label');
     if(!Array.isArray(data)||!data.length){
       list.innerHTML='<div class="hof-empty">No champions yet — play this week to be the first!</div>';
-      updateScrollHint(); return;
+      updateScrollHint();return;
     }
     list.innerHTML=data.map(function(entry){
       return '<div class="hof-card">'+
@@ -1171,12 +1465,12 @@ async function openHallOfFame(){
 
 // ---- HOME TOP SCORE ----
 async function loadHomeTopScore(){
-  const el=document.getElementById('home-top-score');
+  var el=document.getElementById('home-top-score');
   el.className='home-top-score loading';
   el.textContent='Loading top score...';
   try{
-    const wk=getWeekKey();
-    const data=await sbFetch('/rest/v1/scores?week_key=eq.'+encodeURIComponent(wk)+'&order=score.desc&limit=1&select=name,score');
+    var wk=getWeekKey();
+    var data=await sbFetch('/rest/v1/scores?week_key=eq.'+encodeURIComponent(wk)+'&order=score.desc&limit=1&select=name,score');
     el.className='home-top-score';
     if(Array.isArray(data)&&data.length){
       el.textContent='🏆 Top this week: '+Number(data[0].score).toLocaleString()+' pts by '+data[0].name;
@@ -1189,13 +1483,55 @@ async function loadHomeTopScore(){
   }
 }
 
-function goHome(){clearInterval(g.timer);clearInterval(vs.pollTimer);if(vs.ws){vs.ws.close();vs.ws=null;}vs.active=false;document.getElementById('vs-live').style.display='none';show('s-home');}
+// ---- LIVE FEED ----
+var feedItems=[];
+var feedIdx=0;
+var feedTimer=null;
+async function loadLiveFeed(){
+  try{
+    var data=await sbFetch('/rest/v1/scores?order=created_at.desc&limit=8&select=name,score,category');
+    if(!Array.isArray(data)||!data.length)return;
+    feedItems=data.map(function(s){
+      return '<span>'+s.name+'</span> scored '+Number(s.score).toLocaleString()+' on '+s.category;
+    });
+    startFeedTicker();
+  }catch(e){}
+}
+function startFeedTicker(){
+  if(feedItems.length===0)return;
+  var inner=document.getElementById('live-feed-inner');
+  if(!inner)return;
+  inner.innerHTML='';
+  feedItems.forEach(function(txt){
+    var div=document.createElement('div');
+    div.className='live-feed-item';
+    div.innerHTML=txt;
+    inner.appendChild(div);
+  });
+  feedIdx=0;
+  if(feedTimer)clearInterval(feedTimer);
+  feedTimer=setInterval(function(){
+    feedIdx=(feedIdx+1)%feedItems.length;
+    inner.style.transform='translateY(-'+feedIdx*28+'px)';
+  },3000);
+}
+
+function goHome(){
+  clearInterval(g.timer);
+  if(typeof vs!=='undefined'){
+    clearInterval(vs.pollTimer);
+    if(vs.ws){vs.ws.close();vs.ws=null;}
+    vs.active=false;
+    document.getElementById('vs-live').style.display='none';
+  }
+  show('s-home');
+}
 
 // Scroll hint
 function updateScrollHint(){
-  const hint=document.getElementById('scroll-hint');
-  const scrollable=document.documentElement.scrollHeight>window.innerHeight+4;
-  const atBottom=window.scrollY+window.innerHeight>=document.documentElement.scrollHeight-10;
+  var hint=document.getElementById('scroll-hint');
+  var scrollable=document.documentElement.scrollHeight>window.innerHeight+4;
+  var atBottom=window.scrollY+window.innerHeight>=document.documentElement.scrollHeight-10;
   hint.classList.toggle('hidden',!scrollable||atBottom);
 }
 window.addEventListener('scroll',updateScrollHint,{passive:true});
@@ -1204,17 +1540,14 @@ updateScrollHint();
 
 // Give up
 function confirmGiveUp(){
-  if(vs.active){doGiveUp();return;} // skip modal in versus
+  if(typeof vs!=='undefined'&&vs.active){doGiveUp();return;}
   document.getElementById('giveup-modal').classList.add('show');
 }
 function closeGiveUpModal(){document.getElementById('giveup-modal').classList.remove('show');}
 function doGiveUp(){
   closeGiveUpModal();
   clearInterval(g.timer);
-  if(vs.active){
-    // Tell the backend this player abandoned
-    var img=new Image();
-    img.src=APPS_SCRIPT_URL+'?action=updateVersus&code='+vs.code+'&player='+vs.player+'&score='+g.score+'&q='+g.qi+'&done=2';
+  if(typeof vs!=='undefined'&&vs.active){
     clearInterval(vs.pollTimer);vs.pollTimer=null;
     vs.active=false;
     document.getElementById('vs-live').style.display='none';
@@ -1223,15 +1556,15 @@ function doGiveUp(){
   goHome();
 }
 
-// App modal
+// Modals
 function openAppModal(){document.getElementById('app-modal').classList.add('show');}
 function closeAppModal(){document.getElementById('app-modal').classList.remove('show');}
-
 document.getElementById('giveup-modal').addEventListener('click',function(e){if(e.target===this)closeGiveUpModal();});
 document.getElementById('app-modal').addEventListener('click',function(e){if(e.target===this)closeAppModal();});
+document.getElementById('dc-done-modal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('show');});
 
 // ---- VERSUS MODE ----
-var vs={active:false,code:'',player:0,p1name:'',p2name:'',cat:'',qs:[],pollTimer:null,waitingForOpponent:false};
+var vs={active:false,code:'',player:0,p1name:'',p2name:'',cat:'',qs:[],pollTimer:null,waitingForOpponent:false,ws:null,advancing:false};
 
 async function createVersusRoom(){
   var name=document.getElementById('vs-name').value.trim();
@@ -1249,11 +1582,10 @@ async function createVersusRoom(){
       code:code,category:cat,questions:qIds,
       p1_name:name,p2_name:'',p1_score:0,p1_q:0,p2_score:0,p2_q:0,status:'waiting'
     });
-    vs={active:true,code:code,player:1,p1name:name,p2name:'',cat:cat,qs:qs,pollTimer:null,waitingForOpponent:false};
+    vs={active:true,code:code,player:1,p1name:name,p2name:'',cat:cat,qs:qs,pollTimer:null,waitingForOpponent:false,ws:null,advancing:false};
     document.getElementById('vs-room-code').textContent=code;
     show('s-vs-wait');
     status.textContent='';
-    // Poll for player 2 joining
     vs.pollTimer=setInterval(async function(){
       try{
         var data=await sbFetch('/rest/v1/versus_rooms?code=eq.'+code+'&select=p2_name,status');
@@ -1279,11 +1611,10 @@ async function joinVersusRoom(){
     if(!Array.isArray(data)||!data.length){status.textContent='Room not found.';status.className='submit-status err';return;}
     var room=data[0];
     if(room.status!=='waiting'){status.textContent='Room already started.';status.className='submit-status err';return;}
-    // Update room with player 2
     await sbFetch('/rest/v1/versus_rooms?code=eq.'+code,'PATCH',{p2_name:name,status:'ready'});
     var qIndexes=room.questions.split(',');
     var qs=qIndexes.map(function(idx){return QS[room.category][parseInt(idx)];}).filter(Boolean);
-    vs={active:true,code:code,player:2,p1name:room.p1_name,p2name:name,cat:room.category,qs:qs,pollTimer:null,waitingForOpponent:false};
+    vs={active:true,code:code,player:2,p1name:room.p1_name,p2name:name,cat:room.category,qs:qs,pollTimer:null,waitingForOpponent:false,ws:null,advancing:false};
     status.textContent='';
     startVersusGame();
   }catch(e){status.textContent='Could not join room.';status.className='submit-status err';}
@@ -1300,45 +1631,24 @@ function startVersusGame(){
   document.getElementById('vl-p2score').textContent='0';
   document.getElementById('vl-p1q').textContent='Q1';
   document.getElementById('vl-p2q').textContent='Q1';
-  g={cat:vs.cat,qs:vs.qs,qi:0,score:0,streak:0,best:0,correct:0,times:[],answered:false,secsLeft:TSEC,timer:null,tstart:null,scoreSubmitted:false};
+  g={cat:vs.cat,qs:vs.qs,qi:0,score:0,streak:0,best:0,correct:0,times:[],answered:false,secsLeft:TSEC,timer:null,tstart:null,scoreSubmitted:false,isSuddenDeath:false,isDaily:false,sdDied:false,sdDeathQ:0};
   vs.waitingForOpponent=false;
   show('s-q');
   setTimeout(function(){loadQ();},300);
-
-  // Use Supabase Realtime for instant updates
   if(vs.ws){vs.ws.close();vs.ws=null;}
   var wsUrl='wss://movxlchiqytbtfvbauel.supabase.co/realtime/v1/websocket?apikey='+SUPABASE_KEY+'&vsn=1.0.0';
   vs.ws=new WebSocket(wsUrl);
   vs.wsHeartbeat=null;
   vs.ws.onopen=function(){
-    // Subscribe to changes on this specific room
-    vs.ws.send(JSON.stringify({
-      topic:'realtime:public:versus_rooms',
-      event:'phx_join',
-      payload:{
-        config:{
-          broadcast:{ack:false,self:false},
-          presence:{key:''},
-          postgres_changes:[{event:'UPDATE',schema:'public',table:'versus_rooms',filter:'code=eq.'+vs.code}]
-        }
-      },
-      ref:'1'
-    }));
-    // Heartbeat every 30s to keep connection alive
-    vs.wsHeartbeat=setInterval(function(){
-      if(vs.ws&&vs.ws.readyState===1){
-        vs.ws.send(JSON.stringify({topic:'phoenix',event:'heartbeat',payload:{},ref:'hb'}));
-      }
-    },30000);
+    vs.ws.send(JSON.stringify({topic:'realtime:public:versus_rooms',event:'phx_join',payload:{config:{broadcast:{ack:false,self:false},presence:{key:''},postgres_changes:[{event:'UPDATE',schema:'public',table:'versus_rooms',filter:'code=eq.'+vs.code}]}},ref:'1'}));
+    vs.wsHeartbeat=setInterval(function(){if(vs.ws&&vs.ws.readyState===1){vs.ws.send(JSON.stringify({topic:'phoenix',event:'heartbeat',payload:{},ref:'hb'}));}},30000);
   };
   vs.ws.onmessage=function(e){
     try{
       var msg=JSON.parse(e.data);
-      // Handle postgres_changes UPDATE event
       if(msg.event==='postgres_changes'&&msg.payload&&msg.payload.data){
         var record=msg.payload.data.record;
         if(!record)return;
-        // Only update OPPONENT's score — our own score is already shown locally
         var theirScore=vs.player===1?Number(record.p2_score||0):Number(record.p1_score||0);
         var theirQ=vs.player===1?parseInt(record.p2_q||0):parseInt(record.p1_q||0);
         var theirScoreEl=vs.player===1?'vl-p2score':'vl-p1score';
@@ -1349,18 +1659,13 @@ function startVersusGame(){
           if(vs.ws){vs.ws.close();vs.ws=null;}
           clearInterval(vs.wsHeartbeat);
           vs.waitingForOpponent=false;
-          showVersusResult(
-            vs.player===1?g.score:theirScore,
-            vs.player===1?theirScore:g.score,
-            vs.p1name,vs.p2name
-          );
+          showVersusResult(vs.player===1?g.score:theirScore,vs.player===1?theirScore:g.score,vs.p1name,vs.p2name);
         }
       }
     }catch(err){}
   };
   vs.ws.onerror=vs.ws.onclose=function(){
     clearInterval(vs.wsHeartbeat);
-    // Fallback to polling if WebSocket fails
     if(!vs.pollTimer){
       vs.pollTimer=setInterval(async function(){
         try{
@@ -1369,19 +1674,12 @@ function startVersusGame(){
           var room=data[0];
           var theirScore=vs.player===1?Number(room.p2_score||0):Number(room.p1_score||0);
           var theirQ=vs.player===1?parseInt(room.p2_q||0):parseInt(room.p1_q||0);
-          var theirScoreEl=vs.player===1?'vl-p2score':'vl-p1score';
-          var theirQEl=vs.player===1?'vl-p2q':'vl-p1q';
-          // Only update opponent's display — own score is shown locally
-          document.getElementById(theirScoreEl).textContent=theirScore.toLocaleString();
-          document.getElementById(theirQEl).textContent='Q'+(Math.min(theirQ,9)+1);
+          document.getElementById(vs.player===1?'vl-p2score':'vl-p1score').textContent=theirScore.toLocaleString();
+          document.getElementById(vs.player===1?'vl-p2q':'vl-p1q').textContent='Q'+(Math.min(theirQ,9)+1);
           if(vs.waitingForOpponent&&parseInt(theirQ)>=10){
             clearInterval(vs.pollTimer);vs.pollTimer=null;
             vs.waitingForOpponent=false;
-            showVersusResult(
-              vs.player===1?g.score:theirScore,
-              vs.player===1?theirScore:g.score,
-              vs.p1name,vs.p2name
-            );
+            showVersusResult(vs.player===1?g.score:theirScore,vs.player===1?theirScore:g.score,vs.p1name,vs.p2name);
           }
         }catch(e){}
       },1500);
@@ -1407,33 +1705,23 @@ function showVersusResult(p1score,p2score,p1name,p2name){
   document.getElementById('vr-p2name').textContent=theirName;
   document.getElementById('vr-p1score').textContent=myScore.toLocaleString();
   document.getElementById('vr-p2score').textContent=theirScore.toLocaleString();
-  if(myScore>theirScore){
-    document.getElementById('vr-crown').textContent='🏆';
-    document.getElementById('vr-winner').textContent='YOU WIN!';
-    document.getElementById('vr-sub').textContent='You beat '+theirName+'!';
-  } else if(theirScore>myScore){
-    document.getElementById('vr-crown').textContent='😢';
-    document.getElementById('vr-winner').textContent=theirName+' WINS!';
-    document.getElementById('vr-sub').textContent='Better luck next time!';
-  } else {
-    document.getElementById('vr-crown').textContent='🤝';
-    document.getElementById('vr-winner').textContent="IT'S A TIE!";
-    document.getElementById('vr-sub').textContent='Incredible — same score!';
-  }
+  if(myScore>theirScore){document.getElementById('vr-crown').textContent='🏆';document.getElementById('vr-winner').textContent='YOU WIN!';document.getElementById('vr-sub').textContent='You beat '+theirName+'!';}
+  else if(theirScore>myScore){document.getElementById('vr-crown').textContent='😢';document.getElementById('vr-winner').textContent=theirName+' WINS!';document.getElementById('vr-sub').textContent='Better luck next time!';}
+  else{document.getElementById('vr-crown').textContent='🤝';document.getElementById('vr-winner').textContent="IT'S A TIE!";document.getElementById('vr-sub').textContent='Incredible — same score!';}
   vs.active=false;
   show('s-vs-result');
 }
 
+// ---- INIT ----
 loadHomeTopScore();
+loadPersonalBests();
+loadLiveFeed();
 
-// Handle shared versus link
+// Handle versus link
 (function(){
   var urlParams=new URLSearchParams(window.location.search);
   var code=urlParams.get('code');
-  if(code){
-    document.getElementById('vs-code-input').value=code.toUpperCase();
-    show('s-vs-setup');
-  }
+  if(code){document.getElementById('vs-code-input').value=code.toUpperCase();show('s-vs-setup');}
 })();
 </script>
 </body>
