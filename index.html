@@ -21,43 +21,16 @@
   .home-top-score.loading{color:#9ca3c4;border-color:#2a2a42;background:transparent;animation:pulse .8s ease-in-out infinite alternate;}
   @keyframes pulse{from{opacity:.4;}to{opacity:1;}}
 
-
-  /* SUDDEN DEATH TOGGLE */
-  .sd-toggle-row{display:flex;align-items:center;justify-content:space-between;background:#161628;border:1.5px solid #ff5c5c44;border-radius:13px;padding:12px 16px;margin-bottom:12px;cursor:pointer;}
-  .sd-toggle-row.on{border-color:#ff5c5c;background:#200008;}
-  .sd-toggle-label{font-size:13px;font-weight:700;color:#ff5c5c88;}
-  .sd-toggle-row.on .sd-toggle-label{color:#ff5c5c;}
-  .sd-toggle-sub{font-size:10px;color:#9ca3c4;margin-top:2px;}
-  .sd-switch{width:40px;height:22px;background:#2a2a42;border-radius:11px;position:relative;transition:background .2s;flex-shrink:0;}
-  .sd-switch::after{content:'';position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;top:3px;left:3px;transition:transform .2s;}
-  .sd-toggle-row.on .sd-switch{background:#ff5c5c;}
-  .sd-toggle-row.on .sd-switch::after{transform:translateX(18px);}
-
-  /* DAILY CHALLENGE TOGGLE */
-  .dc-toggle-row{display:flex;align-items:center;justify-content:space-between;background:#161628;border:1.5px solid #ffaa3344;border-radius:13px;padding:12px 16px;margin-bottom:12px;cursor:pointer;}
-  .dc-toggle-row.on{border-color:#ffaa33;background:#1a1000;}
-  .dc-toggle-label{font-size:13px;font-weight:700;color:#ffaa3388;}
-  .dc-toggle-row.on .dc-toggle-label{color:#ffaa33;}
-  .dc-toggle-sub{font-size:10px;color:#9ca3c4;margin-top:2px;}
-  .dc-switch{width:40px;height:22px;background:#2a2a42;border-radius:11px;position:relative;transition:background .2s;flex-shrink:0;}
-  .dc-switch::after{content:'';position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;top:3px;left:3px;transition:transform .2s;}
-  .dc-toggle-row.on .dc-switch{background:#ffaa33;}
-  .dc-toggle-row.on .dc-switch::after{transform:translateX(18px);}
-
   .cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;}
   .cat-btn{background:#161628;border:1.5px solid #2a2a42;border-radius:16px;padding:14px 12px 10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;transition:transform .12s,background .12s;}
   .cat-btn:hover{background:#1d1d32;}.cat-btn:active{transform:scale(.96);}
   .cat-icon{font-size:26px;}
   .cat-name{font-size:13px;font-weight:700;color:#d0d4f0;text-align:center;line-height:1.3;}
-  .cat-best{font-size:10px;color:#9ca3c4;font-weight:700;letter-spacing:.5px;}
   .cat-btn.fc{border-color:#00d48a;}.cat-btn.pt{border-color:#ff5c7a;}
   .cat-btn.al{border-color:#ffaa33;}.cat-btn.ce{border-color:#c473ff;}
   .cat-btn.at{border-color:#ffe033;}.cat-btn.gm{border-color:#33d4ff;}
   .cat-btn.sc{border-color:#ff70c0;}.span2{grid-column:span 2;}
   .home-btns{display:flex;flex-direction:column;gap:10px;margin-top:16px;}
-
-  /* SUDDEN DEATH BADGE */
-  .sd-badge{display:inline-block;background:#ff5c5c;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;letter-spacing:1px;text-transform:uppercase;margin-left:8px;}
 
   /* QUIZ */
   .q-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
@@ -84,12 +57,6 @@
   .btn-give-up{width:100%;margin-top:20px;padding:12px;background:transparent;border:1.5px solid #ff5c5c44;border-radius:13px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;color:#ff5c5c88;cursor:pointer;transition:background .12s,color .12s,border-color .12s;}
   .btn-give-up:hover{background:#ff5c5c12;color:#ff5c5c;border-color:#ff5c5c;}
 
-  /* SUDDEN DEATH GAME OVER */
-  .sd-gameover{background:#200008;border:2px solid #ff5c5c;border-radius:16px;padding:20px;text-align:center;margin-bottom:20px;}
-  .sd-gameover-icon{font-size:48px;margin-bottom:8px;}
-  .sd-gameover-txt{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;color:#ff5c5c;}
-  .sd-gameover-sub{font-size:13px;color:#9ca3c4;margin-top:6px;}
-
   /* FEEDBACK FLASH */
   .fb-wrap{position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:99;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s;}
   .fb-wrap.show{opacity:1;}
@@ -112,12 +79,6 @@
   .rating-txt{font-size:20px;font-weight:700;color:#fff;}
   .rating-sub{font-size:13px;color:#b0b8d8;margin-top:5px;}
   .sum-btns{display:flex;flex-direction:column;gap:10px;}
-
-  /* CHALLENGE BANNER on summary */
-  .challenge-banner{width:100%;background:#161628;border:1.5px solid #c473ff;border-radius:13px;padding:14px 16px;margin-bottom:16px;text-align:center;}
-  .challenge-banner-lbl{font-size:11px;color:#c473ff;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;}
-  .challenge-link{font-size:12px;color:#9ca3c4;word-break:break-all;margin-bottom:10px;}
-  .btn-copy{background:#c473ff22;border:1px solid #c473ff;color:#c473ff;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;padding:8px 16px;border-radius:10px;cursor:pointer;}
 
   /* NAME SCREEN */
   #s-name{padding-top:40px;align-items:center;}
@@ -198,12 +159,6 @@
   .vs-score-name{font-size:11px;color:#9ca3c4;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
   .vs-score-val{font-family:'Rajdhani',sans-serif;font-size:32px;font-weight:700;}
 
-  /* SHAREABLE CARD */
-  .share-card-wrap{width:100%;margin-bottom:16px;}
-  canvas#share-canvas{width:100%;border-radius:16px;display:block;}
-  .btn-share{width:100%;padding:14px;background:#c473ff22;border:1.5px solid #c473ff;border-radius:13px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;color:#c473ff;cursor:pointer;margin-bottom:10px;}
-  .btn-share:hover{background:#c473ff33;}
-
   /* SHARED BUTTONS */
   .btn-primary{width:100%;padding:16px;background:#00d48a;border:none;border-radius:13px;font-family:'Rajdhani',sans-serif;font-size:21px;font-weight:700;letter-spacing:1px;color:#001a0a;cursor:pointer;margin-bottom:12px;transition:opacity .12s,transform .12s;}
   .btn-primary:hover{opacity:.9;}.btn-primary:active{transform:scale(.98);}
@@ -237,25 +192,16 @@
     <div class="big-title">QUIZMASTER</div>
     <div class="big-sub">Pick a category</div>
     <div class="home-top-score loading" id="home-top-score">Loading top score...</div>
-    <div class="sd-toggle-row" id="sd-toggle" onclick="toggleSuddenDeath()">
-      <div><div class="sd-toggle-label">⚡ Sudden Death</div><div class="sd-toggle-sub">One wrong answer ends the game</div></div>
-      <div class="sd-switch"></div>
-    </div>
-    <div class="dc-toggle-row" id="dc-toggle" onclick="toggleDailyChallenge()">
-      <div><div class="dc-toggle-label">🔥 Daily Challenge</div><div class="dc-toggle-sub" id="dc-sub">Same questions for everyone today · One attempt</div></div>
-      <div class="dc-switch"></div>
-    </div>
     <div class="cat-grid">
-      <button class="cat-btn fc" onclick="startGame('Football')"><span class="cat-icon">⚽</span><span class="cat-name">Football</span><span class="cat-best" id="best-Football">—</span></button>
-      <button class="cat-btn pt" onclick="startGame('Portugal')"><span class="cat-icon">🇵🇹</span><span class="cat-name">Portugal</span><span class="cat-best" id="best-Portugal">—</span></button>
-      <button class="cat-btn al" onclick="startGame('Algarve')"><span class="cat-icon">🏖</span><span class="cat-name">Algarve</span><span class="cat-best" id="best-Algarve">—</span></button>
-      <button class="cat-btn ce" onclick="startGame('Celebrities and TikTok')"><span class="cat-icon">🎵</span><span class="cat-name">Celebs &amp; TikTok</span><span class="cat-best" id="best-Celebrities and TikTok">—</span></button>
-      <button class="cat-btn at" onclick="startGame('Famous Athletes')"><span class="cat-icon">🏆</span><span class="cat-name">Famous Athletes</span><span class="cat-best" id="best-Famous Athletes">—</span></button>
-      <button class="cat-btn gm" onclick="startGame('Gaming')"><span class="cat-icon">🎮</span><span class="cat-name">Gaming</span><span class="cat-best" id="best-Gaming">—</span></button>
-      <button class="cat-btn sc span2" onclick="startGame('Space and Science')"><span class="cat-icon">🚀</span><span class="cat-name">Space &amp; Science</span><span class="cat-best" id="best-Space and Science">—</span></button>
+      <button class="cat-btn fc" onclick="startGame('Football')"><span class="cat-icon">⚽</span><span class="cat-name">Football</span></button>
+      <button class="cat-btn pt" onclick="startGame('Portugal')"><span class="cat-icon">🇵🇹</span><span class="cat-name">Portugal</span></button>
+      <button class="cat-btn al" onclick="startGame('Algarve')"><span class="cat-icon">🏖</span><span class="cat-name">Algarve</span></button>
+      <button class="cat-btn ce" onclick="startGame('Celebrities and TikTok')"><span class="cat-icon">🎵</span><span class="cat-name">Celebs &amp; TikTok</span></button>
+      <button class="cat-btn at" onclick="startGame('Famous Athletes')"><span class="cat-icon">🏆</span><span class="cat-name">Famous Athletes</span></button>
+      <button class="cat-btn gm" onclick="startGame('Gaming')"><span class="cat-icon">🎮</span><span class="cat-name">Gaming</span></button>
+      <button class="cat-btn sc span2" onclick="startGame('Space and Science')"><span class="cat-icon">🚀</span><span class="cat-name">Space &amp; Science</span></button>
     </div>
     <div class="home-btns">
-      <button class="btn-ghost" onclick="startMixedMarathon()">🌍 Mixed Marathon</button>
       <button class="btn-ghost" onclick="openLeaderboard(null)">🎆 Weekly Leaderboard</button>
       <button class="btn-ghost" onclick="openHallOfFame()">👑 Hall of Fame</button>
       <button class="btn-ghost" onclick="show('s-vs-setup')">⚔️ Versus Mode</button>
@@ -296,7 +242,6 @@
         <option value="Famous Athletes">Famous Athletes</option>
         <option value="Gaming">Gaming</option>
         <option value="Space and Science">Space &amp; Science</option>
-        <option value="Mixed Marathon">Mixed Marathon</option>
       </select>
     </div>
     <div class="lb-back-row" style="margin-bottom:12px;">
@@ -395,11 +340,6 @@
     <div class="sum-title">GAME OVER</div>
     <div class="sum-cat" id="sum-cat"></div>
     <div class="score-box"><div class="score-lbl">Final Score</div><div class="score-num" id="fin-score">0</div></div>
-    <div id="sd-gameover-box" style="display:none;" class="sd-gameover">
-      <div class="sd-gameover-icon">💀</div>
-      <div class="sd-gameover-txt">SUDDEN DEATH</div>
-      <div class="sd-gameover-sub" id="sd-gameover-sub">You answered wrong on question 5</div>
-    </div>
     <div class="sgrid">
       <div class="scard"><div class="scard-lbl">Correct</div><div class="scard-val" id="st-correct">0/10</div><div class="scard-sub">questions</div></div>
       <div class="scard"><div class="scard-lbl">Best streak</div><div class="scard-val" id="st-streak">0</div><div class="scard-sub">in a row</div></div>
@@ -410,15 +350,6 @@
       <div class="rating-stars" id="r-stars">⭐⭐⭐</div>
       <div class="rating-txt" id="r-txt">Nice work!</div>
       <div class="rating-sub" id="r-sub">Keep playing to improve</div>
-    </div>
-    <!-- Shareable card -->
-    <div class="share-card-wrap"><canvas id="share-canvas"></canvas></div>
-    <button class="btn-share" onclick="downloadShareCard()">📸 Save Result Image</button>
-    <!-- Challenge friend -->
-    <div class="challenge-banner" id="challenge-banner">
-      <div class="challenge-banner-lbl">⚔️ Challenge a Friend</div>
-      <div class="challenge-link" id="challenge-link">generating link...</div>
-      <button class="btn-copy" onclick="copyChallenge()">📋 Copy Link</button>
     </div>
     <div class="sum-btns">
       <button class="btn-primary" id="btn-again">PLAY AGAIN</button>
@@ -436,16 +367,6 @@
     <p style="font-size:14px;color:#b0b8d8;text-align:center;margin-bottom:24px;line-height:1.6;">Your current score will be lost and you'll go back to the home screen.</p>
     <button class="btn-primary" style="background:#ff5c5c;color:#fff;margin-bottom:10px;" onclick="doGiveUp()">Yes, give up</button>
     <button class="btn-ghost" onclick="closeGiveUpModal()">Keep playing</button>
-  </div>
-</div>
-
-<!-- Daily Challenge Already Played Modal -->
-<div class="modal-overlay" id="dc-done-modal">
-  <div class="modal-box">
-    <div class="modal-title">🔥 Already Played Today!</div>
-    <p style="font-size:14px;color:#b0b8d8;text-align:center;margin-bottom:8px;line-height:1.6;">You've already done today's Daily Challenge.</p>
-    <p style="font-size:13px;color:#ffaa33;text-align:center;margin-bottom:24px;font-weight:700;" id="dc-done-score"></p>
-    <button class="btn-ghost" onclick="document.getElementById('dc-done-modal').classList.remove('show')">OK</button>
   </div>
 </div>
 
@@ -954,8 +875,6 @@ const QS={
 const L=['A','B','C','D'];
 const TSEC=10;
 let g={};
-let suddenDeath=false;
-let dailyChallenge=false;
 
 const SUPABASE_URL="https://movxlchiqytbtfvbauel.supabase.co";
 const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1vdnhsY2hpcXl0YnRmdmJhdWVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA0Mzk3MTUsImV4cCI6MjA5NjAxNTcxNX0.mYhCGSXmjC892XIciCDBkoKvJ4t_GyAoy0ESx1imkyE";
@@ -975,110 +894,21 @@ function getWeekKey(){
   return mon.getUTCFullYear()+'-W'+(mon.getUTCMonth()+1)+'-'+mon.getUTCDate();
 }
 
-function getDayKey(){
-  var now=new Date();
-  return now.getUTCFullYear()+'-'+(now.getUTCMonth()+1)+'-'+now.getUTCDate();
-}
-
-// Seeded random for daily challenge
-function seededRand(seed){
-  var x=Math.sin(seed+1)*10000;
-  return x-Math.floor(x);
-}
-function seededShuffle(arr,seed){
-  var a=[...arr];
-  for(var i=a.length-1;i>0;i--){
-    var j=Math.floor(seededRand(seed+i)*(i+1));
-    var tmp=a[i];a[i]=a[j];a[j]=tmp;
-  }
-  return a;
-}
-
 function shuf(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
 function show(id){document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');window.scrollTo(0,0);setTimeout(updateScrollHint,80);}
-
-// ---- TOGGLES ----
-function toggleSuddenDeath(){
-  suddenDeath=!suddenDeath;
-  document.getElementById('sd-toggle').classList.toggle('on',suddenDeath);
-}
-function toggleDailyChallenge(){
-  dailyChallenge=!dailyChallenge;
-  document.getElementById('dc-toggle').classList.toggle('on',dailyChallenge);
-  var sub=document.getElementById('dc-sub');
-  sub.textContent=dailyChallenge?'ON — same 10 questions for everyone today':'Same questions for everyone today · One attempt';
-}
-
-// ---- PERSONAL BESTS ----
-function loadPersonalBests(){
-  var cats=Object.keys(QS);
-  cats.forEach(function(cat){
-    var best=localStorage.getItem('pb_'+cat);
-    var el=document.getElementById('best-'+cat);
-    if(el) el.textContent=best?'Best: '+Number(best).toLocaleString():'—';
-  });
-  // Mixed marathon
-  var mbest=localStorage.getItem('pb_Mixed Marathon');
-  // (no separate element needed)
-}
-function savePersonalBest(cat,score){
-  var key='pb_'+cat;
-  var prev=parseInt(localStorage.getItem(key)||'0');
-  if(score>prev) localStorage.setItem(key,score);
+function goHome(){
+  clearInterval(g.timer);
+  if(typeof vs!=='undefined'){clearInterval(vs.pollTimer);vs.pollTimer=null;vs.active=false;}
+  document.getElementById('vs-live').style.display='none';
+  document.getElementById('btn-give-up').style.display='';
+  show('s-home');
 }
 
 // ---- GAME START ----
 function startGame(cat){
-  // Daily challenge check
-  if(dailyChallenge){
-    var dk=getDayKey();
-    var dcKey='dc_'+cat+'_'+dk;
-    var played=localStorage.getItem(dcKey);
-    if(played){
-      document.getElementById('dc-done-score').textContent='Your score: '+Number(played).toLocaleString()+' pts';
-      document.getElementById('dc-done-modal').classList.add('show');
-      return;
-    }
-  }
-  var qs;
-  if(dailyChallenge){
-    // Use date-based seed for same questions every day
-    var dk2=getDayKey();
-    var seed=dk2.split('-').reduce(function(a,b){return a*100+parseInt(b);},0)+cat.length*7;
-    qs=seededShuffle(QS[cat],seed).slice(0,10);
-  } else {
-    qs=shuf(QS[cat]).slice(0,10);
-  }
-  g={cat:cat,qs:qs,qi:0,score:0,streak:0,best:0,correct:0,times:[],answered:false,secsLeft:TSEC,timer:null,tstart:null,scoreSubmitted:false,isDaily:dailyChallenge,isSuddenDeath:suddenDeath,sdDied:false,sdDeathQ:0};
-  document.getElementById('q-cat').textContent=cat+(suddenDeath?' ⚡':'');
-  show('s-q');
-  loadQ();
-}
-
-function startMixedMarathon(){
-  if(dailyChallenge){
-    var dk=getDayKey();
-    var played=localStorage.getItem('dc_Mixed Marathon_'+dk);
-    if(played){
-      document.getElementById('dc-done-score').textContent='Your score: '+Number(played).toLocaleString()+' pts';
-      document.getElementById('dc-done-modal').classList.add('show');
-      return;
-    }
-  }
-  // Pick 10 random questions from all categories combined
-  var allCats=Object.keys(QS);
-  var pool=[];
-  allCats.forEach(function(cat){
-    QS[cat].forEach(function(q){pool.push({...q,_cat:cat});});
-  });
-  var qs;
-  if(dailyChallenge){
-    var seed2=getDayKey().split('-').reduce(function(a,b){return a*100+parseInt(b);},0)+777;
-    qs=seededShuffle(pool,seed2).slice(0,10);
-  } else {
-    qs=shuf(pool).slice(0,10);
-  }
-  g={cat:'Mixed Marathon',qs:qs,qi:0,score:0,streak:0,best:0,correct:0,times:[],answered:false,secsLeft:TSEC,timer:null,tstart:null,scoreSubmitted:false,isDaily:dailyChallenge,isSuddenDeath:suddenDeath,sdDied:false,sdDeathQ:0};
+  var qs=shuf(QS[cat]).slice(0,10);
+  g={cat:cat,qs:qs,qi:0,score:0,streak:0,best:0,correct:0,times:[],answered:false,secsLeft:TSEC,timer:null,tstart:null,scoreSubmitted:false};
+  document.getElementById('q-cat').textContent=cat;
   show('s-q');
   loadQ();
 }
@@ -1089,7 +919,7 @@ function loadQ(){
   if(typeof vs!=='undefined'){clearInterval(vs.pollTimer);vs.pollTimer=null;}
   g.answered=false;g.secsLeft=TSEC;g.tstart=Date.now();
   if(typeof vs!=='undefined')vs.advancing=false;
-  document.getElementById('q-cat').textContent=g.cat+(g.isSuddenDeath?' ⚡':'');
+  document.getElementById('q-cat').textContent=g.cat;
   document.getElementById('q-prog').textContent=(g.qi+1)+' / 10';
   document.getElementById('live-score').textContent=g.score.toLocaleString();
   document.getElementById('live-streak').textContent=g.streak>0?(g.streak+' \uD83D\uDD25'):'0';
@@ -1124,13 +954,6 @@ function timeout(){
   var q=g.qs[g.qi];
   document.querySelectorAll('.opt').forEach(function(b,i){b.classList.add('off');if(i===q.answer)b.classList.add('ok');});
   g.streak=0;
-  // Sudden death: timeout counts as wrong
-  if(g.isSuddenDeath&&!g.sdDied){
-    g.sdDied=true;g.sdDeathQ=g.qi+1;
-    flash(false,0);
-    setTimeout(function(){summary();},1300);
-    return;
-  }
   flash(false,0);setTimeout(nextQ,1300);
 }
 
@@ -1150,19 +973,6 @@ function pick(chosen){
     pts=100+Math.round(sl*10);if(g.streak>1)pts*=g.streak;g.score+=pts;
   } else {
     g.streak=0;
-    // Sudden death: wrong answer = game over
-    if(g.isSuddenDeath&&!g.sdDied){
-      g.sdDied=true;g.sdDeathQ=g.qi+1;
-      document.getElementById('live-score').textContent=g.score.toLocaleString();
-      document.getElementById('live-streak').textContent='0';
-      flash(false,0);
-      if(typeof vs!=='undefined'&&vs.active){
-        var myScoreEl=vs.player===1?'vl-p1score':'vl-p2score';
-        document.getElementById(myScoreEl).textContent=g.score.toLocaleString();
-      }
-      setTimeout(function(){summary();},1300);
-      return;
-    }
   }
   document.getElementById('live-score').textContent=g.score.toLocaleString();
   document.getElementById('live-streak').textContent=g.streak>0?(g.streak+' \uD83D\uDD25'):'0';
@@ -1205,14 +1015,6 @@ async function nextQ(){
 
 function summary(){
   g.scoreSubmitted=false;
-  // Save personal best
-  savePersonalBest(g.cat,g.score);
-  loadPersonalBests();
-  // Save daily challenge attempt
-  if(g.isDaily){
-    var dk=getDayKey();
-    localStorage.setItem('dc_'+g.cat+'_'+dk,g.score);
-  }
   document.getElementById('name-score-preview').textContent=g.score.toLocaleString();
   document.getElementById('name-input').value='';
   document.getElementById('submit-status').textContent='';
@@ -1261,22 +1063,13 @@ function skipToSummary(){showSummaryScreen();}
 function showSummaryScreen(){
   var avg=g.times.length?(g.times.reduce(function(a,b){return a+b;},0)/g.times.length).toFixed(1):0;
   var acc=Math.round((g.correct/10)*100);
-  var displayCat=g.cat+(g.isSuddenDeath?' ⚡':'')+(g.isDaily?' 🔥':'');
-  document.getElementById('sum-cat').textContent=displayCat.toUpperCase();
+  document.getElementById('sum-cat').textContent=g.cat.toUpperCase();
   document.getElementById('fin-score').textContent=g.score.toLocaleString();
   document.getElementById('st-correct').textContent=g.correct+'/10';
   document.getElementById('st-streak').textContent=g.best;
   document.getElementById('st-speed').textContent=avg+'s';
   document.getElementById('st-acc').textContent=acc+'%';
-  // Sudden death box
-  var sdBox=document.getElementById('sd-gameover-box');
-  if(g.isSuddenDeath&&g.sdDied){
-    sdBox.style.display='block';
-    document.getElementById('sd-gameover-sub').textContent='You got it wrong on question '+g.sdDeathQ;
-  } else {
-    sdBox.style.display='none';
-  }
-  var correct=g.sdDied?g.correct:g.correct;
+  var correct=g.correct;
   var stars=correct===10?'⭐⭐⭐':correct>=8?'⭐⭐⭐':correct>=6?'⭐⭐':correct>=4?'⭐':'💣';
   var txt=correct===10?'PERFECT!':correct>=8?'Excellent!':correct>=6?'Good job!':correct>=4?'Not bad!':'Ouch!';
   var sub=correct===10?'Flawless - you know everything!':correct>=8?'You really know your stuff!':correct>=6?'Solid - keep it up!':correct>=4?'Room to grow - try again!':'Better luck next time!';
@@ -1284,121 +1077,7 @@ function showSummaryScreen(){
   document.getElementById('r-txt').textContent=txt;
   document.getElementById('r-sub').textContent=sub;
   document.getElementById('btn-again').onclick=function(){startGame(g.cat);};
-  // Challenge link
-  var baseUrl=window.location.origin+window.location.pathname;
-  var challengeUrl=baseUrl+'?challenge='+g.score+':'+encodeURIComponent(g.cat);
-  document.getElementById('challenge-link').textContent=challengeUrl;
-  // Draw share card
-  drawShareCard(g.savedName||'Anonymous',g.score,g.correct,g.best,avg,acc,g.cat,new Date().toLocaleDateString('en-GB'));
   show('s-sum');
-}
-
-// ---- CHALLENGE LINK ----
-function copyChallenge(){
-  var link=document.getElementById('challenge-link').textContent;
-  navigator.clipboard.writeText(link).then(function(){
-    var btn=document.querySelector('.btn-copy');
-    btn.textContent='✅ Copied!';
-    setTimeout(function(){btn.textContent='📋 Copy Link';},2000);
-  }).catch(function(){
-    // Fallback
-    var ta=document.createElement('textarea');ta.value=link;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
-  });
-}
-
-// Check for challenge param on load
-(function(){
-  var params=new URLSearchParams(window.location.search);
-  var challenge=params.get('challenge');
-  if(challenge){
-    var parts=challenge.split(':');
-    var score=parseInt(parts[0]);
-    var cat=decodeURIComponent(parts[1]||'');
-    if(score&&cat){
-      // Show banner on home screen
-      var banner=document.createElement('div');
-      banner.style.cssText='background:#c473ff22;border:1.5px solid #c473ff;border-radius:13px;padding:14px 16px;margin-bottom:14px;text-align:center;';
-      banner.innerHTML='<div style="font-size:11px;color:#c473ff;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;">⚔️ Challenge!</div>'+
-        '<div style="font-size:15px;font-weight:700;color:#fff;">Beat <span style="color:#c473ff">'+score.toLocaleString()+'</span> pts on <span style="color:#c473ff">'+cat+'</span></div>';
-      var homeEl=document.getElementById('s-home');
-      homeEl.insertBefore(banner,homeEl.querySelector('.cat-grid'));
-    }
-  }
-})();
-
-// ---- SHARE CARD ----
-function drawShareCard(name,score,correct,streak,speed,acc,cat,date){
-  var canvas=document.getElementById('share-canvas');
-  var W=600,H=320;
-  canvas.width=W;canvas.height=H;
-  var ctx=canvas.getContext('2d');
-  // Background
-  var grad=ctx.createLinearGradient(0,0,W,H);
-  grad.addColorStop(0,'#0d0d1a');
-  grad.addColorStop(1,'#161628');
-  ctx.fillStyle=grad;
-  ctx.beginPath();
-  ctx.roundRect(0,0,W,H,20);
-  ctx.fill();
-  // Border
-  ctx.strokeStyle='#00d48a44';
-  ctx.lineWidth=2;
-  ctx.beginPath();
-  ctx.roundRect(1,1,W-2,H-2,20);
-  ctx.stroke();
-  // Title
-  ctx.fillStyle='#00d48a';
-  ctx.font='bold 14px sans-serif';
-  ctx.fillText('QUIZMASTER',30,36);
-  // Category
-  ctx.fillStyle='#9ca3c4';
-  ctx.font='12px sans-serif';
-  ctx.fillText(cat.toUpperCase(),30,56);
-  // Score
-  ctx.fillStyle='#00d48a';
-  ctx.font='bold 72px sans-serif';
-  ctx.fillText(Number(score).toLocaleString(),30,145);
-  ctx.fillStyle='#9ca3c4';
-  ctx.font='12px sans-serif';
-  ctx.fillText('FINAL SCORE',30,168);
-  // Stats grid
-  var stats=[
-    {label:'CORRECT',value:correct+'/10'},
-    {label:'STREAK',value:streak+'x'},
-    {label:'AVG SPEED',value:speed+'s'},
-    {label:'ACCURACY',value:acc+'%'}
-  ];
-  stats.forEach(function(s,i){
-    var x=30+(i%2)*260;
-    var y=i<2?210:270;
-    ctx.fillStyle='#2a2a42';
-    ctx.beginPath();
-    ctx.roundRect(x,y-22,230,50,10);
-    ctx.fill();
-    ctx.fillStyle='#9ca3c4';
-    ctx.font='10px sans-serif';
-    ctx.fillText(s.label,x+12,y-6);
-    ctx.fillStyle='#fff';
-    ctx.font='bold 22px sans-serif';
-    ctx.fillText(s.value,x+12,y+18);
-  });
-  // Name + date
-  ctx.fillStyle='#9ca3c4';
-  ctx.font='12px sans-serif';
-  ctx.fillText(name+' · '+date,30,H-20);
-  // lucs-coder1.github.io/Quizmaster
-  ctx.fillStyle='#3a3a55';
-  ctx.font='11px sans-serif';
-  var link='lucs-coder1.github.io/Quizmaster';
-  ctx.fillText(link,W-ctx.measureText(link).width-20,H-20);
-}
-
-function downloadShareCard(){
-  var canvas=document.getElementById('share-canvas');
-  var a=document.createElement('a');
-  a.download='quizmaster-result.png';
-  a.href=canvas.toDataURL('image/png');
-  a.click();
 }
 
 // ---- LEADERBOARD ----
@@ -1511,7 +1190,6 @@ function openAppModal(){document.getElementById('app-modal').classList.add('show
 function closeAppModal(){document.getElementById('app-modal').classList.remove('show');}
 document.getElementById('giveup-modal').addEventListener('click',function(e){if(e.target===this)closeGiveUpModal();});
 document.getElementById('app-modal').addEventListener('click',function(e){if(e.target===this)closeAppModal();});
-document.getElementById('dc-done-modal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('show');});
 
 // ---- VERSUS MODE ----
 var vs={active:false,code:'',player:0,p1name:'',p2name:'',cat:'',qs:[],pollTimer:null,waitingForOpponent:false,ws:null,advancing:false};
@@ -1581,7 +1259,7 @@ function startVersusGame(){
   document.getElementById('vl-p2score').textContent='0';
   document.getElementById('vl-p1q').textContent='Q1';
   document.getElementById('vl-p2q').textContent='Q1';
-  g={cat:vs.cat,qs:vs.qs,qi:0,score:0,streak:0,best:0,correct:0,times:[],answered:false,secsLeft:TSEC,timer:null,tstart:null,scoreSubmitted:false,isSuddenDeath:false,isDaily:false,sdDied:false,sdDeathQ:0};
+  g={cat:vs.cat,qs:vs.qs,qi:0,score:0,streak:0,best:0,correct:0,times:[],answered:false,secsLeft:TSEC,timer:null,tstart:null,scoreSubmitted:false};
   vs.waitingForOpponent=false;
   show('s-q');
   setTimeout(function(){loadQ();},300);
@@ -1664,8 +1342,6 @@ function showVersusResult(p1score,p2score,p1name,p2name){
 
 // ---- INIT ----
 loadHomeTopScore();
-loadPersonalBests();
-loadLiveFeed();
 
 // Handle versus link
 (function(){
